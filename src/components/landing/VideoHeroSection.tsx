@@ -28,8 +28,8 @@ export function VideoHeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-[140px] sm:pt-[130px]">
-        <div className="text-center max-w-4xl mx-auto">
+      <div className="relative z-10 h-full flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-[180px] sm:pt-[160px] md:pt-[150px]">
+        <div className="text-center max-w-4xl mx-auto mt-8 sm:mt-12 md:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
