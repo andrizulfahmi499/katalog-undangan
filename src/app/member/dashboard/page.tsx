@@ -44,12 +44,25 @@ export default function MemberDashboard() {
   const [showSendModal, setShowSendModal] = useState(false)
   const [activeTab, setActiveTab] = useState<'invitations' | 'history'>('invitations')
 
-  // Sample member ID - in real app, get from auth
-  const memberId = 'member-1'
+  // Get member ID from localStorage
+  const [memberId, setMemberId] = useState<string>('')
 
   useEffect(() => {
-    fetchInvitations()
+    // Get member ID from localStorage
+    const storedMemberId = localStorage.getItem('memberId')
+    if (storedMemberId) {
+      setMemberId(storedMemberId)
+    } else {
+      // Redirect to login if no member ID found
+      window.location.href = '/login'
+    }
   }, [])
+
+  useEffect(() => {
+    if (memberId) {
+      fetchInvitations()
+    }
+  }, [memberId])
 
   const fetchInvitations = async () => {
     try {
@@ -156,6 +169,10 @@ export default function MemberDashboard() {
   }
 
   const handleLogout = () => {
+    // Clear member data from localStorage
+    localStorage.removeItem('memberId')
+    localStorage.removeItem('memberName')
+    localStorage.removeItem('memberEmail')
     window.location.href = '/login'
   }
 

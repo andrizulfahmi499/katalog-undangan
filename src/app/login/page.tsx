@@ -41,6 +41,13 @@ export default function LoginPage() {
         throw new Error(data.error || 'Login gagal')
       }
 
+      // Store user data in localStorage
+      if (data.success && data.data) {
+        localStorage.setItem(loginType === 'admin' ? 'adminId' : 'memberId', data.data.id)
+        localStorage.setItem(loginType === 'admin' ? 'adminName' : 'memberName', data.data.name)
+        localStorage.setItem(loginType === 'admin' ? 'adminEmail' : 'memberEmail', data.data.email)
+      }
+
       // Redirect to respective dashboard
       if (loginType === 'admin') {
         window.location.href = '/admin/dashboard'

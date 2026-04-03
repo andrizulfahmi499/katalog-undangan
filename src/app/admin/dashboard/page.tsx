@@ -40,6 +40,17 @@ export default function AdminDashboard() {
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
   const [currentAdminId, setCurrentAdminId] = useState<string>('')
 
+  // Get admin ID from localStorage
+  useEffect(() => {
+    const storedAdminId = localStorage.getItem('adminId')
+    if (storedAdminId) {
+      setCurrentAdminId(storedAdminId)
+    } else {
+      // Redirect to login if no admin ID found
+      window.location.href = '/login'
+    }
+  }, [])
+
   // New member form state
   const [newMember, setNewMember] = useState({
     name: '',
@@ -64,20 +75,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchMembers()
     fetchInvitations()
-    fetchCurrentAdmin()
   }, [])
-
-  const fetchCurrentAdmin = async () => {
-    try {
-      const response = await fetch('/api/admin/current')
-      const data = await response.json()
-      if (data.success) {
-        setCurrentAdminId(data.data.id)
-      }
-    } catch (error) {
-      console.error('Error fetching current admin:', error)
-    }
-  }
 
   const fetchMembers = async () => {
     try {
@@ -191,6 +189,10 @@ export default function AdminDashboard() {
   }
 
   const handleLogout = () => {
+    // Clear admin data from localStorage
+    localStorage.removeItem('adminId')
+    localStorage.removeItem('adminName')
+    localStorage.removeItem('adminEmail')
     window.location.href = '/login'
   }
 
