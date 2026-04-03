@@ -6,7 +6,7 @@ import { Heart, Sparkles, Users } from 'lucide-react'
 
 export function IntroSection() {
   return (
-    <section className="relative py-20 bg-white overflow-hidden">
+    <section className="relative py-20 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <ScrollReveal>
           <div className="text-center max-w-4xl mx-auto">
@@ -18,8 +18,8 @@ export function IntroSection() {
             >
               <div className="flex items-center justify-center gap-4 mb-6">
                 <Heart className="w-8 h-8 text-gray-800 animate-pulse" fill="currentColor" />
-                <Heart className="w-6 h-6 text-gray-600" fill="currentColor" />
-                <Heart className="w-4 h-4 text-gray-400" fill="currentColor" />
+                <Heart className="w-6 h-6 text-gray-700" fill="currentColor" />
+                <Heart className="w-4 h-4 text-gray-600" fill="currentColor" />
               </div>
             </motion.div>
 
@@ -27,7 +27,7 @@ export function IntroSection() {
               Bukan sekadar undangan biasa...
             </h2>
 
-            <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8">
               Kami membantu Anda menciptakan undangan pernikahan digital yang tidak hanya menginformasikan,
               tetapi juga menyentuh hati setiap tamu yang menerimanya. Dengan desain elegan, fitur lengkap,
               dan kemudahan berbagi, momen spesial Anda akan lebih berkesan.
@@ -35,27 +35,27 @@ export function IntroSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4 border border-gray-200">
+                <div className="inline-flex items-center justify-center w-16 h-16 backdrop-blur-xl bg-white/60 rounded-full mb-4 border border-white/50 shadow-lg shadow-gray-200/30">
                   <Sparkles className="w-8 h-8 text-gray-800" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Desain Elegan</h3>
-                <p className="text-gray-600 text-sm">Pilihan template yang memukau dan dapat dikustomisasi</p>
+                <p className="text-gray-700 text-sm">Pilihan template yang memukau dan dapat dikustomisasi</p>
               </div>
 
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4 border border-gray-200">
+                <div className="inline-flex items-center justify-center w-16 h-16 backdrop-blur-xl bg-white/60 rounded-full mb-4 border border-white/50 shadow-lg shadow-gray-200/30">
                   <Users className="w-8 h-8 text-gray-800" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Mudah Dibagikan</h3>
-                <p className="text-gray-600 text-sm">Kirim ke ribuan tamu hanya dengan satu klik</p>
+                <p className="text-gray-700 text-sm">Kirim ke ribuan tamu hanya dengan satu klik</p>
               </div>
 
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4 border border-gray-200">
+                <div className="inline-flex items-center justify-center w-16 h-16 backdrop-blur-xl bg-white/60 rounded-full mb-4 border border-white/50 shadow-lg shadow-gray-200/30">
                   <Heart className="w-8 h-8 text-gray-800" fill="currentColor" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Penuh Makna</h3>
-                <p className="text-gray-600 text-sm">Ceritakan kisah cinta Anda dengan cara yang unik</p>
+                <p className="text-gray-700 text-sm">Ceritakan kisah cinta Anda dengan cara yang unik</p>
               </div>
             </div>
           </div>

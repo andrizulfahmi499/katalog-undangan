@@ -79,42 +79,42 @@ const features: Feature[] = [
     icon: <Calendar className="w-8 h-8" />,
     title: 'RSVP Online',
     description: 'Kelola konfirmasi kehadiran tamu dengan mudah dan real-time',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('rsvp')
   },
   {
     icon: <MapPin className="w-8 h-8" />,
     title: 'Lokasi Map',
     description: 'Integrasi Google Maps untuk memudahkan tamu menemukan lokasi',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('map')
   },
   {
     icon: <Image className="w-8 h-8" />,
     title: 'Galeri Foto',
     description: 'Tampilkan foto prewedding dan momen spesial Anda',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('gallery')
   },
   {
     icon: <MessageSquare className="w-8 h-8" />,
     title: 'Buku Tamu Digital',
     description: 'Terima ucapan dan doa dari tamu secara digital',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('guestbook')
   },
   {
     icon: <Gift className="w-8 h-8" />,
     title: 'Kirim Kado',
     description: 'Integrasi fitur angpao digital dan daftar kado',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('gift')
   },
   {
     icon: <Calendar className="w-8 h-8" />,
     title: 'Countdown Timer',
     description: 'Hitung mundur menuju hari bahagia Anda',
-    color: 'bg-gray-50',
+    color: 'bg-white/50',
     animationData: createPlaceholderAnimation('countdown')
   }
 ]
@@ -123,7 +123,7 @@ export function FeatureSection() {
   return (
     <section
       id="features"
-      className="relative py-20 bg-gray-50 overflow-hidden"
+      className="relative py-20 overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -132,7 +132,7 @@ export function FeatureSection() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
               Fitur Lengkap untuk Momen Spesial
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
               Semua yang Anda butuhkan untuk undangan pernikahan digital yang sempurna
             </p>
           </div>
@@ -145,7 +145,7 @@ export function FeatureSection() {
               <motion.div
                 whileHover={{ y: -8, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative p-6 rounded-3xl bg-white border-2 border-gray-100 hover:border-gray-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="relative p-6 rounded-3xl backdrop-blur-xl bg-white/70 border-2 border-white/60 hover:border-white/80 transition-all duration-300 shadow-lg shadow-gray-200/30 hover:shadow-xl hover:shadow-gray-200/50"
               >
                 {/* Lottie Animation Container */}
                 <div className="flex justify-center mb-4">
@@ -154,7 +154,7 @@ export function FeatureSection() {
                     transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                     className="relative"
                   >
-                    <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-200">
+                    <div className="w-20 h-20 bg-white/60 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/70 shadow-md shadow-gray-200/30">
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: 'spring', stiffness: 300 }}
@@ -170,13 +170,13 @@ export function FeatureSection() {
                 <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 text-center leading-relaxed">
+                <p className="text-gray-700 text-center leading-relaxed">
                   {feature.description}
                 </p>
 
                 {/* Decorative Element */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center"
+                  className="absolute -top-2 -right-2 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center shadow-lg shadow-gray-200/30"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -193,7 +193,7 @@ export function FeatureSection() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-gray-900 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-md shadow-gray-200 hover:shadow-lg hover:shadow-gray-300 transition-all"
+              className="bg-gray-900 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-gray-300/50 transition-all backdrop-blur-sm"
             >
               Jelajahi Semua Fitur
             </motion.button>

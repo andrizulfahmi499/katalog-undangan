@@ -93,7 +93,7 @@ export function FloatingNav() {
           className="relative"
         >
           {/* Main Nav Bar */}
-          <div className="bg-white/95 backdrop-blur-2xl border-t border-gray-200 shadow-lg shadow-gray-200/50">
+          <div className="backdrop-blur-2xl bg-white/80 border-t-2 border-white/60 shadow-xl shadow-gray-200/50">
             {/* Desktop: Show all items */}
             <div className="hidden md:flex items-center justify-between px-8 py-4 max-w-4xl mx-auto">
               <div className="flex items-center gap-1">
@@ -103,10 +103,10 @@ export function FloatingNav() {
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleNavClick(item.href)}
-                    className={`relative px-6 py-3 rounded-2xl flex items-center gap-2 transition-all ${
+                    className={`relative px-6 py-3 rounded-2xl flex items-center gap-2 transition-all backdrop-blur-sm ${
                       activeSection === item.id
-                        ? 'bg-gray-900 text-white'
-                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                        ? 'bg-gray-900 text-white shadow-lg shadow-gray-200/30'
+                        : 'hover:bg-white/70 text-gray-700 hover:text-gray-900'
                     }`}
                   >
                     {item.icon}
@@ -129,10 +129,10 @@ export function FloatingNav() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowContactMenu(!showContactMenu)}
-                  className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
+                  className={`p-3 rounded-2xl flex items-center gap-2 transition-all backdrop-blur-sm ${
                     showContactMenu
-                      ? 'bg-gray-900 text-white'
-                      : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                      ? 'bg-gray-900 text-white shadow-lg shadow-gray-200/30'
+                      : 'hover:bg-white/70 text-gray-700 hover:text-gray-900'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5" />
@@ -141,7 +141,7 @@ export function FloatingNav() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gray-900 text-white p-3 rounded-2xl shadow-md hover:shadow-lg hover:shadow-gray-200 transition-all"
+                  className="bg-gray-900 text-white p-3 rounded-2xl shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-gray-300/50 transition-all backdrop-blur-sm"
                 >
                   <Sparkles className="w-5 h-5" />
                 </motion.button>
@@ -158,10 +158,10 @@ export function FloatingNav() {
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => handleNavClick(item.href)}
-                      className={`flex-1 max-w-[80px] py-3 rounded-2xl flex flex-col items-center gap-1 transition-all ${
+                      className={`flex-1 max-w-[80px] py-3 rounded-2xl flex flex-col items-center gap-1 transition-all backdrop-blur-sm ${
                         activeSection === item.id
-                          ? 'bg-gray-900 text-white'
-                          : 'text-gray-600'
+                          ? 'bg-gray-900 text-white shadow-lg shadow-gray-200/30'
+                          : 'text-gray-700'
                       }`}
                     >
                       {item.icon}
@@ -171,15 +171,15 @@ export function FloatingNav() {
                 </div>
 
                 {/* Mobile Contact & CTA */}
-                <div className="flex items-center gap-1 pl-2 border-l border-gray-200">
+                <div className="flex items-center gap-1 pl-2 border-l border-white/60">
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setShowContactMenu(!showContactMenu)}
-                    className={`p-3 rounded-2xl transition-all ${
+                    className={`p-3 rounded-2xl transition-all backdrop-blur-sm ${
                       showContactMenu
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-600'
+                        ? 'bg-gray-900 text-white shadow-lg shadow-gray-200/30'
+                        : 'text-gray-700'
                     }`}
                   >
                     <MessageCircle className="w-5 h-5" />
@@ -188,7 +188,7 @@ export function FloatingNav() {
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="bg-gray-900 text-white p-3 rounded-2xl shadow-md"
+                    className="bg-gray-900 text-white p-3 rounded-2xl shadow-lg shadow-gray-200/50 backdrop-blur-sm"
                   >
                     <Sparkles className="w-5 h-5" />
                   </motion.button>
@@ -207,7 +207,7 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 mb-4"
               >
-                <div className="bg-white border-2 border-gray-200 rounded-3xl p-4 shadow-xl shadow-gray-200/50 min-w-[220px]">
+                <div className="backdrop-blur-2xl bg-white/80 border-2 border-white/60 rounded-3xl p-4 shadow-2xl shadow-gray-200/50 min-w-[220px]">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-gray-800" />
                     <span className="text-sm font-semibold text-gray-900">Hubungi Kami</span>
@@ -224,10 +224,10 @@ export function FloatingNav() {
                         transition={{ delay: index * 0.05 }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 transition-all group"
+                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/70 transition-all group backdrop-blur-sm"
                       >
                         <motion.div
-                          className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all`}
+                          className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-md shadow-gray-200/30 group-hover:shadow-lg group-hover:scale-110 transition-all`}
                         >
                           {option.icon}
                         </motion.div>
@@ -251,7 +251,7 @@ export function FloatingNav() {
               whileHover={{ scale: 1.1, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-24 right-6 md:bottom-28 md:right-8 z-50 bg-gray-900 text-white p-4 rounded-full shadow-lg shadow-gray-200 hover:shadow-xl hover:shadow-gray-300 transition-all"
+              className="fixed bottom-24 right-6 md:bottom-28 md:right-8 z-50 backdrop-blur-2xl bg-gray-900 text-white p-4 rounded-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-gray-300/50 transition-all"
             >
               <ChevronUp className="w-6 h-6" />
             </motion.button>

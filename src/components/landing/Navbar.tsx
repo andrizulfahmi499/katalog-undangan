@@ -132,25 +132,25 @@ export function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100"
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 border-b border-white/40"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-2 text-sm">
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 text-gray-600">
-                <Phone className="w-4 h-4 text-gray-800" />
-                <span className="hidden sm:inline text-gray-700">+62 812-3456-7890</span>
+              <div className="flex items-center gap-2 text-gray-700">
+                <Phone className="w-4 h-4 text-gray-900" />
+                <span className="hidden sm:inline text-gray-800">+62 812-3456-7890</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <Mail className="w-4 h-4 text-gray-800" />
-                <span className="hidden sm:inline text-gray-700">hello@undangansamawa.com</span>
+              <div className="flex items-center gap-2 text-gray-700">
+                <Mail className="w-4 h-4 text-gray-900" />
+                <span className="hidden sm:inline text-gray-800">hello@undangansamawa.com</span>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
+              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors text-sm">
                 Bantuan
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
+              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors text-sm">
                 FAQ
               </a>
             </div>
@@ -165,7 +165,7 @@ export function Navbar() {
         initial="visible"
         className={`fixed top-[40px] left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-xl shadow-sm shadow-gray-200/50 border-b border-gray-100'
+            ? 'backdrop-blur-xl bg-white/80 shadow-lg shadow-gray-200/30 border-b border-white/50'
             : 'bg-transparent border-b border-transparent'
         }`}
       >
@@ -181,7 +181,7 @@ export function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <motion.div
-                className="relative w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center shadow-md shadow-gray-200 group-hover:shadow-lg group-hover:shadow-gray-300 transition-shadow"
+                className="relative w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center shadow-lg shadow-gray-200/50 backdrop-blur-xl bg-white/80 group-hover:shadow-xl group-hover:shadow-gray-300/50 transition-shadow"
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
               >
@@ -195,7 +195,7 @@ export function Navbar() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
-                  className="text-xs text-gray-500"
+                  className="text-xs text-gray-700"
                 >
                   Platform Undangan Digital Terbaik
                 </motion.div>
@@ -217,7 +217,7 @@ export function Navbar() {
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible"
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-all duration-300 flex items-center gap-1 relative group"
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300 flex items-center gap-1 relative group"
                 >
                   {item.name}
                   {/* Animated Underline */}
@@ -242,14 +242,14 @@ export function Navbar() {
                 href="#login"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-5 py-2.5 text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors"
+                className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors"
               >
                 Masuk
               </motion.a>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gray-900 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-gray-200 hover:shadow-lg hover:shadow-gray-300 transition-all flex items-center gap-2"
+                className="bg-gray-900 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-gray-300/50 transition-all flex items-center gap-2 backdrop-blur-sm"
               >
                 <Sparkles className="w-4 h-4" />
                 Buat Undangan
@@ -262,7 +262,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
               onClick={toggleMobileMenu}
-              className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 rounded-xl hover:bg-white/60 transition-colors backdrop-blur-md"
             >
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
@@ -299,7 +299,7 @@ export function Navbar() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-2xl overflow-hidden"
+              className="lg:hidden backdrop-blur-xl bg-white/90 border-t border-white/50 shadow-2xl shadow-gray-200/50 overflow-hidden"
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {navItems.map((item, index) => (
@@ -313,7 +313,7 @@ export function Navbar() {
                       onClick={() => setIsMobileMenuOpen(false)}
                       whileHover={{ x: 10 }}
                       whileTap={{ scale: 0.98 }}
-                      className="block px-6 py-4 rounded-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all font-medium text-lg"
+                      className="block px-6 py-4 rounded-2xl text-gray-800 hover:text-gray-900 hover:bg-white/70 transition-all font-medium text-lg backdrop-blur-sm"
                     >
                       {item.name}
                     </motion.a>
@@ -322,19 +322,19 @@ export function Navbar() {
 
                 <motion.div
                   variants={mobileItemVariants}
-                  className="pt-6 mt-6 border-t border-gray-100 space-y-3"
+                  className="pt-6 mt-6 border-t border-white/50 space-y-3"
                 >
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 text-gray-700 hover:text-gray-900 font-medium rounded-2xl hover:bg-gray-50 transition-colors text-lg"
+                    className="w-full py-4 text-gray-800 hover:text-gray-900 font-medium rounded-2xl hover:bg-white/70 transition-colors text-lg backdrop-blur-sm"
                   >
                     Masuk
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-gray-900 text-white py-4 rounded-2xl font-semibold shadow-md shadow-gray-200 flex items-center justify-center gap-2 text-lg"
+                    className="w-full bg-gray-900 text-white py-4 rounded-2xl font-semibold shadow-lg shadow-gray-200/50 flex items-center justify-center gap-2 text-lg backdrop-blur-sm"
                   >
                     <Sparkles className="w-5 h-5" />
                     Buat Undangan
