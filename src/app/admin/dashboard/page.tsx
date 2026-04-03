@@ -38,6 +38,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
+  const [currentAdminId, setCurrentAdminId] = useState<string>('')
 
   // New member form state
   const [newMember, setNewMember] = useState({
@@ -63,7 +64,20 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchMembers()
     fetchInvitations()
+    fetchCurrentAdmin()
   }, [])
+
+  const fetchCurrentAdmin = async () => {
+    try {
+      const response = await fetch('/api/admin/current')
+      const data = await response.json()
+      if (data.success) {
+        setCurrentAdminId(data.data.id)
+      }
+    } catch (error) {
+      console.error('Error fetching current admin:', error)
+    }
+  }
 
   const fetchMembers = async () => {
     try {
@@ -117,13 +131,20 @@ export default function AdminDashboard() {
 
   const handleAddInvitation = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Check if admin ID is available
+    if (!currentAdminId) {
+      alert('Admin ID tidak tersedia. Silakan refresh halaman.')
+      return
+    }
+
     try {
       const response = await fetch('/api/admin/invitations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newInvitation,
-          createdById: 'admin-1', // TODO: Get from auth
+          createdById: currentAdminId,
         }),
       })
 
