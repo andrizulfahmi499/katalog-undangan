@@ -347,8 +347,21 @@ export function Navbar() {
 
                 <motion.div
                   variants={mobileItemVariants}
-                  className="pt-6 mt-6 border-t border-gray-100"
+                  className="pt-6 mt-6 border-t border-gray-100 space-y-3"
                 >
+                  <motion.button
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false)
+                      // Navigate to login portal (Admin/Member selection)
+                      // TODO: Create login portal page
+                      window.location.href = '/login'
+                    }}
+                    className="w-full py-4 text-[#2F2F2F] hover:text-[#A5B4FC] font-medium rounded-2xl hover:bg-gray-50 transition-colors text-lg"
+                  >
+                    Masuk
+                  </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, Menu, X, ChevronUp, MessageCircle, Phone, Mail, Sparkles, ShoppingCart, Heart } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, Menu, X, MessageCircle, Phone, Mail, Sparkles, ShoppingCart, Heart } from 'lucide-react'
 
 interface NavItem {
   id: string
@@ -15,7 +15,6 @@ const navItems: NavItem[] = [
   { id: 'home', label: 'Beranda', icon: <Home className="w-5 h-5" />, href: '#home' },
   { id: 'catalog', label: 'Katalog', icon: <Grid3X3 className="w-5 h-5" />, href: '#catalog' },
   { id: 'pricing', label: 'Harga', icon: <Tag className="w-5 h-5" />, href: '#pricing' },
-  { id: 'contact', label: 'Kontak', icon: <User className="w-5 h-5" />, href: '#contact' },
 ]
 
 const contactOptions = [
@@ -26,7 +25,6 @@ const contactOptions = [
 
 export function FloatingNav() {
   const [activeSection, setActiveSection] = useState('home')
-  const [showScrollTop, setShowScrollTop] = useState(false)
   const [showContactMenu, setShowContactMenu] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -34,9 +32,6 @@ export function FloatingNav() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
-
-      // Show scroll to top button when scrolled down
-      setShowScrollTop(currentScrollY > 500)
 
       // Hide floating nav on scroll down, show on scroll up
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
@@ -64,10 +59,6 @@ export function FloatingNav() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScrollY])
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 
   const handleNavClick = (href: string) => {
     setShowContactMenu(false)
@@ -242,22 +233,7 @@ export function FloatingNav() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Scroll to Top Button */}
-        <AnimatePresence>
-          {showScrollTop && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0, rotate: -180 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0, rotate: 180 }}
-              whileHover={{ scale: 1.1, rotate: 10 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={scrollToTop}
-              className="fixed bottom-24 right-4 md:bottom-28 md:right-8 z-50 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white p-4 rounded-full shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
-            >
-              <ChevronUp className="w-6 h-6" />
-            </motion.button>
-          )}
-        </AnimatePresence>
+
       </div>
     </>
   )
