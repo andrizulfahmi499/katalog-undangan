@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, LogOut, Send, MessageCircle, Users, CreditCard, Clock, CheckCircle, XCircle } from 'lucide-react'
+import { ArrowLeft, LogOut, Send, MessageCircle, Users, CreditCard, Clock, CheckCircle, XCircle, Copy, Link as LinkIcon, Phone } from 'lucide-react'
 
 type Invitation = {
   id: string
@@ -39,10 +39,10 @@ export default function MemberDashboard() {
   const [customMessage, setCustomMessage] = useState('')
   const [guests, setGuests] = useState<Guest[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isSending, setIsSending] = useState(false)
   const [sendResults, setSendResults] = useState<any[]>([])
   const [showSendModal, setShowSendModal] = useState(false)
   const [activeTab, setActiveTab] = useState<'invitations' | 'history'>('invitations')
+  const [copiedLinks, setCopiedLinks] = useState<Record<number, boolean>>({})
 
   // Get member ID from localStorage
   const [memberId, setMemberId] = useState<string>('')
@@ -125,47 +125,93 @@ export default function MemberDashboard() {
     setGuests(guests.filter((_, i) => i !== index))
   }
 
-  const handleSendInvitations = async () => {
-    if (!selectedInvitation || guests.length === 0) {
-      alert('Mohon tambahkan minimal 1 tamu')
-      return
-    }
+  // Generate invitation link with guest name
+  const generateGuestLink = (guestName: string, invitationLink: string): string => {
+    if (!guestName.trim()) return invitationLink
 
-    const validGuests = guests.filter(g => g.name.trim())
+    const paramName = invitationLink.includes('satumomen.com') ? 'guest' : 'to'
+    const separator = invitationLink.includes('?') ? '&' : '?'
+    const encodedName = encodeURIComponent(guestName.trim())
 
-    if (validGuests.length === 0) {
-      alert('Mohon isi nama tamu')
-      return
-    }
+    return `${invitationLink}${separator}${paramName}=${encodedName}`
+  }
 
-    setIsSending(true)
+  // Copy link to clipboard
+  const handleCopyLink = async (guestIndex: number, link: string) => {
     try {
-      const response = await fetch('/api/member/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          memberId,
-          invitationId: selectedInvitation.id,
-          guests: validGuests,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        setSendResults(data.data.results)
-        fetchInvitations()
-        setGuests([])
-        alert(`Berhasil mengirim ${data.data.successful} undangan${data.data.failed > 0 ? `, gagal ${data.data.failed}` : ''}!`)
-      } else {
-        alert(data.error || 'Gagal mengirim undangan')
-      }
+      await navigator.clipboard.writeText(link)
+      setCopiedLinks({ ...copiedLinks, [guestIndex]: true })
+      setTimeout(() => {
+        setCopiedLinks({ ...copiedLinks, [guestIndex]: false })
+      }, 2000)
     } catch (error) {
-      console.error('Error sending invitations:', error)
-      alert('Terjadi kesalahan saat mengirim undangan')
-    } finally {
-      setIsSending(false)
+      console.error('Failed to copy link:', error)
+      alert('Gagal menyalin link. Silakan coba lagi.')
     }
+  }
+
+  // Generate message with placeholders replaced
+  const generateWhatsAppMessage = (guestName: string, invitationLink: string): string => {
+    const guestLink = generateGuestLink(guestName, invitationLink)
+    const eventDate = selectedInvitation
+      ? new Date(selectedInvitation.eventDate).toLocaleDateString('id-ID', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      : ''
+
+    let message = customMessage
+      .replace(/{nama_tamu}/gi, guestName.trim())
+      .replace(/{link_undangan}/gi, guestLink)
+      .replace(/{event_name}/gi, selectedInvitation?.eventName || '')
+      .replace(/{event_date}/gi, eventDate)
+      .replace(/{location}/gi, selectedInvitation?.location || '')
+
+    return message
+  }
+
+  // Send via WhatsApp - redirect to WhatsApp API
+  const handleSendWhatsApp = (guestIndex: number) => {
+    const guest = guests[guestIndex]
+    if (!guest || !guest.name.trim()) {
+      alert('Mohon isi nama tamu terlebih dahulu')
+      return
+    }
+
+    if (!selectedInvitation) {
+      alert('Undangan tidak ditemukan')
+      return
+    }
+
+    let phoneNumber = guest.whatsapp?.trim() || ''
+
+    // Format phone number to international format
+    if (phoneNumber) {
+      // Remove all non-numeric characters
+      phoneNumber = phoneNumber.replace(/\D/g, '')
+
+      // If starts with 0, replace with 62
+      if (phoneNumber.startsWith('0')) {
+        phoneNumber = '62' + phoneNumber.slice(1)
+      }
+
+      // If doesn't start with 62, add 62
+      if (!phoneNumber.startsWith('62')) {
+        phoneNumber = '62' + phoneNumber
+      }
+    } else {
+      alert('Mohon isi nomor WhatsApp tamu')
+      return
+    }
+
+    const message = generateWhatsAppMessage(guest.name, selectedInvitation.invitationLink)
+    const encodedMessage = encodeURIComponent(message)
+
+    // Redirect to WhatsApp API
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+    window.open(whatsappUrl, '_blank')
   }
 
   const handleLogout = () => {
@@ -484,41 +530,107 @@ export default function MemberDashboard() {
                     Tambah Tamu
                   </motion.button>
                 </div>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {guests.map((guest, index) => (
-                    <div key={index} className="flex gap-2 items-start">
-                      <input
-                        type="text"
-                        value={guest.name}
-                        onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
-                        placeholder="Nama tamu"
-                        className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none"
-                      />
-                      <input
-                        type="text"
-                        value={guest.whatsapp || ''}
-                        onChange={(e) => handleGuestChange(index, 'whatsapp', e.target.value)}
-                        placeholder="WhatsApp (opsional)"
-                        className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none"
-                      />
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleRemoveGuest(index)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <XCircle className="w-5 h-5" />
-                      </motion.button>
-                    </div>
-                  ))}
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {guests.map((guest, index) => {
+                    const guestLink = selectedInvitation
+                      ? generateGuestLink(guest.name, selectedInvitation.invitationLink)
+                      : ''
+                    const isLinkGenerated = guest.name.trim() && guestLink !== selectedInvitation?.invitationLink
+
+                    return (
+                      <div key={index} className="bg-gray-50 rounded-2xl p-4 space-y-3">
+                        {/* Guest Name & WhatsApp */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Nama Tamu</label>
+                            <input
+                              type="text"
+                              value={guest.name}
+                              onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
+                              placeholder="Masukkan nama tamu"
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">WhatsApp *</label>
+                            <input
+                              type="text"
+                              value={guest.whatsapp || ''}
+                              onChange={(e) => handleGuestChange(index, 'whatsapp', e.target.value)}
+                              placeholder="08xxxxxxxxxx"
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none text-sm"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Generated Link */}
+                        {isLinkGenerated && (
+                          <div className="bg-white rounded-xl p-3 border border-gray-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <LinkIcon className="w-4 h-4 text-pink-500" />
+                              <span className="text-xs font-medium text-gray-700">Link Undangan dengan Nama:</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-600 break-all">
+                                {guestLink}
+                              </div>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => handleCopyLink(index, guestLink)}
+                                className="px-3 py-2 bg-pink-100 hover:bg-pink-200 text-pink-700 rounded-lg transition-colors flex items-center gap-1 text-xs font-medium"
+                              >
+                                {copiedLinks[index] ? (
+                                  <>
+                                    <CheckCircle className="w-3 h-3" />
+                                    Disalin!
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3 h-3" />
+                                    Salin
+                                  </>
+                                )}
+                              </motion.button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => handleSendWhatsApp(index)}
+                            disabled={!guest.name.trim() || !guest.whatsapp?.trim()}
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <Phone className="w-4 h-4" />
+                            Kirim ke WhatsApp
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleRemoveGuest(index)}
+                            className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <XCircle className="w-5 h-5" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    )
+                  })}
                   {guests.length === 0 && (
-                    <p className="text-center text-gray-500 py-4">Belum ada tamu. Klik "Tambah Tamu" untuk menambah.</p>
+                    <div className="text-center py-8 bg-gray-50 rounded-2xl">
+                      <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                      <p className="text-sm text-gray-500">Belum ada tamu. Klik "Tambah Tamu" untuk menambah.</p>
+                    </div>
                   )}
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3">
+              <div className="pt-4 border-t border-gray-200">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -526,20 +638,11 @@ export default function MemberDashboard() {
                     setShowSendModal(false)
                     setSelectedInvitation(null)
                     setGuests([])
+                    setCopiedLinks({})
                   }}
-                  disabled={isSending}
-                  className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors disabled:opacity-50"
+                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
                 >
-                  Batal
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSendInvitations}
-                  disabled={isSending}
-                  className="flex-1 py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium disabled:opacity-50"
-                >
-                  {isSending ? 'Mengirim...' : 'Kirim Undangan'}
+                  Tutup
                 </motion.button>
               </div>
             </motion.div>
