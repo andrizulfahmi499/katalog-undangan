@@ -29,7 +29,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleOverlayClick}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-md z-50"
           />
 
           {/* Modal */}
@@ -40,20 +40,20 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-4 md:inset-8 lg:inset-16 z-50 flex items-center justify-center"
           >
-            <div className="w-full h-full bg-gray-900 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-800 overflow-hidden flex flex-col">
+            <div className="w-full h-full bg-white rounded-3xl shadow-2xl border-2 border-gray-200 overflow-hidden flex flex-col">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-800 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500">
+              <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 bg-white">
                 <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white">{theme.name}</h2>
-                  <p className="text-white/80 text-sm">{theme.category} • {theme.price}</p>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">{theme.name}</h2>
+                  <p className="text-gray-600 text-sm">{theme.category} • {theme.price}</p>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
-                  className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
+                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
                 >
-                  <X className="w-6 h-6 text-white" />
+                  <X className="w-6 h-6 text-gray-900" />
                 </motion.button>
               </div>
 
@@ -62,7 +62,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                 {/* Preview Image Area */}
                 <div className="relative">
                   {/* Loading Skeleton */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
 
                   {/* Theme Preview */}
                   <motion.div
@@ -98,7 +98,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                             repeat: Infinity,
                             ease: "easeInOut"
                           }}
-                          className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg"
+                          className="bg-amber-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md"
                         >
                           <Sparkles className="w-3 h-3" />
                           POPULER
@@ -112,8 +112,8 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                 <div className="p-6 md:p-8 space-y-6">
                   {/* Description */}
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-2">Tentang Tema Ini</h3>
-                    <p className="text-gray-400 leading-relaxed">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Tentang Tema Ini</h3>
+                    <p className="text-gray-600 leading-relaxed">
                       Tema {theme.name} dengan gaya {theme.category.toLowerCase()} yang elegan dan modern.
                       Cocok untuk pernikahan impian Anda dengan desain yang memukau dan fitur lengkap.
                     </p>
@@ -121,7 +121,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
 
                   {/* Features */}
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-3">Fitur Unggulan</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Fitur Unggulan</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {[
                         'RSVP Online Real-time',
@@ -138,40 +138,40 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.4 + index * 0.05 }}
-                          className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-xl border border-gray-700/50"
+                          className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100"
                         >
-                          <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0" />
-                          <span className="text-sm text-gray-300">{feature}</span>
+                          <CheckCircle className="w-5 h-5 text-gray-800 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{feature}</span>
                         </motion.div>
                       ))}
                     </div>
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-3 gap-4 p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/20">
+                  <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200">
                     <div className="text-center">
-                      <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      <div className="text-2xl font-bold text-gray-900">
                         {theme.views.toLocaleString()}
                       </div>
-                      <div className="text-xs text-gray-400">Dilihat</div>
+                      <div className="text-xs text-gray-600">Dilihat</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      <div className="text-2xl font-bold text-gray-900">
                         {theme.likes}
                       </div>
-                      <div className="text-xs text-gray-400">Disukai</div>
+                      <div className="text-xs text-gray-600">Disukai</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      <div className="text-2xl font-bold text-gray-900">
                         {Math.floor(Math.random() * 500) + 100}
                       </div>
-                      <div className="text-xs text-gray-400">Digunakan</div>
+                      <div className="text-xs text-gray-600">Digunakan</div>
                     </div>
                   </div>
 
                   {/* Color Palette Preview */}
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-3">Palet Warna</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Palet Warna</h3>
                     <div className="flex gap-2">
                       {['#C2185B', '#E91E63', '#9C27B0', '#673AB7', '#F8BBD9'].map((color, index) => (
                         <motion.div
@@ -180,7 +180,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                           animate={{ scale: 1 }}
                           transition={{ delay: 0.5 + index * 0.1 }}
                           whileHover={{ scale: 1.2, y: -5 }}
-                          className="w-12 h-12 rounded-xl shadow-lg cursor-pointer border border-gray-700"
+                          className="w-12 h-12 rounded-xl shadow-md cursor-pointer border border-gray-200"
                           style={{ backgroundColor: color }}
                         />
                       ))}
@@ -190,20 +190,20 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
               </div>
 
               {/* Footer Actions */}
-              <div className="p-4 md:p-6 border-t border-gray-800 bg-gray-900/50">
+              <div className="p-4 md:p-6 border-t border-gray-200 bg-gray-50">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={onClose}
-                    className="flex-1 px-6 py-3 border-2 border-purple-500/50 text-purple-400 rounded-xl font-semibold hover:bg-purple-500/10 transition-colors"
+                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Tutup
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:shadow-purple-500/30 transition-all"
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:bg-gray-800 transition-all"
                   >
                     <ExternalLink className="w-5 h-5" />
                     Lihat Demo Live
@@ -212,7 +212,7 @@ export function ThemePreviewModal({ isOpen, onClose, theme, onSelectTheme }: The
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={onSelectTheme}
-                    className="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:shadow-pink-500/30 transition-all"
+                    className="flex items-center justify-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:bg-gray-800 transition-all"
                   >
                     <CheckCircle className="w-5 h-5" />
                     Pilih Tema Ini

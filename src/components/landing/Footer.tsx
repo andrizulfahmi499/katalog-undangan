@@ -35,7 +35,7 @@ export function Footer() {
   }
 
   return (
-    <footer id="contact" className="bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white">
+    <footer id="contact" className="bg-white text-gray-900">
       {/* Wave Divider */}
       <div className="w-full">
         <svg
@@ -48,7 +48,7 @@ export function Footer() {
         >
           <path
             d="M0,64 C240,100 480,28 720,64 C960,100 1200,28 1440,64 L1440,0 L0,0 Z"
-            fill="gray-900"
+            fill="gray-50"
           />
         </svg>
       </div>
@@ -65,14 +65,14 @@ export function Footer() {
               className="mb-6"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2.5 rounded-full">
+                <div className="bg-gray-900 p-2.5 rounded-full">
                   <Heart className="w-6 h-6 text-white" fill="white" />
                 </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold text-gray-900">
                   UndanganSamawa
                 </span>
               </div>
-              <p className="text-gray-400 leading-relaxed mb-6">
+              <p className="text-gray-600 leading-relaxed mb-6">
                 Platform pembuatan undangan pernikahan digital terbaik di Indonesia.
                 Buat momen spesial Anda lebih berkesan.
               </p>
@@ -92,7 +92,7 @@ export function Footer() {
                   href={social.href}
                   whileHover={{ scale: 1.2, y: -3 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center w-10 h-10 bg-gray-800/50 border border-gray-700/50 rounded-full hover:bg-purple-500/20 hover:border-purple-500/50 transition-all"
+                  className="inline-flex items-center justify-center w-10 h-10 bg-gray-100 border border-gray-200 rounded-full hover:bg-gray-200 transition-all"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -108,13 +108,13 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <h3 className="text-lg font-bold mb-4 text-white">Produk</h3>
+            <h3 className="text-lg font-bold mb-4 text-gray-900">Produk</h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-gray-400 hover:text-purple-400 transition-colors inline-block"
+                    className="text-gray-600 hover:text-gray-900 transition-colors inline-block"
                   >
                     {link.name}
                   </a>
@@ -130,13 +130,13 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h3 className="text-lg font-bold mb-4 text-white">Perusahaan</h3>
+            <h3 className="text-lg font-bold mb-4 text-gray-900">Perusahaan</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-gray-400 hover:text-purple-400 transition-colors inline-block"
+                    className="text-gray-600 hover:text-gray-900 transition-colors inline-block"
                   >
                     {link.name}
                   </a>
@@ -152,28 +152,28 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 className="text-lg font-bold mb-4 text-white">Hubungi Kami</h3>
+            <h3 className="text-lg font-bold mb-4 text-gray-900">Hubungi Kami</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5 text-purple-400" />
-                <span className="text-gray-400">
+                <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5 text-gray-800" />
+                <span className="text-gray-600">
                   Jl. Nusantara 2, Palupi, Palu
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 flex-shrink-0 text-purple-400" />
+                <Mail className="w-5 h-5 flex-shrink-0 text-gray-800" />
                 <a
                   href="mailto:hello@undangansamawa.com"
-                  className="text-gray-400 hover:text-purple-400 transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   hello@undangansamawa.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 flex-shrink-0 text-purple-400" />
+                <Phone className="w-5 h-5 flex-shrink-0 text-gray-800" />
                 <a
                   href="tel:+6281234567890"
-                  className="text-gray-400 hover:text-purple-400 transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   +62 812-3456-7890
                 </a>
@@ -188,7 +188,7 @@ export function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="pt-8 border-t border-gray-800"
+          className="pt-8 border-t border-gray-200"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-500 text-sm text-center md:text-left">
@@ -196,7 +196,7 @@ export function Footer() {
             </p>
             <p className="text-gray-500 text-sm flex items-center gap-2">
               Made with{' '}
-              <Heart className="w-4 h-4 text-purple-400 fill-purple-400 animate-pulse" />
+              <Heart className="w-4 h-4 text-gray-800 fill-gray-800 animate-pulse" />
               for your special moments
             </p>
           </div>
