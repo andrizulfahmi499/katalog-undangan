@@ -11,7 +11,7 @@ import { FloatingNav } from '@/components/landing/FloatingNav'
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-hidden" style={{ backgroundColor: '#F7F7F8' }}>
+    <main className="min-h-screen relative overflow-hidden pb-20 md:pb-0" style={{ backgroundColor: '#F7F7F8' }}>
       {/* Animated Gradient Background */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-[#F7F7F8] via-[#FFFFFF] to-[#F0F4F8] animate-gradient-shift" />

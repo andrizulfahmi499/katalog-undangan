@@ -48,11 +48,15 @@ export function Footer() {
               className="mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] p-3 rounded-2xl shadow-lg shadow-[#A5B4FC]/30">
-                  <Heart className="w-6 h-6 text-white" fill="white" />
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] overflow-hidden bg-white">
+                  <img
+                    src="/logo.png"
+                    alt="Katalog Undanganku"
+                    className="w-full h-full object-contain p-1"
+                  />
                 </div>
                 <span className="text-2xl font-bold text-[#2F2F2F]">
-                  UndanganSamawa
+                  Katalog Undanganku
                 </span>
               </div>
               <p className="text-[#6B7280] leading-relaxed mb-8">
@@ -146,10 +150,10 @@ export function Footer() {
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 flex-shrink-0 text-[#C4B5FD]" />
                 <a
-                  href="mailto:hello@undangansamawa.com"
+                  href="mailto:hello@katalogundanganku.com"
                   className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors font-medium"
                 >
-                  hello@undangansamawa.com
+                  hello@katalogundanganku.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -175,7 +179,7 @@ export function Footer() {
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-[#9CA3AF] text-sm text-center md:text-left">
-              © {currentYear} UndanganSamawa. All rights reserved.
+              © {currentYear} Katalog Undanganku. All rights reserved.
             </p>
             <p className="text-[#9CA3AF] text-sm flex items-center gap-2">
               Made with{' '}

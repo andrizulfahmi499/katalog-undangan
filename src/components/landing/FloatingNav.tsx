@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
 const contactOptions = [
   { icon: <MessageCircle className="w-5 h-5" />, label: 'WhatsApp', href: 'https://wa.me/6281234567890', color: 'from-green-400 to-emerald-500' },
   { icon: <Phone className="w-5 h-5" />, label: 'Telepon', href: 'tel:+6281234567890', color: 'from-blue-400 to-blue-500' },
-  { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:hello@undangansamawa.com', color: 'from-gray-400 to-gray-600' },
+  { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:hello@katalogundanganku.com', color: 'from-gray-400 to-gray-600' },
 ]
 
 export function FloatingNav() {
@@ -80,7 +80,7 @@ export function FloatingNav() {
   return (
     <>
       {/* Main Floating Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50">
+      <div className="fixed bottom-0 left-0 right-0 z-50 pb-safe">
         {/* Container */}
         <motion.div
           initial={{ y: 100, opacity: 0 }}
@@ -93,7 +93,7 @@ export function FloatingNav() {
           className="relative"
         >
           {/* Main Nav Bar */}
-          <div className="bg-white/95 backdrop-blur-2xl border-t border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+          <div className="bg-white/98 backdrop-blur-2xl border-t border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
             {/* Desktop: Show all items */}
             <div className="hidden md:flex items-center justify-between px-8 py-4 max-w-4xl mx-auto">
               <div className="flex items-center gap-2">
@@ -137,14 +137,6 @@ export function FloatingNav() {
                 >
                   <MessageCircle className="w-5 h-5" />
                 </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white p-3 rounded-2xl shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.button>
               </div>
             </div>
 
@@ -170,7 +162,7 @@ export function FloatingNav() {
                   ))}
                 </div>
 
-                {/* Mobile Contact & CTA */}
+                {/* Mobile Contact */}
                 <div className="flex items-center gap-1 pl-2 border-l border-gray-100">
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
@@ -183,14 +175,6 @@ export function FloatingNav() {
                     }`}
                   >
                     <MessageCircle className="w-5 h-5" />
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white p-3 rounded-2xl shadow-lg shadow-[#A5B4FC]/30"
-                  >
-                    <Sparkles className="w-5 h-5" />
                   </motion.button>
                 </div>
               </div>
@@ -251,7 +235,7 @@ export function FloatingNav() {
               whileHover={{ scale: 1.1, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-24 right-6 md:bottom-28 md:right-8 z-50 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white p-4 rounded-full shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
+              className="fixed bottom-24 right-4 md:bottom-28 md:right-8 z-50 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white p-4 rounded-full shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
             >
               <ChevronUp className="w-6 h-6" />
             </motion.button>

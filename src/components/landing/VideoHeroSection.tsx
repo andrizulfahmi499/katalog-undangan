@@ -37,7 +37,6 @@ export function VideoHeroSection() {
             className="mb-6"
           >
             <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md border border-gray-200 text-[#2F2F2F] px-5 py-2.5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
-              <Sparkles className="w-4 h-4 text-[#A5B4FC]" />
               <span className="text-sm font-semibold">Platform Undangan Digital Terbaik</span>
             </div>
           </motion.div>

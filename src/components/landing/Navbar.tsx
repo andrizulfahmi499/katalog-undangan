@@ -132,25 +132,25 @@ export function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100"
+        className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-2 text-sm">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2 text-[#6B7280]">
                 <Phone className="w-4 h-4 text-[#A5B4FC]" />
-                <span className="hidden sm:inline text-[#2F2F2F]">+62 812-3456-7890</span>
+                <span className="hidden md:inline text-[#2F2F2F]">+62 812-3456-7890</span>
               </div>
               <div className="flex items-center gap-2 text-[#6B7280]">
                 <Mail className="w-4 h-4 text-[#C4B5FD]" />
-                <span className="hidden sm:inline text-[#2F2F2F]">hello@undangansamawa.com</span>
+                <span className="hidden md:inline text-[#2F2F2F]">hello@katalogundanganku.com</span>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <a href="#" className="text-[#6B7280] hover:text-[#A5B4FC] transition-colors text-sm">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <a href="#" className="text-[#6B7280] hover:text-[#A5B4FC] transition-colors text-xs sm:text-sm">
                 Bantuan
               </a>
-              <a href="#" className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors text-sm">
+              <a href="#" className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors text-xs sm:text-sm">
                 FAQ
               </a>
             </div>
@@ -163,10 +163,10 @@ export function Navbar() {
         variants={navbarVariants}
         animate={isVisible ? 'visible' : 'hidden'}
         initial="visible"
-        className={`fixed top-[40px] left-0 right-0 z-40 transition-all duration-500 ${
+        className={`fixed top-[44px] sm:top-[40px] left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border-b border-gray-100'
-            : 'bg-transparent border-b border-transparent'
+            ? 'bg-white/98 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border-b border-gray-100'
+            : 'bg-white/95 backdrop-blur-md border-b border-gray-100'
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,15 +181,19 @@ export function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <motion.div
-                className="relative w-12 h-12 bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] rounded-2xl flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30 group-hover:shadow-xl group-hover:shadow-[#C4B5FD]/40 transition-shadow"
-                whileHover={{ rotate: 360 }}
+                className="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] group-hover:shadow-[0_12px_48px_rgba(165,180,252,0.4)] transition-shadow overflow-hidden bg-white"
+                whileHover={{ rotate: 5 }}
                 transition={{ duration: 0.6 }}
               >
-                <Heart className="w-6 h-6 text-white fill-white" />
+                <img
+                  src="/logo.png"
+                  alt="Katalog Undanganku"
+                  className="w-full h-full object-contain p-1"
+                />
               </motion.div>
               <div className="hidden sm:block">
                 <motion.div className="text-xl font-bold text-[#2F2F2F]">
-                  UndanganSamawa
+                  Katalog Undanganku
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -249,9 +253,8 @@ export function Navbar() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all flex items-center gap-2"
+                className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
               >
-                <Sparkles className="w-4 h-4" />
                 Buat Undangan
               </motion.button>
             </motion.div>
@@ -299,7 +302,7 @@ export function Navbar() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-[0_16px_48px_rgba(0,0,0,0.12)] overflow-hidden"
+              className="lg:hidden bg-white/98 backdrop-blur-xl border-t border-gray-100 shadow-[0_16px_48px_rgba(0,0,0,0.12)] overflow-hidden z-50"
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {navItems.map((item, index) => (
@@ -334,9 +337,8 @@ export function Navbar() {
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white py-4 rounded-2xl font-semibold shadow-lg shadow-[#A5B4FC]/30 flex items-center justify-center gap-2 text-lg"
+                    className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white py-4 rounded-2xl font-semibold shadow-lg shadow-[#A5B4FC]/30 flex items-center justify-center text-lg"
                   >
-                    <Sparkles className="w-5 h-5" />
                     Buat Undangan
                   </motion.button>
                 </motion.div>
