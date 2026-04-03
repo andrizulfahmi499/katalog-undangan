@@ -6,6 +6,7 @@ import { IntroSection } from '@/components/landing/IntroSection'
 import { FeatureSection } from '@/components/landing/FeatureSection'
 import { CatalogSection } from '@/components/landing/CatalogSection'
 import { PricingSection } from '@/components/landing/PricingSection'
+import { OrderFormSection } from '@/components/landing/OrderFormSection'
 import { Footer } from '@/components/landing/Footer'
 import { FloatingNav } from '@/components/landing/FloatingNav'
 
@@ -39,6 +40,9 @@ export default function Home() {
 
       {/* Pricing Section */}
       <PricingSection />
+
+      {/* Order Form Section */}
+      <OrderFormSection />
 
       {/* Footer */}
       <Footer />

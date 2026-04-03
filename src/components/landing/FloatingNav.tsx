@@ -19,8 +19,8 @@ const navItems: NavItem[] = [
 ]
 
 const contactOptions = [
-  { icon: <MessageCircle className="w-5 h-5" />, label: 'WhatsApp', href: 'https://wa.me/6281234567890', color: 'from-green-400 to-emerald-500' },
-  { icon: <Phone className="w-5 h-5" />, label: 'Telepon', href: 'tel:+6281234567890', color: 'from-blue-400 to-blue-500' },
+  { icon: <MessageCircle className="w-5 h-5" />, label: 'WhatsApp', href: 'https://wa.me/6285299659458', color: 'from-green-400 to-emerald-500' },
+  { icon: <Phone className="w-5 h-5" />, label: 'Telepon', href: 'tel:+6285299659458', color: 'from-blue-400 to-blue-500' },
   { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:hello@katalogundanganku.com', color: 'from-gray-400 to-gray-600' },
 ]
 
@@ -128,6 +128,15 @@ export function FloatingNav() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => handleNavClick('#order-form')}
+                  className="px-5 py-3 bg-gradient-to-r from-[#FBCFE8] to-[#F9A8D4] text-white rounded-2xl font-semibold text-sm shadow-lg shadow-[#FBCFE8]/30 hover:shadow-xl hover:shadow-[#F9A8D4]/40 transition-all flex items-center gap-2"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Pesan
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setShowContactMenu(!showContactMenu)}
                   className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
                     showContactMenu
@@ -164,6 +173,14 @@ export function FloatingNav() {
 
                 {/* Mobile Contact */}
                 <div className="flex items-center gap-1 pl-2 border-l border-gray-100">
+                  <motion.button
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleNavClick('#order-form')}
+                    className="p-3 rounded-2xl text-[#6B7280] transition-all"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                  </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}

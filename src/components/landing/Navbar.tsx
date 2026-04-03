@@ -254,6 +254,12 @@ export function Navbar() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
+                onClick={() => {
+                  const element = document.querySelector('#order-form')
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
               >
                 Buat Undangan
               </motion.button>
@@ -337,6 +343,13 @@ export function Navbar() {
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false)
+                      const element = document.querySelector('#order-form')
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    }}
                     className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white py-4 rounded-2xl font-semibold shadow-lg shadow-[#A5B4FC]/30 flex items-center justify-center text-lg"
                   >
                     Buat Undangan

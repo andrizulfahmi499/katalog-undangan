@@ -1,0 +1,537 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { ScrollReveal } from './ScrollReveal'
+import { Sparkles, User, Heart, Calendar, MapPin, Image, Music, Send, Upload, X, Check } from 'lucide-react'
+
+export function OrderFormSection() {
+  const [formData, setFormData] = useState({
+    // Informasi Pemesan
+    namaPemesan: '',
+    noWhatsApp: '',
+    
+    // Data Mempelai
+    namaPria: '',
+    namaWanita: '',
+    namaPanggilan: '',
+    
+    // Detail Acara
+    tanggalAkad: '',
+    tanggalResepsi: '',
+    lokasiAkad: '',
+    lokasiResepsi: '',
+    linkMaps: '',
+    
+    // Tema
+    temaPilihan: '',
+    
+    // Tambahan
+    linkLagu: '',
+    turutMengundang: '',
+    catatanTambahan: '',
+  })
+  
+  const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [previewUrls, setPreviewUrls] = useState<string[]>([])
+
+  const MAX_PHOTOS = 15
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    
+    if (uploadedPhotos.length + files.length > MAX_PHOTOS) {
+      alert(`Maksimal ${MAX_PHOTOS} foto saja`)
+      return
+    }
+
+    setUploadedPhotos(prev => [...prev, ...files])
+    
+    // Create preview URLs
+    files.forEach(file => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewUrls(prev => [...prev, reader.result as string])
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const removePhoto = (index: number) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== index))
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    // Format pesan WhatsApp
+    let message = `🎉 *FORM ORDER UNDANGAN DIGITAL*\n\n`
+    
+    message += `📋 *INFORMASI PEMESAN*\n`
+    message += `Nama: ${formData.namaPemesan}\n`
+    message += `No. WhatsApp: ${formData.noWhatsApp}\n\n`
+    
+    message += `💑 *DATA MEMPELAI*\n`
+    message += `Nama Pria: ${formData.namaPria}\n`
+    message += `Nama Wanita: ${formData.namaWanita}\n`
+    message += `Nama Panggilan: ${formData.namaPanggilan}\n\n`
+    
+    message += `📅 *DETAIL ACARA*\n`
+    message += `Tanggal Akad: ${formData.tanggalAkad}\n`
+    message += `Tanggal Resepsi: ${formData.tanggalResepsi}\n`
+    message += `Lokasi Akad: ${formData.lokasiAkad}\n`
+    message += `Lokasi Resepsi: ${formData.lokasiResepsi}\n\n`
+    
+    if (formData.linkMaps) {
+      message += `📍 *LINK MAPS*\n${formData.linkMaps}\n\n`
+    }
+    
+    message += `🎨 *TEMA PILIHAN*\n${formData.temaPilihan || 'Belum dipilih'}\n\n`
+    
+    if (formData.linkLagu) {
+      message += `🎵 *LINK LAGU*\n${formData.linkLagu}\n\n`
+    }
+    
+    if (formData.turutMengundang) {
+      message += `👨‍👩‍👧‍👦 *TURUT MENGUNDANG*\n${formData.turutMengundang}\n\n`
+    }
+    
+    if (formData.catatanTambahan) {
+      message += `📝 *CATATAN TAMBAHAN*\n${formData.catatanTambahan}\n\n`
+    }
+    
+    message += `📸 *FOTO MEMPELAI*\n`
+    message += `Jumlah foto terlampir: ${uploadedPhotos.length} foto\n\n`
+    
+    message += `Mohon diproses segera. Terima kasih! 🙏`
+
+    // Encode and redirect to WhatsApp
+    const phoneNumber = '6285299659458'
+    const encodedMessage = encodeURIComponent(message)
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank')
+    
+    setIsSubmitting(false)
+    
+    // Reset form
+    setFormData({
+      namaPemesan: '',
+      noWhatsApp: '',
+      namaPria: '',
+      namaWanita: '',
+      namaPanggilan: '',
+      tanggalAkad: '',
+      tanggalResepsi: '',
+      lokasiAkad: '',
+      lokasiResepsi: '',
+      linkMaps: '',
+      temaPilihan: '',
+      linkLagu: '',
+      turutMengundang: '',
+      catatanTambahan: '',
+    })
+    setUploadedPhotos([])
+    setPreviewUrls([])
+  }
+
+  return (
+    <section id="order-form" className="relative py-24 overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <ScrollReveal>
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              className="inline-block mb-6"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <Sparkles className="w-6 h-6 text-[#A5B4FC]" />
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F]">
+                  Form Order Undangan
+                </h2>
+                <Sparkles className="w-6 h-6 text-[#C4B5FD]" />
+              </div>
+            </motion.div>
+            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto leading-relaxed">
+              Lengkapi formulir di bawah ini untuk memesan undangan digital impian Anda
+            </p>
+          </div>
+        </ScrollReveal>
+
+        {/* Form Container */}
+        <ScrollReveal delay={0.1}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto"
+          >
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 overflow-hidden">
+              {/* Informasi Pemesan */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2F2F2F]">Informasi Pemesan</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Nama Lengkap <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="namaPemesan"
+                      value={formData.namaPemesan}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Masukkan nama lengkap"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      No. WhatsApp <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="noWhatsApp"
+                      value={formData.noWhatsApp}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Contoh: 081234567890"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Mempelai */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FBCFE8] to-[#F9A8D4] flex items-center justify-center shadow-lg shadow-[#FBCFE8]/30">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2F2F2F]">Data Mempelai</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Nama Lengkap Pria <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="namaPria"
+                      value={formData.namaPria}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Nama lengkap mempelai pria"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Nama Lengkap Wanita <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="namaWanita"
+                      value={formData.namaWanita}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Nama lengkap mempelai wanita"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    Nama Panggilan (Keduanya) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="namaPanggilan"
+                    value={formData.namaPanggilan}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                    placeholder="Contoh: Ahmad & Siti"
+                  />
+                </div>
+              </div>
+
+              {/* Detail Acara */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
+                    <Calendar className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2F2F2F]">Detail Acara</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Tanggal Akad <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      name="tanggalAkad"
+                      value={formData.tanggalAkad}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Tanggal Resepsi
+                    </label>
+                    <input
+                      type="date"
+                      name="tanggalResepsi"
+                      value={formData.tanggalResepsi}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Lokasi Akad <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="lokasiAkad"
+                      value={formData.lokasiAkad}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Nama gedung/lokasi akad"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Lokasi Resepsi
+                    </label>
+                    <input
+                      type="text"
+                      name="lokasiResepsi"
+                      value={formData.lokasiResepsi}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Nama gedung/lokasi resepsi"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    Link Google Maps
+                  </label>
+                  <input
+                    type="url"
+                    name="linkMaps"
+                    value={formData.linkMaps}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    placeholder="https://maps.google.com/..."
+                  />
+                </div>
+              </div>
+
+              {/* Tema Pilihan */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2F2F2F]">Tema Pilihan</h3>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    Pilih Tema
+                  </label>
+                  <input
+                    type="text"
+                    name="temaPilihan"
+                    value={formData.temaPilihan}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    placeholder="Masukkan nama tema yang diinginkan"
+                  />
+                  <p className="text-xs text-[#6B7280] mt-2">
+                    💡 Lihat katalog tema di atas untuk memilih
+                  </p>
+                </div>
+              </div>
+
+              {/* Upload Foto Mempelai */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
+                    <Image className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-[#2F2F2F]">Foto Mempelai</h3>
+                    <p className="text-xs text-[#6B7280]">Maksimal {MAX_PHOTOS} foto</p>
+                  </div>
+                </div>
+                
+                <div className="border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-[#A5B4FC] transition-colors">
+                  <input
+                    type="file"
+                    id="photoUpload"
+                    multiple
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    disabled={uploadedPhotos.length >= MAX_PHOTOS}
+                  />
+                  <label
+                    htmlFor="photoUpload"
+                    className={`cursor-pointer flex flex-col items-center ${uploadedPhotos.length >= MAX_PHOTOS ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10 flex items-center justify-center mb-4">
+                      <Upload className="w-8 h-8 text-[#A5B4FC]" />
+                    </div>
+                    <p className="text-sm font-medium text-[#2F2F2F] mb-1">
+                      Klik untuk upload foto
+                    </p>
+                    <p className="text-xs text-[#6B7280]">
+                      {uploadedPhotos.length}/{MAX_PHOTOS} foto terupload
+                    </p>
+                  </label>
+                </div>
+
+                {/* Photo Preview Grid */}
+                {previewUrls.length > 0 && (
+                  <div className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                    {previewUrls.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full aspect-square object-cover rounded-2xl shadow-md"
+                        />
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => removePhoto(index)}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                        >
+                          <X className="w-4 h-4" />
+                        </motion.button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Tambahan */}
+              <div className="p-6 sm:p-8 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
+                    <Music className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2F2F2F]">Tambahan</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Link Lagu (YouTube/Spotify)
+                    </label>
+                    <input
+                      type="url"
+                      name="linkLagu"
+                      value={formData.linkLagu}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="https://youtube.com/..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                      Turut Mengundang
+                    </label>
+                    <input
+                      type="text"
+                      name="turutMengundang"
+                      value={formData.turutMengundang}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      placeholder="Keluarga besar, sahabat, dll"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    Catatan Tambahan
+                  </label>
+                  <textarea
+                    name="catatanTambahan"
+                    value={formData.catatanTambahan}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50 resize-none"
+                    placeholder="Tuliskan catatan atau permintaan khusus..."
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="p-6 sm:p-8 bg-gradient-to-br from-[#A5B4FC]/5 to-[#C4B5FD]/5">
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Memproses...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Kirim Pesanan ke WhatsApp
+                    </>
+                  )}
+                </motion.button>
+                <p className="text-center text-xs text-[#6B7280] mt-4">
+                  Anda akan diarahkan ke WhatsApp untuk mengirim pesanan
+                </p>
+              </div>
+            </form>
+          </motion.div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
