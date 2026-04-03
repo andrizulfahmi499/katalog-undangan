@@ -71,50 +71,57 @@ interface Feature {
   title: string
   description: string
   color: string
+  gradient: string
   animationData: any
 }
 
 const features: Feature[] = [
   {
-    icon: <Calendar className="w-8 h-8" />,
+    icon: <Calendar className="w-10 h-10" />,
     title: 'RSVP Online',
     description: 'Kelola konfirmasi kehadiran tamu dengan mudah dan real-time',
-    color: 'bg-white/50',
+    color: 'bg-[#A5B4FC]',
+    gradient: 'from-[#A5B4FC] to-[#C4B5FD]',
     animationData: createPlaceholderAnimation('rsvp')
   },
   {
-    icon: <MapPin className="w-8 h-8" />,
+    icon: <MapPin className="w-10 h-10" />,
     title: 'Lokasi Map',
     description: 'Integrasi Google Maps untuk memudahkan tamu menemukan lokasi',
-    color: 'bg-white/50',
+    color: 'bg-[#C4B5FD]',
+    gradient: 'from-[#C4B5FD] to-[#FBCFE8]',
     animationData: createPlaceholderAnimation('map')
   },
   {
-    icon: <Image className="w-8 h-8" />,
+    icon: <Image className="w-10 h-10" />,
     title: 'Galeri Foto',
     description: 'Tampilkan foto prewedding dan momen spesial Anda',
-    color: 'bg-white/50',
+    color: 'bg-[#FBCFE8]',
+    gradient: 'from-[#FBCFE8] to-[#A5B4FC]',
     animationData: createPlaceholderAnimation('gallery')
   },
   {
-    icon: <MessageSquare className="w-8 h-8" />,
+    icon: <MessageSquare className="w-10 h-10" />,
     title: 'Buku Tamu Digital',
     description: 'Terima ucapan dan doa dari tamu secara digital',
-    color: 'bg-white/50',
+    color: 'bg-[#A5B4FC]',
+    gradient: 'from-[#A5B4FC] to-[#C4B5FD]',
     animationData: createPlaceholderAnimation('guestbook')
   },
   {
-    icon: <Gift className="w-8 h-8" />,
+    icon: <Gift className="w-10 h-10" />,
     title: 'Kirim Kado',
     description: 'Integrasi fitur angpao digital dan daftar kado',
-    color: 'bg-white/50',
+    color: 'bg-[#C4B5FD]',
+    gradient: 'from-[#C4B5FD] to-[#FBCFE8]',
     animationData: createPlaceholderAnimation('gift')
   },
   {
-    icon: <Calendar className="w-8 h-8" />,
+    icon: <Calendar className="w-10 h-10" />,
     title: 'Countdown Timer',
     description: 'Hitung mundur menuju hari bahagia Anda',
-    color: 'bg-white/50',
+    color: 'bg-[#FBCFE8]',
+    gradient: 'from-[#FBCFE8] to-[#A5B4FC]',
     animationData: createPlaceholderAnimation('countdown')
   }
 ]
@@ -123,43 +130,43 @@ export function FeatureSection() {
   return (
     <section
       id="features"
-      className="relative py-20 overflow-hidden"
+      className="relative py-24 overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <ScrollReveal>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F] mb-6">
               Fitur Lengkap untuk Momen Spesial
             </h2>
-            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto leading-relaxed">
               Semua yang Anda butuhkan untuk undangan pernikahan digital yang sempurna
             </p>
           </div>
         </ScrollReveal>
 
         {/* Feature Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <ScrollReveal key={feature.title} delay={index * 0.1}>
               <motion.div
-                whileHover={{ y: -8, scale: 1.02 }}
+                whileHover={{ y: -12, rotate: index % 2 === 0 ? 2 : -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative p-6 rounded-3xl backdrop-blur-xl bg-white/70 border-2 border-white/60 hover:border-white/80 transition-all duration-300 shadow-lg shadow-gray-200/30 hover:shadow-xl hover:shadow-gray-200/50"
+                className="group relative p-8 rounded-3xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 hover:shadow-[0_20px_60px_rgba(165,180,252,0.25)] transition-all duration-500"
               >
                 {/* Lottie Animation Container */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-6">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                     className="relative"
                   >
-                    <div className="w-20 h-20 bg-white/60 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/70 shadow-md shadow-gray-200/30">
+                    <div className={`w-24 h-24 bg-gradient-to-br ${feature.gradient} rounded-3xl flex items-center justify-center shadow-lg ${feature.color.replace('bg-', 'shadow-')}/30 hover:shadow-xl transition-shadow duration-300`}>
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
-                        <div className="text-gray-800">
+                        <div className="text-white">
                           {feature.icon}
                         </div>
                       </motion.div>
@@ -167,20 +174,20 @@ export function FeatureSection() {
                   </motion.div>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+                <h3 className="text-2xl font-bold text-[#2F2F2F] mb-4 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-gray-700 text-center leading-relaxed">
+                <p className="text-[#6B7280] text-center leading-relaxed text-base">
                   {feature.description}
                 </p>
 
-                {/* Decorative Element */}
+                {/* Decorative Element - Clay style */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center shadow-lg shadow-gray-200/30"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  className={`absolute -top-3 -right-3 w-12 h-12 ${feature.color} rounded-2xl flex items-center justify-center shadow-lg`}
+                  animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
-                  <span className="text-white text-sm">✨</span>
+                  <span className="text-white text-lg">✨</span>
                 </motion.div>
               </motion.div>
             </ScrollReveal>
@@ -189,11 +196,11 @@ export function FeatureSection() {
 
         {/* CTA Section */}
         <ScrollReveal delay={0.5}>
-          <div className="mt-16 text-center">
+          <div className="mt-20 text-center">
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-gray-900 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-gray-300/50 transition-all backdrop-blur-sm"
+              className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-12 py-5 rounded-3xl font-semibold text-xl shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all duration-300"
             >
               Jelajahi Semua Fitur
             </motion.button>
