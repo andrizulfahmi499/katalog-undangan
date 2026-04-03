@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Heart, Sparkles, Phone, Mail } from 'lucide-react'
+import { Menu, X, Heart, Sparkles, Phone, Mail, MessageCircle } from 'lucide-react'
 
 interface NavItem {
   name: string
@@ -213,7 +213,7 @@ export function Navbar() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="hidden lg:flex items-center gap-1"
             >
-              {navItems.map((item, index) => (
+              {navItems.slice(0, 2).map((item, index) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
@@ -233,27 +233,21 @@ export function Navbar() {
                   />
                 </motion.a>
               ))}
-            </motion.div>
 
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="hidden lg:flex items-center gap-3"
-            >
-              <motion.a
-                href="#login"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-5 py-2.5 text-[#6B7280] hover:text-[#A5B4FC] font-medium text-sm transition-colors"
-              >
-                Masuk
-              </motion.a>
+              {/* Centered Order Button with Vibrating Animation */}
               <motion.button
+                animate={{
+                  rotate: [-1, 1, -1, 1, 0],
+                }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                  ease: 'easeInOut',
+                }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all"
+                className="mx-4 px-6 py-2.5 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white rounded-xl font-semibold text-sm shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all flex items-center gap-2"
                 onClick={() => {
                   const element = document.querySelector('#order-form')
                   if (element) {
@@ -261,8 +255,30 @@ export function Navbar() {
                   }
                 }}
               >
+                <MessageCircle className="w-4 h-4" />
                 Buat Undangan
               </motion.button>
+
+              {navItems.slice(2).map((item, index) => (
+                <motion.a
+                  key={item.name}
+                  href={item.href}
+                  custom={index + 2}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#A5B4FC] transition-all duration-300 flex items-center gap-1 relative group"
+                >
+                  {item.name}
+                  {/* Animated Underline */}
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] rounded-full"
+                    initial={{ scaleX: 0, originX: 0.5 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.a>
+              ))}
             </motion.div>
 
             {/* Mobile Menu Button */}
@@ -331,18 +347,20 @@ export function Navbar() {
 
                 <motion.div
                   variants={mobileItemVariants}
-                  className="pt-6 mt-6 border-t border-gray-100 space-y-3"
+                  className="pt-6 mt-6 border-t border-gray-100"
                 >
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 text-[#2F2F2F] hover:text-[#A5B4FC] font-medium rounded-2xl hover:bg-gray-50 transition-colors text-lg"
-                  >
-                    Masuk
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02, x: 5 }}
-                    whileTap={{ scale: 0.98 }}
+                    animate={{
+                      rotate: [-1, 1, -1, 1, 0],
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      repeat: Infinity,
+                      repeatDelay: 2,
+                      ease: 'easeInOut',
+                    }}
                     onClick={() => {
                       setIsMobileMenuOpen(false)
                       const element = document.querySelector('#order-form')
@@ -350,8 +368,9 @@ export function Navbar() {
                         element.scrollIntoView({ behavior: 'smooth' })
                       }
                     }}
-                    className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white py-4 rounded-2xl font-semibold shadow-lg shadow-[#A5B4FC]/30 flex items-center justify-center text-lg"
+                    className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white py-4 rounded-2xl font-semibold shadow-lg shadow-[#A5B4FC]/30 flex items-center justify-center gap-2 text-lg"
                   >
+                    <MessageCircle className="w-5 h-5" />
                     Buat Undangan
                   </motion.button>
                 </motion.div>
