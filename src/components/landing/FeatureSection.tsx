@@ -157,13 +157,13 @@ export function FeatureSection() {
                 {/* Lottie Animation Container */}
                 <div className="flex justify-center mb-6">
                   <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                     className="relative"
                   >
                     <div className={`w-24 h-24 bg-gradient-to-br ${feature.gradient} rounded-3xl flex items-center justify-center shadow-lg ${feature.color.replace('bg-', 'shadow-')}/30 hover:shadow-xl transition-shadow duration-300`}>
                       <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileHover={{ scale: 1.1 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
                         <div className="text-white">
@@ -184,8 +184,8 @@ export function FeatureSection() {
                 {/* Decorative Element - Clay style */}
                 <motion.div
                   className={`absolute -top-3 -right-3 w-12 h-12 ${feature.color} rounded-2xl flex items-center justify-center shadow-lg`}
-                  animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <span className="text-white text-lg">✨</span>
                 </motion.div>
