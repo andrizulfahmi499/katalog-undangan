@@ -12,7 +12,7 @@ import { FloatingNav } from '@/components/landing/FloatingNav'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black">
       {/* Navbar */}
       <Navbar />
 
@@ -20,25 +20,25 @@ export default function Home() {
       <HeroSection />
 
       {/* Wave Divider */}
-      <WaveDivider color="#FFF9E6" />
+      <WaveDivider color="#111827" />
 
       {/* Intro Section */}
       <IntroSection />
 
       {/* Wave Divider */}
-      <WaveDivider color="white" />
+      <WaveDivider color="#0f172a" />
 
       {/* Feature Section */}
       <FeatureSection />
 
       {/* Wave Divider */}
-      <WaveDivider color="white" />
+      <WaveDivider color="#0f172a" />
 
       {/* Catalog Section */}
       <CatalogSection />
 
       {/* Wave Divider */}
-      <WaveDivider color="#FFF9E6" />
+      <WaveDivider color="#111827" />
 
       {/* Pricing Section */}
       <PricingSection />

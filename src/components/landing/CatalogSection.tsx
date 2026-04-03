@@ -277,12 +277,12 @@ const categories = [
 // Loading Skeleton Component
 function ThemeCardSkeleton() {
   return (
-    <div className="backdrop-blur-xl bg-white/40 border border-white/40 rounded-3xl overflow-hidden">
-      <div className="h-64 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
+    <div className="backdrop-blur-xl bg-gray-800/40 border border-gray-700/40 rounded-3xl overflow-hidden">
+      <div className="h-64 bg-gradient-to-br from-gray-700 to-gray-800 animate-pulse" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 rounded animate-pulse" />
-        <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse" />
-        <div className="h-10 bg-gray-200 rounded-xl animate-pulse" />
+        <div className="h-4 bg-gray-700 rounded animate-pulse" />
+        <div className="h-3 bg-gray-700 rounded w-2/3 animate-pulse" />
+        <div className="h-10 bg-gray-700 rounded-xl animate-pulse" />
       </div>
     </div>
   )
@@ -373,7 +373,7 @@ export function CatalogSection() {
 
   return (
     <>
-      <section id="catalog" className="relative py-20 bg-gradient-to-br from-white via-pink-50 to-purple-50 overflow-hidden min-h-screen">
+      <section id="catalog" className="relative py-20 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 overflow-hidden min-h-screen">
         {/* Animated Background Blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -386,7 +386,7 @@ export function CatalogSection() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full blur-3xl opacity-50"
+            className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
           />
           <motion.div
             animate={{
@@ -398,7 +398,7 @@ export function CatalogSection() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-50"
+            className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-rose-500/10 rounded-full blur-3xl"
           />
         </div>
 
@@ -413,30 +413,30 @@ export function CatalogSection() {
                 className="inline-block mb-6"
               >
                 <div className="flex items-center justify-center gap-2">
-                  <Sparkles className="w-6 h-6 text-[#C2185B]" />
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#C2185B] to-purple-600 bg-clip-text text-transparent">
+                  <Sparkles className="w-6 h-6 text-purple-400" />
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 bg-clip-text text-transparent">
                     Katalog Tema Undangan
                   </h2>
-                  <Sparkles className="w-6 h-6 text-purple-600" />
+                  <Sparkles className="w-6 h-6 text-rose-400" />
                 </div>
               </motion.div>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-6">
                 Temukan tema undangan pernikahan digital yang sesuai dengan impian Anda
               </p>
 
               {/* Stats */}
               <div className="flex items-center justify-center gap-8 flex-wrap">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Grid className="w-5 h-5 text-[#C2185B]" />
-                  <span className="font-semibold">{catalogThemes.length}+ Tema</span>
+                <div className="flex items-center gap-2 text-gray-400">
+                  <Grid className="w-5 h-5 text-purple-400" />
+                  <span className="font-semibold text-white">{catalogThemes.length}+ Tema</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <TrendingUp className="w-5 h-5 text-[#C2185B]" />
-                  <span className="font-semibold">Trending Now</span>
+                <div className="flex items-center gap-2 text-gray-400">
+                  <TrendingUp className="w-5 h-5 text-purple-400" />
+                  <span className="font-semibold text-white">Trending Now</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Clock className="w-5 h-5 text-[#C2185B]" />
-                  <span className="font-semibold">Update Harian</span>
+                <div className="flex items-center gap-2 text-gray-400">
+                  <Clock className="w-5 h-5 text-purple-400" />
+                  <span className="font-semibold text-white">Update Harian</span>
                 </div>
               </div>
             </div>
@@ -445,7 +445,7 @@ export function CatalogSection() {
           {/* Search Bar - Glassmorphism */}
           <ScrollReveal delay={0.1}>
             <div className="max-w-2xl mx-auto mb-8">
-              <div className="backdrop-blur-xl bg-white/30 border border-white/40 rounded-2xl p-2 shadow-xl shadow-purple-500/10">
+              <div className="backdrop-blur-xl bg-gray-800/30 border border-gray-700/40 rounded-2xl p-2 shadow-xl shadow-purple-500/10">
                 <div className="flex items-center gap-3 px-4 py-2">
                   <Search className="w-5 h-5 text-gray-500" />
                   <input
@@ -453,12 +453,12 @@ export function CatalogSection() {
                     placeholder="Cari tema undangan..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-500"
+                    className="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-500"
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="backdrop-blur-md bg-gradient-to-r from-[#C2185B] to-purple-600 text-white px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-shadow"
+                    className="backdrop-blur-md bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-shadow"
                   >
                     Cari
                   </motion.button>
@@ -470,10 +470,10 @@ export function CatalogSection() {
           {/* Category Filter - Glassmorphism */}
           <ScrollReveal delay={0.2}>
             <div className="mb-8">
-              <div className="backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl p-4 shadow-xl shadow-purple-500/10">
+              <div className="backdrop-blur-xl bg-gray-800/20 border border-gray-700/30 rounded-2xl p-4 shadow-xl shadow-purple-500/10">
                 <div className="flex items-center gap-2 mb-4">
-                  <Filter className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-600">Filter Kategori:</span>
+                  <Filter className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-400">Filter Kategori:</span>
                 </div>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {categories.map((category) => (
@@ -484,8 +484,8 @@ export function CatalogSection() {
                       onClick={() => setSelectedCategory(category.id)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
                         selectedCategory === category.id
-                          ? 'bg-gradient-to-r from-[#C2185B] to-purple-600 text-white shadow-lg shadow-purple-500/30'
-                          : 'backdrop-blur-md bg-white/30 text-gray-700 hover:bg-white/50 border border-white/40'
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
+                          : 'backdrop-blur-md bg-gray-800/30 text-gray-300 hover:bg-gray-800/50 border border-gray-700/40'
                       }`}
                     >
                       {category.icon}
@@ -495,8 +495,8 @@ export function CatalogSection() {
                 </div>
 
                 {/* Sort Options */}
-                <div className="flex items-center gap-2 pt-4 border-t border-white/30">
-                  <span className="text-sm font-medium text-gray-600">Urutkan:</span>
+                <div className="flex items-center gap-2 pt-4 border-t border-gray-700/30">
+                  <span className="text-sm font-medium text-gray-400">Urutkan:</span>
                   <div className="flex gap-2">
                     {[
                       { value: 'popular', label: 'Terpopuler' },
@@ -511,8 +511,8 @@ export function CatalogSection() {
                         onClick={() => setSortBy(sort.value as any)}
                         className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                           sortBy === sort.value
-                            ? 'bg-[#C2185B] text-white'
-                            : 'bg-white/30 text-gray-600 hover:bg-white/50'
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-gray-800/30 text-gray-400 hover:bg-gray-800/50'
                         }`}
                       >
                         {sort.label}
@@ -542,7 +542,7 @@ export function CatalogSection() {
                     className="group"
                   >
                     {/* Glassmorphism Card */}
-                    <div className="backdrop-blur-xl bg-gradient-to-br from-white/40 to-white/20 border border-white/40 rounded-3xl overflow-hidden shadow-xl shadow-purple-500/20 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300">
+                    <div className="backdrop-blur-xl bg-gradient-to-br from-gray-800/40 to-gray-900/20 border border-gray-700/40 rounded-3xl overflow-hidden shadow-xl shadow-purple-500/20 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300">
                       {/* Featured & Discount Badges */}
                       <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                         {theme.featured && (
@@ -568,20 +568,20 @@ export function CatalogSection() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => toggleLike(theme.id)}
-                          className="backdrop-blur-md bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                          className="backdrop-blur-md bg-gray-900/80 p-2 rounded-full shadow-lg hover:bg-gray-900 transition-colors"
                         >
                           <Heart
-                            className={`w-4 h-4 ${likedThemes.has(theme.id) ? 'text-red-500 fill-red-500' : 'text-gray-600 hover:text-red-500'}`}
+                            className={`w-4 h-4 ${likedThemes.has(theme.id) ? 'text-red-500 fill-red-500' : 'text-gray-400 hover:text-red-500'}`}
                           />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => toggleBookmark(theme.id)}
-                          className="backdrop-blur-md bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                          className="backdrop-blur-md bg-gray-900/80 p-2 rounded-full shadow-lg hover:bg-gray-900 transition-colors"
                         >
                           <Bookmark
-                            className={`w-4 h-4 ${bookmarkedThemes.has(theme.id) ? 'text-[#C2185B] fill-[#C2185B]' : 'text-gray-600 hover:text-[#C2185B]'}`}
+                            className={`w-4 h-4 ${bookmarkedThemes.has(theme.id) ? 'text-purple-400 fill-purple-400' : 'text-gray-400 hover:text-purple-400'}`}
                           />
                         </motion.button>
                       </div>
@@ -600,13 +600,13 @@ export function CatalogSection() {
                         <motion.div
                           initial={{ opacity: 0 }}
                           whileHover={{ opacity: 1 }}
-                          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-end justify-center pb-6"
+                          className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end justify-center pb-6"
                         >
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handlePreview(theme)}
-                            className="backdrop-blur-md bg-white/90 text-[#C2185B] px-6 py-3 rounded-full font-semibold text-sm shadow-lg flex items-center gap-2"
+                            className="backdrop-blur-md bg-gray-900/90 text-purple-400 px-6 py-3 rounded-full font-semibold text-sm shadow-lg flex items-center gap-2"
                           >
                             <Eye className="w-4 h-4" />
                             Preview Tema
@@ -615,12 +615,12 @@ export function CatalogSection() {
                       </div>
 
                       {/* Card Content */}
-                      <div className="p-4 backdrop-blur-md bg-white/30">
+                      <div className="p-4 backdrop-blur-md bg-gray-900/30">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-1">{theme.name}</h3>
+                            <h3 className="text-lg font-bold text-white mb-1">{theme.name}</h3>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-xs font-medium text-[#C2185B] bg-pink-50 px-2 py-0.5 rounded-full">
+                              <span className="text-xs font-medium text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full">
                                 {theme.category}
                               </span>
                               <span className="text-xs text-gray-500">
@@ -629,11 +629,11 @@ export function CatalogSection() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-lg font-bold bg-gradient-to-r from-[#C2185B] to-purple-600 bg-clip-text text-transparent">
+                            <div className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                               {theme.price}
                             </div>
                             {theme.originalPrice && (
-                              <div className="text-xs text-gray-400 line-through">
+                              <div className="text-xs text-gray-600 line-through">
                                 {theme.originalPrice}
                               </div>
                             )}
@@ -646,17 +646,17 @@ export function CatalogSection() {
                             {[...Array(5)].map((_, i) => (
                               <Star
                                 key={i}
-                                className={`w-3 h-3 ${i < Math.floor(theme.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                                className={`w-3 h-3 ${i < Math.floor(theme.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-700'}`}
                               />
                             ))}
                           </div>
-                          <span className="text-xs text-gray-600">
+                          <span className="text-xs text-gray-400">
                             {theme.rating} ({theme.reviews} ulasan)
                           </span>
                         </div>
 
                         {/* Stats */}
-                        <div className="flex items-center justify-between text-xs text-gray-600 mb-4 pt-3 border-t border-white/30">
+                        <div className="flex items-center justify-between text-xs text-gray-400 mb-4 pt-3 border-t border-gray-700/30">
                           <div className="flex items-center gap-1">
                             <Eye className="w-3 h-3" />
                             <span>{theme.views.toLocaleString()}</span>
@@ -665,7 +665,7 @@ export function CatalogSection() {
                             <Heart className="w-3 h-3" />
                             <span>{theme.likes}</span>
                           </div>
-                          <div className="flex items-center gap-1 text-[#C2185B]">
+                          <div className="flex items-center gap-1 text-purple-400">
                             <Sparkles className="w-3 h-3" />
                             <span>Trending</span>
                           </div>
@@ -677,7 +677,7 @@ export function CatalogSection() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handlePreview(theme)}
-                            className="flex-1 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#C2185B] to-purple-600 text-white shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+                            className="flex-1 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
                           >
                             <Eye className="w-4 h-4" />
                             Preview
@@ -686,7 +686,7 @@ export function CatalogSection() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handleSelectTheme(theme)}
-                            className="flex-1 py-2.5 rounded-xl font-semibold text-sm border-2 border-[#C2185B] text-[#C2185B] hover:bg-[#C2185B] hover:text-white transition-all flex items-center justify-center gap-2"
+                            className="flex-1 py-2.5 rounded-xl font-semibold text-sm border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2"
                           >
                             Pilih
                             <ArrowRight className="w-4 h-4" />
@@ -705,8 +705,8 @@ export function CatalogSection() {
             <ScrollReveal>
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">Tidak ada tema ditemukan</h3>
-                <p className="text-gray-500 mb-4">Coba ubah kata kunci pencarian atau filter kategori</p>
+                <h3 className="text-xl font-bold text-white mb-2">Tidak ada tema ditemukan</h3>
+                <p className="text-gray-400 mb-4">Coba ubah kata kunci pencarian atau filter kategori</p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -714,7 +714,7 @@ export function CatalogSection() {
                     setSearchQuery('')
                     setSelectedCategory('all')
                   }}
-                  className="px-6 py-2 bg-[#C2185B] text-white rounded-full font-medium"
+                  className="px-6 py-2 bg-purple-500 text-white rounded-full font-medium"
                 >
                   Reset Filter
                 </motion.button>
@@ -729,7 +729,7 @@ export function CatalogSection() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="backdrop-blur-xl bg-white/40 border border-white/50 text-[#C2185B] px-10 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:bg-white/60 transition-all inline-flex items-center gap-2"
+                  className="backdrop-blur-xl bg-gray-800/40 border border-gray-700/50 text-purple-400 px-10 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:bg-gray-800/60 transition-all inline-flex items-center gap-2"
                 >
                   Lihat Lebih Banyak Tema
                   <ArrowRight className="w-5 h-5" />

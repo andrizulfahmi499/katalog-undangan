@@ -6,8 +6,36 @@ import { Heart, Sparkles, Users } from 'lucide-react'
 
 export function IntroSection() {
   return (
-    <section className="relative py-20 bg-[#FFF9E6] overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-20 bg-gray-900/50 overflow-hidden">
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [0, -90, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute -bottom-20 -left-20 w-64 h-64 bg-gradient-to-br from-pink-500/10 to-rose-500/10 rounded-full blur-3xl"
+        />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <ScrollReveal>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
@@ -17,17 +45,17 @@ export function IntroSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-4 mb-6">
-                <Heart className="w-8 h-8 text-[#C2185B] animate-pulse" fill="#C2185B" />
-                <Heart className="w-6 h-6 text-[#C2185B]/60" fill="#C2185B" />
-                <Heart className="w-4 h-4 text-[#C2185B]/40" fill="#C2185B" />
+                <Heart className="w-8 h-8 text-purple-400 animate-pulse" fill="currentColor" />
+                <Heart className="w-6 h-6 text-purple-400/60" fill="currentColor" />
+                <Heart className="w-4 h-4 text-purple-400/40" fill="currentColor" />
               </div>
             </motion.div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
               Bukan sekadar undangan biasa...
             </h2>
 
-            <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed mb-8">
               Kami membantu Anda menciptakan undangan pernikahan digital yang tidak hanya menginformasikan,
               tetapi juga menyentuh hati setiap tamu yang menerimanya. Dengan desain elegan, fitur lengkap,
               dan kemudahan berbagi, momen spesial Anda akan lebih berkesan.
@@ -35,27 +63,27 @@ export function IntroSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#C2185B]/10 rounded-full mb-4">
-                  <Sparkles className="w-8 h-8 text-[#C2185B]" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-4 border border-purple-500/30">
+                  <Sparkles className="w-8 h-8 text-purple-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Desain Elegan</h3>
-                <p className="text-gray-600 text-sm">Pilihan template yang memukau dan dapat dikustomisasi</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Desain Elegan</h3>
+                <p className="text-gray-400 text-sm">Pilihan template yang memukau dan dapat dikustomisasi</p>
               </div>
 
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#C2185B]/10 rounded-full mb-4">
-                  <Users className="w-8 h-8 text-[#C2185B]" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-500/20 rounded-full mb-4 border border-pink-500/30">
+                  <Users className="w-8 h-8 text-pink-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Mudah Dibagikan</h3>
-                <p className="text-gray-600 text-sm">Kirim ke ribuan tamu hanya dengan satu klik</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Mudah Dibagikan</h3>
+                <p className="text-gray-400 text-sm">Kirim ke ribuan tamu hanya dengan satu klik</p>
               </div>
 
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#C2185B]/10 rounded-full mb-4">
-                  <Heart className="w-8 h-8 text-[#C2185B]" fill="#C2185B" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-rose-500/20 rounded-full mb-4 border border-rose-500/30">
+                  <Heart className="w-8 h-8 text-rose-400" fill="currentColor" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Penuh Makna</h3>
-                <p className="text-gray-600 text-sm">Ceritakan kisah cinta Anda dengan cara yang unik</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Penuh Makna</h3>
+                <p className="text-gray-400 text-sm">Ceritakan kisah cinta Anda dengan cara yang unik</p>
               </div>
             </div>
           </div>

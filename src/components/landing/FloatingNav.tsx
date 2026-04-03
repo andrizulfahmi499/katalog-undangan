@@ -103,7 +103,7 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4"
               >
-                <div className="backdrop-blur-2xl bg-white/95 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-pink-500/20">
+                <div className="backdrop-blur-2xl bg-gray-900/95 border border-white/10 rounded-3xl p-4 shadow-2xl shadow-purple-500/20">
                   <div className="grid grid-cols-4 gap-3">
                     {navItems.map((item, index) => (
                       <motion.button
@@ -114,8 +114,8 @@ export function FloatingNav() {
                         onClick={() => handleNavClick(item.href)}
                         className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
                           activeSection === item.id
-                            ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
-                            : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
+                            ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-lg shadow-purple-500/30'
+                            : 'hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 text-gray-300'
                         }`}
                       >
                         {item.icon}
@@ -129,7 +129,7 @@ export function FloatingNav() {
           </AnimatePresence>
 
           {/* Main Nav Bar */}
-          <div className="backdrop-blur-2xl bg-white/80 border border-white/60 rounded-3xl shadow-2xl shadow-pink-500/20 overflow-hidden">
+          <div className="backdrop-blur-2xl bg-gray-900/80 border border-white/10 rounded-3xl shadow-2xl shadow-purple-500/20 overflow-hidden">
             {/* Desktop: Show all items */}
             <div className="hidden md:flex items-center gap-1 px-2 py-2.5">
               {navItems.map((item) => (
@@ -140,8 +140,8 @@ export function FloatingNav() {
                   onClick={() => handleNavClick(item.href)}
                   className={`relative px-5 py-2.5 rounded-2xl flex items-center gap-2 transition-all ${
                     activeSection === item.id
-                      ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
-                      : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
+                      ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-lg shadow-purple-500/30'
+                      : 'hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 text-gray-300'
                   }`}
                 >
                   {item.icon}
@@ -149,7 +149,7 @@ export function FloatingNav() {
                   {activeSection === item.id && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute inset-0 bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 rounded-2xl -z-10"
+                      className="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-2xl -z-10"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -164,8 +164,8 @@ export function FloatingNav() {
                 onClick={() => setShowContactMenu(!showContactMenu)}
                 className={`ml-2 px-5 py-2.5 rounded-2xl flex items-center gap-2 transition-all ${
                   showContactMenu
-                    ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
-                    : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
+                    ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-lg shadow-purple-500/30'
+                    : 'hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 text-gray-300'
                 }`}
               >
                 <MessageCircle className="w-5 h-5" />
@@ -177,7 +177,7 @@ export function FloatingNav() {
             <div className="md:hidden flex items-center justify-between px-4 py-3">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-2 rounded-xl hover:bg-rose-50 text-gray-700 transition-colors"
+                className="p-2 rounded-xl hover:bg-white/10 text-gray-300 transition-colors"
               >
                 <AnimatePresence mode="wait">
                   {isExpanded ? (
@@ -213,8 +213,8 @@ export function FloatingNav() {
                     onClick={() => handleNavClick(item.href)}
                     className={`p-3 rounded-xl transition-all ${
                       activeSection === item.id
-                        ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
-                        : 'hover:bg-rose-50 text-gray-700'
+                        ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-lg shadow-purple-500/30'
+                        : 'hover:bg-white/10 text-gray-300'
                     }`}
                   >
                     {item.icon}
@@ -229,8 +229,8 @@ export function FloatingNav() {
                 onClick={() => setShowContactMenu(!showContactMenu)}
                 className={`p-3 rounded-xl transition-all ${
                   showContactMenu
-                    ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
-                    : 'hover:bg-rose-50 text-gray-700'
+                    ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white shadow-lg shadow-purple-500/30'
+                    : 'hover:bg-white/10 text-gray-300'
                 }`}
               >
                 <MessageCircle className="w-5 h-5" />
@@ -248,10 +248,10 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full right-0 mb-4 md:mb-0 md:bottom-full md:right-auto md:left-0"
               >
-                <div className="backdrop-blur-2xl bg-white/95 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-pink-500/30 min-w-[220px]">
+                <div className="backdrop-blur-2xl bg-gray-900/95 border border-white/10 rounded-3xl p-4 shadow-2xl shadow-purple-500/30 min-w-[220px]">
                   <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="w-4 h-4 text-pink-500" />
-                    <span className="text-sm font-semibold text-gray-800">Hubungi Kami</span>
+                    <Sparkles className="w-4 h-4 text-purple-400" />
+                    <span className="text-sm font-semibold text-gray-200">Hubungi Kami</span>
                   </div>
                   <div className="space-y-2">
                     {contactOptions.map((option, index) => (
@@ -265,14 +265,14 @@ export function FloatingNav() {
                         transition={{ delay: index * 0.05 }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gradient-to-r hover:from-rose-50 hover:to-purple-50 transition-all group"
+                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 transition-all group"
                       >
                         <motion.div
                           className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all`}
                         >
                           {option.icon}
                         </motion.div>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-rose-500 transition-colors">{option.label}</span>
+                        <span className="text-sm font-medium text-gray-300 group-hover:text-purple-400 transition-colors">{option.label}</span>
                       </motion.a>
                     ))}
                   </div>
@@ -292,7 +292,7 @@ export function FloatingNav() {
               whileHover={{ scale: 1.1, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-28 right-6 md:bottom-8 md:right-8 z-50 backdrop-blur-2xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white p-4 rounded-full shadow-2xl shadow-pink-500/40 hover:shadow-pink-500/60 transition-all"
+              className="fixed bottom-28 right-6 md:bottom-8 md:right-8 z-50 backdrop-blur-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white p-4 rounded-full shadow-2xl shadow-purple-500/40 hover:shadow-purple-500/60 transition-all"
             >
               <ChevronUp className="w-6 h-6" />
             </motion.button>
