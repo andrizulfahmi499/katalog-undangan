@@ -1,6 +1,7 @@
 'use client'
 
 import { Navbar } from '@/components/landing/Navbar'
+import { VideoHeroSection } from '@/components/landing/VideoHeroSection'
 import { IntroSection } from '@/components/landing/IntroSection'
 import { FeatureSection } from '@/components/landing/FeatureSection'
 import { CatalogSection } from '@/components/landing/CatalogSection'
@@ -23,6 +24,9 @@ export default function Home() {
 
       {/* Navbar */}
       <Navbar />
+
+      {/* Video Hero Section */}
+      <VideoHeroSection />
 
       {/* Intro Section */}
       <IntroSection />
