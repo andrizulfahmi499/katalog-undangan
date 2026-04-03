@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +10,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+// Admin users who manage members and invitations
+model Admin {
   id        String   @id @default(cuid())
+  name      String
   email     String   @unique
-  name      String?
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  invitations      Invitations[]
+  creditTransactions CreditTransaction[]
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Members who can send invitations
+model Member {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  whatsapp     String
+  password     String
+  creditPoints Int      @default(0)
+  status       String   @default("active") // 'active' | 'inactive'
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invitations          Invitations[]
+  invitationMessages   InvitationMessages[]
+  invitationSends      InvitationSends[]
+  creditTransactions   CreditTransaction[]
+}
+
+// Invitations created by admin
+model Invitations {
+  id                String   @id @default(cuid())
+  title             String
+  eventName         String
+  eventDate         DateTime
+  location          String
+  invitationLink    String
+  invitationDomain  String   // 'satumomen' | 'akainvitation'
+  templateMessage   String
+  costPoints        Int      @default(20)
+  status            String   @default("draft") // 'draft' | 'published' | 'completed'
+  createdById       String
+  assignedMemberId  String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  createdBy         Admin               @relation(fields: [createdById], references: [id])
+  assignedMember    Member              @relation(fields: [assignedMemberId], references: [id])
+  invitationMessages InvitationMessages[]
+  invitationSends     InvitationSends[]
+  creditTransactions  CreditTransaction[]
+
+  @@index([assignedMemberId])
+  @@index([createdById])
+  @@index([status])
+}
+
+// Custom message templates created by member
+model InvitationMessages {
+  id             String   @id @default(cuid())
+  memberId       String
+  invitationId   String
+  messageTemplate String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  member         Member     @relation(fields: [memberId], references: [id])
+  invitation     Invitations @relation(fields: [invitationId], references: [id])
+
+  @@unique([memberId, invitationId])
+}
+
+// Log of invitations sent by member
+model InvitationSends {
+  id              String   @id @default(cuid())
+  memberId        String
+  invitationId    String
+  guestName       String
+  guestWhatsapp   String?
+  guestEmail      String?
+  generatedMessage String
+  generatedLink   String
+  sentAt          DateTime @default(now())
+  status          String   @default("pending") // 'pending' | 'sent' | 'failed'
+  errorMessage    String?
+
+  member          Member     @relation(fields: [memberId], references: [id])
+  invitation      Invitations @relation(fields: [invitationId], references: [id])
+
+  @@index([memberId])
+  @@index([invitationId])
+  @@index([status])
+}
+
+// Credit point transactions
+model CreditTransaction {
+  id             String   @id @default(cuid())
+  memberId       String
+  adminId        String?
+  invitationId   String?
+  type           String   // 'credit' | 'debit'
+  amount         Int
+  description    String
+  createdAt      DateTime @default(now())
+
+  member         Member      @relation(fields: [memberId], references: [id])
+  admin          Admin?      @relation(fields: [adminId], references: [id])
+  invitation     Invitations? @relation(fields: [invitationId], references: [id])
+
+  @@index([memberId])
+  @@index([adminId])
+  @@index([invitationId])
 }
