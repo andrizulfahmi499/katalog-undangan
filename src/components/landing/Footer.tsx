@@ -35,7 +35,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-gradient-to-br from-[#8B1255] to-[#C2185B] text-white">
+    <footer id="contact" className="bg-gradient-to-br from-[#8B1255] to-[#C2185B] text-white">
       {/* Wave Divider */}
       <div className="w-full">
         <svg
