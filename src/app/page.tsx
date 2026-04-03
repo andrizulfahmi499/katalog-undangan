@@ -1,13 +1,13 @@
 'use client'
 
 import { Navbar } from '@/components/landing/Navbar'
+import { VideoHeroSection } from '@/components/landing/VideoHeroSection'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { IntroSection } from '@/components/landing/IntroSection'
 import { FeatureSection } from '@/components/landing/FeatureSection'
 import { CatalogSection } from '@/components/landing/CatalogSection'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { Footer } from '@/components/landing/Footer'
-import { WaveDivider } from '@/components/landing/WaveDivider'
 import { FloatingNav } from '@/components/landing/FloatingNav'
 
 export default function Home() {
@@ -16,29 +16,20 @@ export default function Home() {
       {/* Navbar */}
       <Navbar />
 
+      {/* Video Hero Section */}
+      <VideoHeroSection />
+
       {/* Hero Section */}
       <HeroSection />
-
-      {/* Wave Divider */}
-      <WaveDivider color="#111827" />
 
       {/* Intro Section */}
       <IntroSection />
 
-      {/* Wave Divider */}
-      <WaveDivider color="#0f172a" />
-
       {/* Feature Section */}
       <FeatureSection />
 
-      {/* Wave Divider */}
-      <WaveDivider color="#0f172a" />
-
       {/* Catalog Section */}
       <CatalogSection />
-
-      {/* Wave Divider */}
-      <WaveDivider color="#111827" />
 
       {/* Pricing Section */}
       <PricingSection />
