@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, Menu, X, ChevronUp, MessageCircle, Phone, Mail } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, Menu, X, ChevronUp, MessageCircle, Phone, Mail, Sparkles } from 'lucide-react'
 
 interface NavItem {
   id: string
@@ -19,9 +19,9 @@ const navItems: NavItem[] = [
 ]
 
 const contactOptions = [
-  { icon: <MessageCircle className="w-5 h-5" />, label: 'WhatsApp', href: 'https://wa.me/6281234567890', color: 'from-green-400 to-green-500' },
+  { icon: <MessageCircle className="w-5 h-5" />, label: 'WhatsApp', href: 'https://wa.me/6281234567890', color: 'from-green-400 to-emerald-500' },
   { icon: <Phone className="w-5 h-5" />, label: 'Telepon', href: 'tel:+6281234567890', color: 'from-blue-400 to-blue-500' },
-  { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:hello@undangansamawa.com', color: 'from-purple-400 to-purple-500' },
+  { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:hello@undangansamawa.com', color: 'from-purple-400 to-violet-500' },
 ]
 
 export function FloatingNav() {
@@ -29,11 +29,22 @@ export function FloatingNav() {
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [showContactMenu, setShowContactMenu] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
       // Show scroll to top button when scrolled down
-      setShowScrollTop(window.scrollY > 500)
+      setShowScrollTop(currentScrollY > 500)
+
+      // Hide floating nav on scroll down, show on scroll up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false)
+      } else {
+        setIsVisible(true)
+      }
 
       // Detect active section
       const sections = navItems.map(item => item.href.replace('#', ''))
@@ -47,11 +58,13 @@ export function FloatingNav() {
           }
         }
       }
+
+      setLastScrollY(currentScrollY)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY])
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -72,8 +85,12 @@ export function FloatingNav() {
         {/* Glassmorphism Container */}
         <motion.div
           initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          animate={{ y: isVisible ? 0 : 150, opacity: isVisible ? 1 : 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          }}
           className="relative"
         >
           {/* Expanded Menu (for mobile) */}
@@ -86,8 +103,8 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4"
               >
-                <div className="backdrop-blur-xl bg-white/90 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-purple-500/20">
-                  <div className="grid grid-cols-4 gap-4">
+                <div className="backdrop-blur-2xl bg-white/95 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-pink-500/20">
+                  <div className="grid grid-cols-4 gap-3">
                     {navItems.map((item, index) => (
                       <motion.button
                         key={item.id}
@@ -97,8 +114,8 @@ export function FloatingNav() {
                         onClick={() => handleNavClick(item.href)}
                         className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
                           activeSection === item.id
-                            ? 'bg-gradient-to-br from-[#C2185B] to-purple-600 text-white shadow-lg'
-                            : 'hover:bg-white/50 text-gray-700'
+                            ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
+                            : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
                         }`}
                       >
                         {item.icon}
@@ -112,19 +129,19 @@ export function FloatingNav() {
           </AnimatePresence>
 
           {/* Main Nav Bar */}
-          <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl shadow-2xl shadow-purple-500/20 overflow-hidden">
+          <div className="backdrop-blur-2xl bg-white/80 border border-white/60 rounded-3xl shadow-2xl shadow-pink-500/20 overflow-hidden">
             {/* Desktop: Show all items */}
-            <div className="hidden md:flex items-center gap-1 px-2 py-2">
+            <div className="hidden md:flex items-center gap-1 px-2 py-2.5">
               {navItems.map((item) => (
                 <motion.button
                   key={item.id}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleNavClick(item.href)}
-                  className={`relative px-6 py-3 rounded-2xl flex items-center gap-2 transition-all ${
+                  className={`relative px-5 py-2.5 rounded-2xl flex items-center gap-2 transition-all ${
                     activeSection === item.id
-                      ? 'bg-gradient-to-br from-[#C2185B] to-purple-600 text-white shadow-lg'
-                      : 'hover:bg-white/50 text-gray-700'
+                      ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
+                      : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
                   }`}
                 >
                   {item.icon}
@@ -132,7 +149,7 @@ export function FloatingNav() {
                   {activeSection === item.id && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute inset-0 bg-gradient-to-br from-[#C2185B] to-purple-600 rounded-2xl -z-10"
+                      className="absolute inset-0 bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 rounded-2xl -z-10"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -142,13 +159,13 @@ export function FloatingNav() {
 
               {/* Contact Button */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowContactMenu(!showContactMenu)}
-                className={`ml-2 px-6 py-3 rounded-2xl flex items-center gap-2 transition-all ${
+                className={`ml-2 px-5 py-2.5 rounded-2xl flex items-center gap-2 transition-all ${
                   showContactMenu
-                    ? 'bg-gradient-to-br from-[#C2185B] to-purple-600 text-white shadow-lg'
-                    : 'hover:bg-white/50 text-gray-700'
+                    ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
+                    : 'hover:bg-gradient-to-br hover:from-rose-50 hover:to-purple-50 text-gray-700'
                 }`}
               >
                 <MessageCircle className="w-5 h-5" />
@@ -160,22 +177,44 @@ export function FloatingNav() {
             <div className="md:hidden flex items-center justify-between px-4 py-3">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-2 rounded-xl hover:bg-white/50 text-gray-700 transition-colors"
+                className="p-2 rounded-xl hover:bg-rose-50 text-gray-700 transition-colors"
               >
-                {isExpanded ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                <AnimatePresence mode="wait">
+                  {isExpanded ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <X className="w-6 h-6" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Menu className="w-6 h-6" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </button>
 
               <div className="flex items-center gap-1">
                 {navItems.slice(0, 3).map((item) => (
                   <motion.button
                     key={item.id}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleNavClick(item.href)}
                     className={`p-3 rounded-xl transition-all ${
                       activeSection === item.id
-                        ? 'bg-gradient-to-br from-[#C2185B] to-purple-600 text-white shadow-lg'
-                        : 'hover:bg-white/50 text-gray-700'
+                        ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
+                        : 'hover:bg-rose-50 text-gray-700'
                     }`}
                   >
                     {item.icon}
@@ -185,13 +224,13 @@ export function FloatingNav() {
 
               {/* Mobile Contact Toggle */}
               <motion.button
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowContactMenu(!showContactMenu)}
                 className={`p-3 rounded-xl transition-all ${
                   showContactMenu
-                    ? 'bg-gradient-to-br from-[#C2185B] to-purple-600 text-white shadow-lg'
-                    : 'hover:bg-white/50 text-gray-700'
+                    ? 'bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/30'
+                    : 'hover:bg-rose-50 text-gray-700'
                 }`}
               >
                 <MessageCircle className="w-5 h-5" />
@@ -209,9 +248,10 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full right-0 mb-4 md:mb-0 md:bottom-full md:right-auto md:left-0"
               >
-                <div className="backdrop-blur-xl bg-white/95 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-purple-500/30 min-w-[200px]">
-                  <div className="text-sm font-semibold text-gray-700 mb-3 px-2">
-                    Hubungi Kami
+                <div className="backdrop-blur-2xl bg-white/95 border border-white/50 rounded-3xl p-4 shadow-2xl shadow-pink-500/30 min-w-[220px]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-pink-500" />
+                    <span className="text-sm font-semibold text-gray-800">Hubungi Kami</span>
                   </div>
                   <div className="space-y-2">
                     {contactOptions.map((option, index) => (
@@ -223,14 +263,16 @@ export function FloatingNav() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group"
+                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gradient-to-r hover:from-rose-50 hover:to-purple-50 transition-all group"
                       >
-                        <div className={`p-2 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-lg group-hover:shadow-xl transition-shadow`}>
+                        <motion.div
+                          className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all`}
+                        >
                           {option.icon}
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                        </motion.div>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-rose-500 transition-colors">{option.label}</span>
                       </motion.a>
                     ))}
                   </div>
@@ -244,13 +286,13 @@ export function FloatingNav() {
         <AnimatePresence>
           {showScrollTop && (
             <motion.button
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              whileHover={{ scale: 1.1 }}
+              initial={{ opacity: 0, scale: 0, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, scale: 0, rotate: 180 }}
+              whileHover={{ scale: 1.1, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-28 right-6 md:bottom-8 md:right-8 z-50 backdrop-blur-xl bg-gradient-to-br from-[#C2185B] to-purple-600 text-white p-4 rounded-full shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow"
+              className="fixed bottom-28 right-6 md:bottom-8 md:right-8 z-50 backdrop-blur-2xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white p-4 rounded-full shadow-2xl shadow-pink-500/40 hover:shadow-pink-500/60 transition-all"
             >
               <ChevronUp className="w-6 h-6" />
             </motion.button>
