@@ -118,10 +118,14 @@ export async function DELETE(
       )
     }
 
-    // Delete member
-    await db.member.delete({
-      where: { id: params.id },
-    })
+    // Delete member and all related data using transaction
+    await db.$transaction([
+      db.creditTransaction.deleteMany({ where: { memberId: params.id } }),
+      db.invitationMessages.deleteMany({ where: { memberId: params.id } }),
+      db.invitationSends.deleteMany({ where: { memberId: params.id } }),
+      db.invitations.deleteMany({ where: { assignedMemberId: params.id } }),
+      db.member.delete({ where: { id: params.id } }),
+    ])
 
     return NextResponse.json({
       success: true,
