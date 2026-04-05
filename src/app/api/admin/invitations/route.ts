@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
+
 // Helper function to detect invitation domain
 function detectInvitationDomain(link: string): 'satumomen' | 'akainvitation' {
   if (link.includes('satumomen.com')) {
@@ -91,12 +94,8 @@ export async function POST(request: NextRequest) {
 
     const pointsCost = costPoints || 20
 
-    if (member.creditPoints < pointsCost) {
-      return NextResponse.json(
-        { error: `Credit point member tidak cukup. Diperlukan ${pointsCost} coin, tersisa ${member.creditPoints} coin.` },
-        { status: 400 }
-      )
-    }
+    // Admin tidak dibatasi oleh credit point member, sehingga validasi ini dihapus.
+    // Poin member akan tetap terpotong secara otomatis di bawah.
 
     // Check if admin exists
     const admin = await db.admin.findUnique({

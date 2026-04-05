@@ -125,6 +125,28 @@ Panduan untuk mengatasi masalah umum saat deployment dan usage.
 
 ## 🗄️ DATABASE ISSUES
 
+### Issue: Postgres `42P05` — `prepared statement "s1" already exists` (Prisma + PgBouncer)
+
+**Symptoms:**
+- Error saat login atau API yang memakai Prisma
+- Pesan mengandung `ConnectorError`, `QueryError`, kode `42P05`, atau `prepared statement` / `already exists`
+- Sering terjadi di **Vercel/serverless** dengan **Supabase connection pooler** (port **6543**)
+
+**Penyebab:**
+- Prisma memakai *prepared statements*; **PgBouncer** (mode transaksi) tidak kompatibel kecuali Prisma dikonfigurasi untuk itu.
+
+**Solusi:**
+
+1. **Pada `DATABASE_URL` yang lewat pooler**, tambahkan parameter **`pgbouncer=true`**:
+   - Contoh: `...pooler.supabase.com:6543/postgres?pgbouncer=true`
+   - Jika string sudah punya `?`, tambahkan: `&pgbouncer=true`
+2. **Set `DIRECT_URL`** di `.env` / Vercel ke koneksi **direct** Postgres (biasanya port **5432**, host `db.<ref>.supabase.co`) — dipakai Prisma untuk migrate/db push. Lihat `prisma/schema.prisma` dan `.env.example`.
+3. **Redeploy** setelah mengubah environment variables.
+
+Tanpa pooler (koneksi langsung 5432 saja), error ini biasanya tidak muncul; Anda bisa set `DIRECT_URL` sama dengan `DATABASE_URL` untuk development lokal.
+
+---
+
 ### Issue: "Connection refused" atau "Database connection failed"
 
 **Symptoms:**

@@ -179,7 +179,10 @@ Copy `.env.example` to `.env` and fill in the values:
 
 ```env
 # Database (Supabase)
+# Pooler (port 6543): tambahkan ?pgbouncer=true agar Prisma tidak bentrok dengan PgBouncer.
 DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres"
+# Koneksi direct (port 5432) untuk migrate — jika tidak pakai pooler, isi sama seperti DATABASE_URL
+DIRECT_URL="postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres"
 
 # NextAuth
 NEXTAUTH_SECRET="your-random-secret-here"

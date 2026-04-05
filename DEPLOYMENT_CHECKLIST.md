@@ -72,6 +72,11 @@ Saat melakukan deployment di Vercel:
 ### Environment Variables (CRITICAL!)
 - [ ] **DATABASE_URL** sudah ditambahkan:
   - [ ] Value: Supabase connection string
+  - [ ] Jika pakai **pooler** (port **6543**): pastikan ada **`?pgbouncer=true`** (atau `&pgbouncer=true`) agar tidak error `42P05` / prepared statement
+  - [ ] Environments: ✅ Production, ✅ Preview, ✅ Development
+- [ ] **DIRECT_URL** sudah ditambahkan:
+  - [ ] Value: koneksi **Direct** Supabase (port **5432**, host `db.<ref>.supabase.co`) — untuk Prisma migrate/db push
+  - [ ] Jika tidak pakai pooler: isi **sama** dengan `DATABASE_URL`
   - [ ] Environments: ✅ Production, ✅ Preview, ✅ Development
 - [ ] **NEXTAUTH_SECRET** sudah ditambahkan:
   - [ ] Value: Generated dengan `openssl rand -base64 32`

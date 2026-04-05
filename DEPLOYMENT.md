@@ -207,15 +207,33 @@ Klik **Environment Variables** dan tambahkan variabel berikut:
 | Setting | Value |
 |---------|-------|
 | **Name** | `DATABASE_URL` |
-| **Value** | `[Paste dari Supabase step 1.3]` |
+| **Value** | `[Paste dari Supabase — lihat catatan di bawah]` |
 | **Environments** | ✅ Production, ✅ Preview, ✅ Development |
 
-Contoh value:
+- Jika memakai **connection pooling** (Supabase **Transaction mode**, biasanya port **6543**), URL harus menyertakan **`?pgbouncer=true`** (atau `&pgbouncer=true` jika sudah ada query). Tanpa ini Prisma bisa error `42P05` (*prepared statement already exists*).
+- Jika memakai koneksi **direct** saja (port **5432**), tidak wajib `pgbouncer=true`, tetapi tetap set **Variable 2** `DIRECT_URL`.
+
+Contoh (pooler):
 ```
-postgresql://postgres:myPassword123@db.abc123xyz.supabase.co:5432/postgres
+postgresql://postgres.xxx:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres?pgbouncer=true
 ```
 
-#### Variable 2: NEXTAUTH_SECRET
+Contoh (direct saja):
+```
+postgresql://postgres:PASSWORD@db.abc123xyz.supabase.co:5432/postgres
+```
+
+#### Variable 2: DIRECT_URL
+
+| Setting | Value |
+|---------|-------|
+| **Name** | `DIRECT_URL` |
+| **Value** | Koneksi **Direct** dari Supabase (Settings → Database → *Connection string* → URI, host `db.<ref>.supabase.co`, port **5432**) |
+| **Environments** | ✅ Production, ✅ Preview, ✅ Development |
+
+Digunakan Prisma untuk `migrate` / `db push`. Jika `DATABASE_URL` sudah direct (5432), isi `DIRECT_URL` **sama** dengan `DATABASE_URL`.
+
+#### Variable 3: NEXTAUTH_SECRET
 
 | Setting | Value |
 |---------|-------|
@@ -234,7 +252,7 @@ Contoh hasil:
 aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890
 ```
 
-#### Variable 3: NEXTAUTH_URL
+#### Variable 4: NEXTAUTH_URL
 
 | Setting | Value |
 |---------|-------|
