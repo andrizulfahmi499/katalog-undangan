@@ -39,6 +39,16 @@ export default function AdminDashboard() {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
   const [currentAdminId, setCurrentAdminId] = useState<string>('')
+  const [showEditMemberModal, setShowEditMemberModal] = useState(false)
+  const [editingMember, setEditingMember] = useState<Member | null>(null)
+  const [editMemberForm, setEditMemberForm] = useState({
+    name: '',
+    email: '',
+    whatsapp: '',
+    password: '',
+    creditPoints: 0,
+    status: 'active'
+  })
 
   // Get admin ID from localStorage
   useEffect(() => {
@@ -127,6 +137,57 @@ export default function AdminDashboard() {
     }
   }
 
+  const openEditModal = (member: Member) => {
+    setEditingMember(member)
+    setEditMemberForm({
+      name: member.name,
+      email: member.email,
+      whatsapp: member.whatsapp,
+      password: '',
+      creditPoints: member.creditPoints,
+      status: member.status || 'active'
+    })
+    setShowEditMemberModal(true)
+  }
+
+  const handleEditMember = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingMember) return
+
+    try {
+      const updateData: any = {
+        name: editMemberForm.name,
+        email: editMemberForm.email,
+        whatsapp: editMemberForm.whatsapp,
+        creditPoints: editMemberForm.creditPoints,
+        status: editMemberForm.status
+      }
+      
+      if (editMemberForm.password) {
+        updateData.password = editMemberForm.password
+      }
+
+      const response = await fetch(`/api/admin/members/${editingMember.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateData),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        fetchMembers()
+        setShowEditMemberModal(false)
+        setEditingMember(null)
+      } else {
+        alert(data.error || 'Gagal mengupdate member')
+      }
+    } catch (error) {
+      console.error('Error updating member:', error)
+      alert('Terjadi kesalahan saat mengupdate member')
+    }
+  }
+
   const handleAddInvitation = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -174,17 +235,25 @@ export default function AdminDashboard() {
   const handleDeleteMember = async (id: string) => {
     if (!confirm('Yakin ingin menghapus member ini?')) return
 
+    const previousMembers = [...members]
+    setMembers(members.filter((m) => m.id !== id)) // optimistic update
+
     try {
       const response = await fetch(`/api/admin/members/${id}`, {
         method: 'DELETE',
       })
 
-      if (response.ok) {
-        fetchMembers()
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Optionally fetchMembers() here if you want to ensure perfect sync
+      } else {
+        throw new Error(data.error || 'Gagal menghapus member')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting member:', error)
-      alert('Gagal menghapus member')
+      alert(error?.message || 'Gagal menghapus member')
+      setMembers(previousMembers) // rollback if error
     }
   }
 
@@ -366,14 +435,26 @@ export default function AdminDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleDeleteMember(member.id)}
-                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </motion.button>
+                          <div className="flex gap-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => openEditModal(member)}
+                              className="p-2 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                              title="Edit Member"
+                            >
+                              <Edit className="w-5 h-5" />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleDeleteMember(member.id)}
+                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Hapus Member"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </motion.button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -548,6 +629,109 @@ export default function AdminDashboard() {
                     className="flex-1 py-3 bg-gradient-to-r from-purple-400 to-indigo-500 text-white rounded-xl font-medium"
                   >
                     Simpan
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Member Modal */}
+      <AnimatePresence>
+        {showEditMemberModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto"
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Edit Member</h3>
+              <form onSubmit={handleEditMember} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                  <input
+                    type="text"
+                    value={editMemberForm.name}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={editMemberForm.email}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, email: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+                  <input
+                    type="text"
+                    value={editMemberForm.whatsapp}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, whatsapp: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password Baru (Opsional)</label>
+                  <input
+                    type="password"
+                    value={editMemberForm.password}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, password: e.target.value })}
+                    placeholder="Biarkan kosong jika tidak ingin mengubah password"
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    value={editMemberForm.status}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, status: e.target.value })}
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Credit Points</label>
+                  <input
+                    type="number"
+                    value={editMemberForm.creditPoints}
+                    onChange={(e) => setEditMemberForm({ ...editMemberForm, creditPoints: parseInt(e.target.value) || 0 })}
+                    required
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+                <div className="flex gap-3 pt-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => setShowEditMemberModal(false)}
+                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
+                  >
+                    Batal
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="flex-1 py-3 bg-gradient-to-r from-indigo-400 to-purple-500 text-white rounded-xl font-medium"
+                  >
+                    Simpan Perubahan
                   </motion.button>
                 </div>
               </form>
