@@ -145,17 +145,21 @@ Terima kasih.`,
       },
     })
 
-    // Create credit transaction record
-    await db.creditTransaction.create({
-      data: {
-        memberId: assignedMemberId,
-        adminId: createdById,
-        invitationId: invitation.id,
-        type: 'debit',
-        amount: pointsCost,
-        description: `Pembuatan undangan: ${title}`,
-      },
-    })
+    // Create credit transaction record (Bungkus dalam try-catch agar error sinkronisasi kolom tidak membatalkan undangan)
+    try {
+      await db.creditTransaction.create({
+        data: {
+          memberId: assignedMemberId,
+          adminId: createdById,
+          invitationId: invitation.id,
+          type: 'debit',
+          amount: pointsCost,
+          description: `Pembuatan undangan: ${title}`,
+        },
+      })
+    } catch (txError) {
+      console.warn('Gagal mencatat riwayat transaksi kredit, namun undangan tetap dilanjutkan:', txError)
+    }
 
     return NextResponse.json({
       success: true,
