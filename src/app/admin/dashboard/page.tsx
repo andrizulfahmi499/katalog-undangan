@@ -79,7 +79,7 @@ export default function AdminDashboard() {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch('/api/admin/members')
+      const response = await fetch(`/api/admin/members?_t=${Date.now()}`, { cache: 'no-store' })
       const data = await response.json()
       if (data.success) {
         setMembers(data.data)
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
 
   const fetchInvitations = async () => {
     try {
-      const response = await fetch('/api/admin/invitations')
+      const response = await fetch(`/api/admin/invitations?_t=${Date.now()}`, { cache: 'no-store' })
       const data = await response.json()
       if (data.success) {
         setInvitations(data.data)

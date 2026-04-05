@@ -66,7 +66,9 @@ export default function MemberDashboard() {
 
   const fetchInvitations = async () => {
     try {
-      const response = await fetch(`/api/member/invitations?memberId=${memberId}`)
+      const response = await fetch(`/api/member/invitations?memberId=${memberId}&_t=${Date.now()}`, {
+        cache: 'no-store',
+      })
       const data = await response.json()
       if (data.success) {
         setInvitations(data.data)
