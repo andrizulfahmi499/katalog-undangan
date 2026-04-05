@@ -1,32 +1,42 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
-export async function GET() {
+export async function POST(request: NextRequest) {
   try {
+    const { email, password } = await request.json()
+
+    // Find admin
     const admin = await db.admin.findUnique({
-      where: { email: 'admin@undanganku.com' },
+      where: { email },
     })
 
     if (!admin) {
-      return NextResponse.json({ error: 'Admin not found' }, { status: 404 })
+      return NextResponse.json({
+        success: false,
+        error: 'Admin not found'
+      })
     }
 
-    // Test dengan password "admin123"
-    const testPassword = 'admin123'
-    const isValid = await bcrypt.compare(testPassword, admin.password)
+    // Test bcrypt compare
+    const isValid = await bcrypt.compare(password, admin.password)
 
     return NextResponse.json({
-      email: admin.email,
-      passwordHash: admin.password,
-      testPassword,
-      isValid,
-      message: isValid ? 'Password valid!' : 'Password invalid!',
+      success: true,
+      email: email,
+      passwordProvided: password ? `${password.substring(0, 2)}***` : 'empty',
+      passwordLength: password ? password.length : 0,
+      adminEmail: admin.email,
+      adminPasswordPrefix: admin.password.substring(0, 15),
+      adminPasswordLength: admin.password.length,
+      passwordMatch: isValid,
+      message: isValid ? 'Password correct!' : 'Password incorrect!'
     })
   } catch (error: any) {
     return NextResponse.json({
+      success: false,
       error: error.message,
-      stack: error.stack,
+      errorType: error.constructor.name
     }, { status: 500 })
   }
 }
