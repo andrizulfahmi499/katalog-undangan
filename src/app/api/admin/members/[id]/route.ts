@@ -118,23 +118,46 @@ export async function DELETE(
       )
     }
 
+    // Get all invitations assigned to this member
+    const memberInvitations = await db.invitations.findMany({
+      where: { assignedMemberId: params.id },
+      select: { id: true }
+    })
+    const invitationIds = memberInvitations.map(inv => inv.id)
+
     // Delete member and all related data using transaction
-    await db.$transaction([
-      db.creditTransaction.deleteMany({ where: { memberId: params.id } }),
-      db.invitationMessages.deleteMany({ where: { memberId: params.id } }),
-      db.invitationSends.deleteMany({ where: { memberId: params.id } }),
-      db.invitations.deleteMany({ where: { assignedMemberId: params.id } }),
-      db.member.delete({ where: { id: params.id } }),
-    ])
+    const deleteOperations: any[] = []
+
+    // 1. Delete all credit transactions for this member
+    deleteOperations.push(db.creditTransaction.deleteMany({ where: { memberId: params.id } }))
+    
+    // 2. Delete all invitation sends (by member or by invitation)
+    if (invitationIds.length > 0) {
+      deleteOperations.push(db.invitationSends.deleteMany({ where: { invitationId: { in: invitationIds } } }))
+      deleteOperations.push(db.invitationMessages.deleteMany({ where: { invitationId: { in: invitationIds } } }))
+      // Also cleanup any credit transactions linked to these invitations just in case
+      deleteOperations.push(db.creditTransaction.deleteMany({ where: { invitationId: { in: invitationIds } } }))
+    }
+
+    deleteOperations.push(db.invitationSends.deleteMany({ where: { memberId: params.id } }))
+    deleteOperations.push(db.invitationMessages.deleteMany({ where: { memberId: params.id } }))
+    
+    // 3. Delete the invitations
+    deleteOperations.push(db.invitations.deleteMany({ where: { assignedMemberId: params.id } }))
+    
+    // 4. Finally delete the member
+    deleteOperations.push(db.member.delete({ where: { id: params.id } }))
+
+    await db.$transaction(deleteOperations)
 
     return NextResponse.json({
       success: true,
       message: 'Member berhasil dihapus',
     })
   } catch (error: any) {
-    console.error('Error deleting member:', error)
+    console.error('Error deleting member DETAIL:', error?.message || error)
     return NextResponse.json(
-      { error: 'Terjadi kesalahan saat menghapus member' },
+      { error: 'Terjadi kesalahan saat menghapus member: ' + (error?.message?.split('\\n').pop() || 'Unknown DB error') },
       { status: 500 }
     )
   }
