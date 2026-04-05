@@ -5,9 +5,10 @@ import bcrypt from 'bcryptjs'
 // GET single member
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await props.params;
     const member = await db.member.findUnique({
       where: { id: params.id },
       select: {
@@ -45,9 +46,10 @@ export async function GET(
 // PUT update member
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await props.params;
     const { name, email, whatsapp, password, creditPoints, status } = await request.json()
 
     // Check if member exists
@@ -103,9 +105,10 @@ export async function PUT(
 // DELETE member
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await props.params;
     // Check if member exists
     const existingMember = await db.member.findUnique({
       where: { id: params.id },
