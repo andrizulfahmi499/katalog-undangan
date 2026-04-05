@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import bcrypt from 'bcryptjs'
+import { bcrypt } from 'bcryptjs'  // ← Ini harus ada!
 
 export async function GET() {
   try {
     // Try to connect to database
     const adminCount = await db.admin.count()
     
-    // Test password verification
+    // Test password verification  // ← Ini harus ada!
     const admin = await db.admin.findUnique({
       where: { email: 'admin@undanganku.com' },
     })
     
-    let passwordTest = null
+    let passwordTest = null  // ← Ini harus ada!
     if (admin) {
       const isValid = await bcrypt.compare('admin123', admin.password)
       passwordTest = {
@@ -29,7 +29,7 @@ export async function GET() {
       success: true,
       database: 'connected',
       adminCount,
-      passwordTest,
+      passwordTest,  // ← Ini harus ada!
       message: 'Database connection successful'
     })
   } catch (error: any) {
