@@ -78,22 +78,42 @@ export function VideoHeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mt-20 flex items-center justify-center gap-8 sm:gap-16 flex-wrap"
+            className="mt-20 flex items-center justify-start gap-4 sm:gap-8 overflow-x-auto no-scrollbar px-4 sm:px-0"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
-            <div className="text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            <motion.div
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.1 }}
+            >
               <div className="text-3xl sm:text-4xl font-bold text-[#A5B4FC]">10K+</div>
               <div className="text-sm text-purple-200/80 mt-1">Undangan Dibuat</div>
-            </div>
-            <div className="w-px h-12 bg-white/10" />
-            <div className="text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            </motion.div>
+            <motion.div
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
               <div className="text-3xl sm:text-4xl font-bold text-[#C4B5FD]">99%</div>
               <div className="text-sm text-purple-200/80 mt-1">Kepuasan Pelanggan</div>
-            </div>
-            <div className="w-px h-12 bg-white/10" />
-            <div className="text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            </motion.div>
+            <motion.div
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.3 }}
+            >
               <div className="text-3xl sm:text-4xl font-bold text-[#FBCFE8]">24/7</div>
               <div className="text-sm text-purple-200/80 mt-1">Support</div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
