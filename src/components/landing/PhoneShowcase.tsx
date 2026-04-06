@@ -111,9 +111,6 @@ export function PhoneShowcase() {
                   perspective: '1200px',
                 }}
               >
-                {/* Purple glow behind phone */}
-                <div className="absolute -inset-10 bg-gradient-to-b from-[#A5B4FC]/20 via-[#C4B5FD]/15 to-transparent rounded-full blur-[80px] pointer-events-none" />
-
                 <motion.div
                   animate={{ rotateY: [-12, -8, -12], rotateX: [3, 5, 3] }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
@@ -123,7 +120,7 @@ export function PhoneShowcase() {
                   }}
                 >
                   {/* Phone Frame */}
-                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px] shadow-[0_25px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(165,180,252,0.15)] overflow-hidden">
+                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px] overflow-hidden">
                     <img
                       src="/phone-mockup.png"
                       alt="Phone mockup"
