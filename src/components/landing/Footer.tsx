@@ -35,7 +35,7 @@ export function Footer() {
   }
 
   return (
-    <footer id="contact" className="bg-white text-[#2F2F2F] border-t border-gray-100">
+    <footer id="contact" className="bg-white/5 backdrop-blur-xl text-white border-t border-white/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-16">
           {/* Brand Section */}
@@ -48,18 +48,18 @@ export function Footer() {
               className="mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] overflow-hidden bg-white">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] overflow-hidden bg-white/15 backdrop-blur-sm border border-white/20">
                   <img
                     src="/logo.png"
                     alt="Katalog Undanganku"
                     className="w-full h-full object-contain p-1"
                   />
                 </div>
-                <span className="text-2xl font-bold text-[#2F2F2F]">
+                <span className="text-2xl font-bold text-white">
                   Katalog Undanganku
                 </span>
               </div>
-              <p className="text-[#6B7280] leading-relaxed mb-8">
+              <p className="text-purple-200/70 leading-relaxed mb-8">
                 Platform pembuatan undangan pernikahan digital terbaik di Indonesia.
                 Buat momen spesial Anda lebih berkesan.
               </p>
@@ -79,7 +79,7 @@ export function Footer() {
                   href={social.href}
                   whileHover={{ scale: 1.2, y: -3 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center w-12 h-12 bg-gray-50 border border-gray-200 rounded-2xl hover:bg-gradient-to-br hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white hover:border-transparent transition-all shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-lg hover:shadow-[#A5B4FC]/30 text-[#6B7280]"
+                  className="inline-flex items-center justify-center w-12 h-12 bg-white/10 border border-white/15 rounded-2xl hover:bg-gradient-to-br hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white hover:border-transparent transition-all shadow-[0_4px_16px_rgba(0,0,0,0.2)] hover:shadow-lg hover:shadow-[#A5B4FC]/30 text-purple-200/70"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -95,13 +95,13 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <h3 className="text-lg font-bold mb-6 text-[#2F2F2F]">Produk</h3>
+            <h3 className="text-lg font-bold mb-6 text-white">Produk</h3>
             <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-[#6B7280] hover:text-[#A5B4FC] transition-colors inline-block font-medium"
+                    className="text-purple-200/70 hover:text-white transition-colors inline-block font-medium"
                   >
                     {link.name}
                   </a>
@@ -117,13 +117,13 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h3 className="text-lg font-bold mb-6 text-[#2F2F2F]">Perusahaan</h3>
+            <h3 className="text-lg font-bold mb-6 text-white">Perusahaan</h3>
             <ul className="space-y-4">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors inline-block font-medium"
+                    className="text-purple-200/70 hover:text-white transition-colors inline-block font-medium"
                   >
                     {link.name}
                   </a>
@@ -139,11 +139,11 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 className="text-lg font-bold mb-6 text-[#2F2F2F]">Hubungi Kami</h3>
+            <h3 className="text-lg font-bold mb-6 text-white">Hubungi Kami</h3>
             <ul className="space-y-5">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#A5B4FC]" />
-                <span className="text-[#6B7280]">
+                <span className="text-purple-200/70">
                   Jl. Nusantara 2, Palupi, Palu
                 </span>
               </li>
@@ -151,7 +151,7 @@ export function Footer() {
                 <Mail className="w-5 h-5 flex-shrink-0 text-[#C4B5FD]" />
                 <a
                   href="mailto:hello@katalogundanganku.com"
-                  className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors font-medium"
+                  className="text-purple-200/70 hover:text-white transition-colors font-medium"
                 >
                   hello@katalogundanganku.com
                 </a>
@@ -160,7 +160,7 @@ export function Footer() {
                 <Phone className="w-5 h-5 flex-shrink-0 text-[#FBCFE8]" />
                 <a
                   href="tel:+6281234567890"
-                  className="text-[#6B7280] hover:text-[#FBCFE8] transition-colors font-medium"
+                  className="text-purple-200/70 hover:text-white transition-colors font-medium"
                 >
                   +62 812-3456-7890
                 </a>
@@ -175,13 +175,13 @@ export function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="pt-10 border-t border-gray-100"
+          className="pt-10 border-t border-white/10"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[#9CA3AF] text-sm text-center md:text-left">
+            <p className="text-purple-300/50 text-sm text-center md:text-left">
               © {currentYear} Katalog Undanganku. All rights reserved.
             </p>
-            <p className="text-[#9CA3AF] text-sm flex items-center gap-2">
+            <p className="text-purple-300/50 text-sm flex items-center gap-2">
               Made with{' '}
               <Heart className="w-4 h-4 text-[#FBCFE8] fill-[#FBCFE8] animate-pulse" />
               for your special moments

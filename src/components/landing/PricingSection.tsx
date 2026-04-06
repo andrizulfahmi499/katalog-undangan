@@ -114,10 +114,10 @@ export function PricingSection() {
         {/* Section Header */}
         <ScrollReveal>
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F] mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
               Pilih Paket yang Sesuai
             </h2>
-            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
               Harga terjangkau dengan fitur lengkap untuk pernikahan impian Anda
             </p>
           </div>
@@ -130,10 +130,10 @@ export function PricingSection() {
               <motion.div
                 whileHover={{ y: -12, scale: plan.highlighted ? 1.03 : 1.02, rotate: index % 2 === 0 ? 1 : -1 }}
                 whileTap={{ scale: 0.98 }}
-                className={`relative rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 ${
+                className={`relative rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 ${
                   plan.highlighted
                     ? `${plan.color} shadow-[0_20px_60px_rgba(165,180,252,0.25)] border-[#A5B4FC]/50`
-                    : `${plan.color} hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)]`
+                    : `bg-white/10 backdrop-blur-xl hover:bg-white/15 hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)]`
                 } transition-all duration-500`}
               >
                 {/* Popular Badge */}
@@ -161,10 +161,10 @@ export function PricingSection() {
                       {plan.icon}
                     </div>
                   </div>
-                  <h3 className={`text-2xl font-bold mb-3 ${plan.highlighted ? 'text-white' : 'text-[#2F2F2F]'}`}>
+                  <h3 className={`text-2xl font-bold mb-3 ${plan.highlighted ? 'text-white' : 'text-white'}`}>
                     {plan.name}
                   </h3>
-                  <p className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-[#6B7280]'}`}>
+                  <p className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-purple-200/70'}`}>
                     {plan.description}
                   </p>
                 </div>
@@ -172,12 +172,12 @@ export function PricingSection() {
                 {/* Price */}
                 <div className="text-center mb-8">
                   <div
-                    className={`text-5xl lg:text-6xl font-bold ${plan.highlighted ? 'text-white' : 'text-[#2F2F2F]'}`}
+                    className={`text-5xl lg:text-6xl font-bold ${plan.highlighted ? 'text-white' : 'text-white'}`}
                   >
                     {plan.price}
                   </div>
                   <div
-                    className={`text-base ${plan.highlighted ? 'text-white/80' : 'text-[#9CA3AF]'}`}
+                    className={`text-base ${plan.highlighted ? 'text-white/80' : 'text-purple-300/60'}`}
                   >
                     per {plan.period}
                   </div>
@@ -193,7 +193,7 @@ export function PricingSection() {
                         }`}
                       />
                       <span
-                        className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-[#6B7280]'}`}
+                        className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-purple-200/70'}`}
                       >
                         {feature}
                       </span>
@@ -221,13 +221,13 @@ export function PricingSection() {
         {/* Additional Info */}
         <ScrollReveal delay={0.5}>
           <div className="mt-20 text-center">
-            <p className="text-[#6B7280] mb-6 text-lg">
+            <p className="text-purple-200/70 mb-6 text-lg">
               Butuh paket kustom untuk pernikahan besar?
             </p>
             <motion.button
               whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-[#A5B4FC] border-2 border-[#A5B4FC] px-10 py-4 rounded-2xl font-semibold hover:bg-[#A5B4FC] hover:text-white transition-all shadow-[0_8px_32px_rgba(165,180,252,0.15)]"
+              className="bg-white/10 backdrop-blur-xl text-white border border-white/20 px-10 py-4 rounded-2xl font-semibold hover:bg-white/20 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
             >
               Hubungi Kami untuk Penawaran Khusus
             </motion.button>

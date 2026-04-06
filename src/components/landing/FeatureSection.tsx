@@ -136,10 +136,10 @@ export function FeatureSection() {
         {/* Section Header */}
         <ScrollReveal>
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F] mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
               Fitur Lengkap untuk Momen Spesial
             </h2>
-            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
               Semua yang Anda butuhkan untuk undangan pernikahan digital yang sempurna
             </p>
           </div>
@@ -152,7 +152,7 @@ export function FeatureSection() {
               <motion.div
                 whileHover={{ y: -12, rotate: index % 2 === 0 ? 2 : -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative p-8 rounded-3xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 hover:shadow-[0_20px_60px_rgba(165,180,252,0.25)] transition-all duration-500"
+                className="group relative p-8 rounded-3xl bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 hover:bg-white/15 hover:shadow-[0_20px_60px_rgba(165,180,252,0.2)] transition-all duration-500"
               >
                 {/* Lottie Animation Container */}
                 <div className="flex justify-center mb-6">
@@ -174,10 +174,10 @@ export function FeatureSection() {
                   </motion.div>
                 </div>
 
-                <h3 className="text-2xl font-bold text-[#2F2F2F] mb-4 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-[#6B7280] text-center leading-relaxed text-base">
+                <p className="text-purple-200/70 text-center leading-relaxed text-base">
                   {feature.description}
                 </p>
 

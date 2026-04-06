@@ -132,25 +132,25 @@ export function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm"
+        className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-sm"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-2 text-sm">
             <div className="flex items-center gap-4 sm:gap-6">
-              <div className="flex items-center gap-2 text-[#6B7280]">
-                <Phone className="w-4 h-4 text-[#A5B4FC]" />
-                <span className="hidden md:inline text-[#2F2F2F]">+62 812-3456-7890</span>
+              <div className="flex items-center gap-2 text-purple-300/80">
+                <Phone className="w-4 h-4 text-purple-300" />
+                <span className="hidden md:inline text-purple-200">+62 812-3456-7890</span>
               </div>
-              <div className="flex items-center gap-2 text-[#6B7280]">
-                <Mail className="w-4 h-4 text-[#C4B5FD]" />
-                <span className="hidden md:inline text-[#2F2F2F]">hello@katalogundanganku.com</span>
+              <div className="flex items-center gap-2 text-purple-300/80">
+                <Mail className="w-4 h-4 text-purple-300" />
+                <span className="hidden md:inline text-purple-200">hello@katalogundanganku.com</span>
               </div>
             </div>
             <div className="flex items-center gap-3 sm:gap-4">
-              <a href="#" className="text-[#6B7280] hover:text-[#A5B4FC] transition-colors text-xs sm:text-sm">
+              <a href="#" className="text-purple-300/70 hover:text-white transition-colors text-xs sm:text-sm">
                 Bantuan
               </a>
-              <a href="#" className="text-[#6B7280] hover:text-[#C4B5FD] transition-colors text-xs sm:text-sm">
+              <a href="#" className="text-purple-300/70 hover:text-white transition-colors text-xs sm:text-sm">
                 FAQ
               </a>
             </div>
@@ -165,8 +165,8 @@ export function Navbar() {
         initial="visible"
         className={`fixed top-[44px] sm:top-[40px] left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
-            ? 'bg-white/98 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border-b border-gray-100'
-            : 'bg-white/95 backdrop-blur-md border-b border-gray-100'
+            ? 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-b border-white/10'
+            : 'bg-white/5 backdrop-blur-md border-b border-white/10'
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,7 +181,7 @@ export function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <motion.div
-                className="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] group-hover:shadow-[0_12px_48px_rgba(165,180,252,0.4)] transition-shadow overflow-hidden bg-white"
+                className="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(165,180,252,0.3)] group-hover:shadow-[0_12px_48px_rgba(165,180,252,0.4)] transition-shadow overflow-hidden bg-white/15 backdrop-blur-sm border border-white/20"
                 whileHover={{ rotate: 5 }}
                 transition={{ duration: 0.6 }}
               >
@@ -192,14 +192,14 @@ export function Navbar() {
                 />
               </motion.div>
               <div className="hidden sm:block">
-                <motion.div className="text-xl font-bold text-[#2F2F2F]">
+                <motion.div className="text-xl font-bold text-white">
                   Katalog Undanganku
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
-                  className="text-xs text-[#6B7280]"
+                  className="text-xs text-purple-300/80"
                 >
                   Platform Undangan Digital Terbaik
                 </motion.div>
@@ -221,7 +221,7 @@ export function Navbar() {
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible"
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#A5B4FC] transition-all duration-300 flex items-center gap-1 relative group"
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-purple-200/80 hover:text-white transition-all duration-300 flex items-center gap-1 relative group"
                 >
                   {item.name}
                   {/* Animated Underline */}
@@ -267,7 +267,7 @@ export function Navbar() {
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible"
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#A5B4FC] transition-all duration-300 flex items-center gap-1 relative group"
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-purple-200/80 hover:text-white transition-all duration-300 flex items-center gap-1 relative group"
                 >
                   {item.name}
                   {/* Animated Underline */}
@@ -287,7 +287,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
               onClick={toggleMobileMenu}
-              className="lg:hidden p-2 rounded-xl hover:bg-gray-50 transition-colors"
+              className="lg:hidden p-2 rounded-xl hover:bg-white/10 transition-colors"
             >
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
@@ -298,7 +298,7 @@ export function Navbar() {
                     exit={{ rotate: 90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <X className="w-6 h-6 text-[#2F2F2F]" />
+                    <X className="w-6 h-6 text-white" />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -308,7 +308,7 @@ export function Navbar() {
                     exit={{ rotate: -90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Menu className="w-6 h-6 text-[#2F2F2F]" />
+                    <Menu className="w-6 h-6 text-white" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -324,7 +324,7 @@ export function Navbar() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="lg:hidden bg-white/98 backdrop-blur-xl border-t border-gray-100 shadow-[0_16px_48px_rgba(0,0,0,0.12)] overflow-hidden z-50"
+              className="lg:hidden bg-white/10 backdrop-blur-xl border-t border-white/10 shadow-[0_16px_48px_rgba(0,0,0,0.4)] overflow-hidden z-50"
             >
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {navItems.map((item, index) => (
@@ -338,7 +338,7 @@ export function Navbar() {
                       onClick={() => setIsMobileMenuOpen(false)}
                       whileHover={{ x: 10 }}
                       whileTap={{ scale: 0.98 }}
-                      className="block px-6 py-4 rounded-2xl text-[#2F2F2F] hover:text-[#A5B4FC] hover:bg-gray-50 transition-all font-medium text-lg"
+                      className="block px-6 py-4 rounded-2xl text-white/90 hover:text-white hover:bg-white/10 transition-all font-medium text-lg"
                     >
                       {item.name}
                     </motion.a>
@@ -347,7 +347,7 @@ export function Navbar() {
 
                 <motion.div
                   variants={mobileItemVariants}
-                  className="pt-6 mt-6 border-t border-gray-100 space-y-3"
+                  className="pt-6 mt-6 border-t border-white/10 space-y-3"
                 >
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
@@ -358,7 +358,7 @@ export function Navbar() {
                       // TODO: Create login portal page
                       window.location.href = '/login'
                     }}
-                    className="w-full py-4 text-[#2F2F2F] hover:text-[#A5B4FC] font-medium rounded-2xl hover:bg-gray-50 transition-colors text-lg"
+                    className="w-full py-4 text-white/80 hover:text-white font-medium rounded-2xl hover:bg-white/10 transition-colors text-lg"
                   >
                     Masuk
                   </motion.button>

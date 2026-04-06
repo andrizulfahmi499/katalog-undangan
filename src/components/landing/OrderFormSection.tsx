@@ -161,13 +161,13 @@ export function OrderFormSection() {
             >
               <div className="flex items-center justify-center gap-2">
                 <Sparkles className="w-6 h-6 text-[#A5B4FC]" />
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F]">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
                   Form Order Undangan
                 </h2>
                 <Sparkles className="w-6 h-6 text-[#C4B5FD]" />
               </div>
             </motion.div>
-            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
               Lengkapi formulir di bawah ini untuk memesan undangan digital impian Anda
             </p>
           </div>
@@ -181,19 +181,19 @@ export function OrderFormSection() {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto"
           >
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 overflow-hidden">
+            <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 overflow-hidden">
               {/* Informasi Pemesan */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
                     <User className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2F2F2F]">Informasi Pemesan</h3>
+                  <h3 className="text-xl font-bold text-white">Informasi Pemesan</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Nama Lengkap <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -202,12 +202,12 @@ export function OrderFormSection() {
                       value={formData.namaPemesan}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="Masukkan nama lengkap"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       No. WhatsApp <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -216,7 +216,7 @@ export function OrderFormSection() {
                       value={formData.noWhatsApp}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="Contoh: 081234567890"
                     />
                   </div>
@@ -224,17 +224,17 @@ export function OrderFormSection() {
               </div>
 
               {/* Data Mempelai */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FBCFE8] to-[#F9A8D4] flex items-center justify-center shadow-lg shadow-[#FBCFE8]/30">
                     <Heart className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2F2F2F]">Data Mempelai</h3>
+                  <h3 className="text-xl font-bold text-white">Data Mempelai</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Nama Lengkap Pria <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -248,7 +248,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Nama Lengkap Wanita <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -279,17 +279,17 @@ export function OrderFormSection() {
               </div>
 
               {/* Detail Acara */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
                     <Calendar className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2F2F2F]">Detail Acara</h3>
+                  <h3 className="text-xl font-bold text-white">Detail Acara</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Tanggal Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -298,11 +298,11 @@ export function OrderFormSection() {
                       value={formData.tanggalAkad}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Tanggal Resepsi
                     </label>
                     <input
@@ -310,13 +310,13 @@ export function OrderFormSection() {
                       name="tanggalResepsi"
                       value={formData.tanggalResepsi}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Lokasi Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -325,12 +325,12 @@ export function OrderFormSection() {
                       value={formData.lokasiAkad}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="Nama gedung/lokasi akad"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Lokasi Resepsi
                     </label>
                     <input
@@ -338,7 +338,7 @@ export function OrderFormSection() {
                       name="lokasiResepsi"
                       value={formData.lokasiResepsi}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="Nama gedung/lokasi resepsi"
                     />
                   </div>
@@ -359,12 +359,12 @@ export function OrderFormSection() {
               </div>
 
               {/* Tema Pilihan */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2F2F2F]">Tema Pilihan</h3>
+                  <h3 className="text-xl font-bold text-white">Tema Pilihan</h3>
                 </div>
                 
                 <div>
@@ -379,25 +379,25 @@ export function OrderFormSection() {
                     className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
                     placeholder="Masukkan nama tema yang diinginkan"
                   />
-                  <p className="text-xs text-[#6B7280] mt-2">
+                  <p className="text-xs text-purple-300/60 mt-2">
                     💡 Lihat katalog tema di atas untuk memilih
                   </p>
                 </div>
               </div>
 
               {/* Upload Foto Mempelai */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
                     <Image className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-[#2F2F2F]">Foto Mempelai</h3>
-                    <p className="text-xs text-[#6B7280]">Maksimal {MAX_PHOTOS} foto</p>
+                    <h3 className="text-xl font-bold text-white">Foto Mempelai</h3>
+                    <p className="text-xs text-purple-300/60">Maksimal {MAX_PHOTOS} foto</p>
                   </div>
                 </div>
                 
-                <div className="border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:border-[#A5B4FC] transition-colors">
+                <div className="border-2 border-dashed border-white/20 rounded-3xl p-8 text-center hover:border-[#A5B4FC] transition-colors">
                   <input
                     type="file"
                     id="photoUpload"
@@ -414,10 +414,10 @@ export function OrderFormSection() {
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10 flex items-center justify-center mb-4">
                       <Upload className="w-8 h-8 text-[#A5B4FC]" />
                     </div>
-                    <p className="text-sm font-medium text-[#2F2F2F] mb-1">
+                    <p className="text-sm font-medium text-white mb-1">
                       Klik untuk upload foto
                     </p>
-                    <p className="text-xs text-[#6B7280]">
+                    <p className="text-xs text-purple-300/60">
                       {uploadedPhotos.length}/{MAX_PHOTOS} foto terupload
                     </p>
                   </label>
@@ -449,17 +449,17 @@ export function OrderFormSection() {
               </div>
 
               {/* Tambahan */}
-              <div className="p-6 sm:p-8 border-b border-gray-100">
+              <div className="p-6 sm:p-8 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
                     <Music className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2F2F2F]">Tambahan</h3>
+                  <h3 className="text-xl font-bold text-white">Tambahan</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Link Lagu (YouTube/Spotify)
                     </label>
                     <input
@@ -467,12 +467,12 @@ export function OrderFormSection() {
                       name="linkLagu"
                       value={formData.linkLagu}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="https://youtube.com/..."
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
                       Turut Mengundang
                     </label>
                     <input
@@ -480,7 +480,7 @@ export function OrderFormSection() {
                       name="turutMengundang"
                       value={formData.turutMengundang}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
                       placeholder="Keluarga besar, sahabat, dll"
                     />
                   </div>
@@ -501,7 +501,7 @@ export function OrderFormSection() {
               </div>
 
               {/* Submit Button */}
-              <div className="p-6 sm:p-8 bg-gradient-to-br from-[#A5B4FC]/5 to-[#C4B5FD]/5">
+              <div className="p-6 sm:p-8 bg-white/5">
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
@@ -524,7 +524,7 @@ export function OrderFormSection() {
                     </>
                   )}
                 </motion.button>
-                <p className="text-center text-xs text-[#6B7280] mt-4">
+                <p className="text-center text-xs text-purple-300/60 mt-4">
                   Anda akan diarahkan ke WhatsApp untuk mengirim pesanan
                 </p>
               </div>

@@ -29,14 +29,14 @@ interface Category {
 // Loading Skeleton Component
 function ThemeCardSkeleton() {
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80">
-      <div className="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
+    <div className="bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15">
+      <div className="aspect-[3/4] bg-gradient-to-br from-purple-900/50 to-purple-800/50 animate-pulse" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-100 rounded animate-pulse" />
-        <div className="h-3 bg-gray-100 rounded w-2/3 animate-pulse" />
+        <div className="h-4 bg-white/10 rounded animate-pulse" />
+        <div className="h-3 bg-white/10 rounded w-2/3 animate-pulse" />
         <div className="grid grid-cols-2 gap-2">
-          <div className="h-10 bg-gray-100 rounded-xl animate-pulse" />
-          <div className="h-10 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-10 bg-white/10 rounded-xl animate-pulse" />
+          <div className="h-10 bg-white/10 rounded-xl animate-pulse" />
         </div>
       </div>
     </div>
@@ -151,29 +151,29 @@ export function CatalogSection() {
             >
               <div className="flex items-center justify-center gap-2">
                 <Sparkles className="w-6 h-6 text-[#A5B4FC]" />
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F2F2F]">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
                   Katalog Tema Undangan
                 </h2>
                 <Sparkles className="w-6 h-6 text-[#C4B5FD]" />
               </div>
             </motion.div>
-            <p className="text-xl text-[#4A4A4A] max-w-2xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto mb-8 leading-relaxed">
               Temukan tema undangan pernikahan digital yang sesuai dengan impian Anda
             </p>
 
             {/* Stats */}
             <div className="flex items-center justify-center gap-8 flex-wrap">
-              <div className="flex items-center gap-2 text-[#6B7280]">
+              <div className="flex items-center gap-2 text-purple-300/70">
                 <Grid className="w-5 h-5 text-[#A5B4FC]" />
-                <span className="font-semibold text-[#2F2F2F]">{totalThemes}+ Tema</span>
+                <span className="font-semibold text-white">{totalThemes}+ Tema</span>
               </div>
-              <div className="flex items-center gap-2 text-[#6B7280]">
+              <div className="flex items-center gap-2 text-purple-300/70">
                 <TrendingUp className="w-5 h-5 text-[#C4B5FD]" />
-                <span className="font-semibold text-[#2F2F2F]">Trending Now</span>
+                <span className="font-semibold text-white">Trending Now</span>
               </div>
-              <div className="flex items-center gap-2 text-[#6B7280]">
+              <div className="flex items-center gap-2 text-purple-300/70">
                 <Clock className="w-5 h-5 text-[#FBCFE8]" />
-                <span className="font-semibold text-[#2F2F2F]">Update Harian</span>
+                <span className="font-semibold text-white">Update Harian</span>
               </div>
             </div>
           </div>
@@ -219,7 +219,7 @@ export function CatalogSection() {
                       className={`px-5 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 ${
                         selectedCategory === category.id
                           ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                          : 'bg-white text-[#6B7280] hover:bg-gray-50 border border-gray-200 shadow-sm'
+                          : 'bg-white/10 backdrop-blur-sm text-purple-200/80 hover:bg-white/15 border border-white/15 shadow-sm'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -249,7 +249,7 @@ export function CatalogSection() {
                   className="group"
                 >
                   {/* Card */}
-                  <div className="relative bg-white rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/80 hover:shadow-[0_20px_60px_rgba(165,180,252,0.25)] transition-all duration-500">
+                  <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 hover:bg-white/15 hover:shadow-[0_20px_60px_rgba(165,180,252,0.2)] transition-all duration-500">
                     {/* Theme Preview Image */}
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <img
@@ -266,7 +266,7 @@ export function CatalogSection() {
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-4 bg-white/80 border-t border-gray-100">
+                    <div className="p-4 bg-white/5 backdrop-blur-sm border-t border-white/10">
                       {/* Category Badge */}
                       <div className="mb-2">
                         <span className="text-xs font-medium text-[#A5B4FC] bg-gradient-to-r from-[#A5B4FC]/10 to-[#C4B5FD]/10 px-3 py-1 rounded-full">
@@ -275,7 +275,7 @@ export function CatalogSection() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold text-[#2F2F2F] mb-3 line-clamp-2 min-h-[3rem]">
+                      <h3 className="text-base font-bold text-white mb-3 line-clamp-2 min-h-[3rem]">
                         {theme.name}
                       </h3>
 
@@ -285,7 +285,7 @@ export function CatalogSection() {
                           href={theme.previewUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-semibold py-2.5 px-3 text-center rounded-2xl bg-gray-100 text-gray-700 hover:bg-gradient-to-r hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                          className="text-xs font-semibold py-2.5 px-3 text-center rounded-2xl bg-white/10 text-purple-200 hover:bg-gradient-to-r hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           Preview
@@ -312,8 +312,8 @@ export function CatalogSection() {
           <ScrollReveal>
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-bold text-[#2F2F2F] mb-2">Tidak ada tema ditemukan</h3>
-              <p className="text-[#6B7280] mb-4">Coba pilih kategori lain</p>
+              <h3 className="text-xl font-bold text-white mb-2">Tidak ada tema ditemukan</h3>
+              <p className="text-purple-200/70 mb-4">Coba pilih kategori lain</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
