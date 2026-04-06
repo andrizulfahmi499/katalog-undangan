@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Heart, Sparkles, Phone, Mail, MessageCircle } from 'lucide-react'
+import { Menu, X, Heart, Sparkles, MessageCircle } from 'lucide-react'
 
 interface NavItem {
   name: string
@@ -127,43 +127,12 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-sm"
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-2 text-sm">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="flex items-center gap-2 text-purple-300/80">
-                <Phone className="w-4 h-4 text-purple-300" />
-                <span className="hidden md:inline text-purple-200">+62 812-3456-7890</span>
-              </div>
-              <div className="flex items-center gap-2 text-purple-300/80">
-                <Mail className="w-4 h-4 text-purple-300" />
-                <span className="hidden md:inline text-purple-200">hello@katalogundanganku.com</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <a href="#" className="text-purple-300/70 hover:text-white transition-colors text-xs sm:text-sm">
-                Bantuan
-              </a>
-              <a href="#" className="text-purple-300/70 hover:text-white transition-colors text-xs sm:text-sm">
-                FAQ
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Main Navbar */}
       <motion.nav
         variants={navbarVariants}
         animate={isVisible ? 'visible' : 'hidden'}
         initial="visible"
-        className={`fixed top-[44px] sm:top-[40px] left-0 right-0 z-40 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
             ? 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-b border-white/10'
             : 'bg-white/5 backdrop-blur-md border-b border-white/10'

@@ -14,23 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UndanganSamawa - Platform Undangan Pernikahan Digital Terbaik",
+  title: "Katalog Undanganku - Platform Undangan Pernikahan Digital Terbaik",
   description: "Buat undangan pernikahan digital yang elegan, modern, dan mudah dibagikan. Berbagai tema undangan dengan fitur lengkap untuk momen spesial Anda.",
   keywords: ["Undangan Pernikahan Digital", "Wedding Invitation", "Undangan Online", "Undangan Pernikahan", "Digital Wedding", "Wedding Invitation Indonesia"],
-  authors: [{ name: "UndanganSamawa Team" }],
+  authors: [{ name: "Katalog Undanganku Team" }],
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "UndanganSamawa - Undangan Pernikahan Digital",
+    title: "Katalog Undanganku - Undangan Pernikahan Digital",
     description: "Buat undangan pernikahan digital yang elegan dan modern dengan berbagai pilihan tema",
-    url: "https://undangansamawa.com",
-    siteName: "UndanganSamawa",
+    url: "https://katalog-undangan-beta.vercel.app",
+    siteName: "Katalog Undanganku",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UndanganSamawa - Undangan Pernikahan Digital",
+    title: "Katalog Undanganku - Undangan Pernikahan Digital",
     description: "Platform undangan pernikahan digital terbaik di Indonesia",
   },
 };

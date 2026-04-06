@@ -84,7 +84,7 @@ export function FloatingNav() {
           className="relative"
         >
           {/* Main Nav Bar */}
-          <div className="bg-white/98 backdrop-blur-2xl border-t border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+          <div className="bg-white/10 backdrop-blur-2xl border-t border-white/20 shadow-[0_-8px_32px_rgba(139,92,246,0.15)]">
             {/* Desktop: Show all items */}
             <div className="hidden md:flex items-center justify-between px-8 py-4 max-w-4xl mx-auto">
               <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export function FloatingNav() {
                     className={`relative px-6 py-3 rounded-2xl flex items-center gap-2 transition-all ${
                       activeSection === item.id
                         ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                        : 'hover:bg-gray-50 text-[#6B7280] hover:text-[#A5B4FC]'
+                        : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
                     }`}
                   >
                     {item.icon}
@@ -129,10 +129,10 @@ export function FloatingNav() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowContactMenu(!showContactMenu)}
-                  className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
+                    className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
                     showContactMenu
                       ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                      : 'hover:bg-gray-50 text-[#6B7280] hover:text-[#A5B4FC]'
+                      : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5" />
@@ -153,7 +153,7 @@ export function FloatingNav() {
                       className={`flex-1 max-w-[80px] py-3 rounded-2xl flex flex-col items-center gap-1 transition-all ${
                         activeSection === item.id
                           ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                          : 'text-[#6B7280]'
+                          : 'text-purple-200/70'
                       }`}
                     >
                       {item.icon}
@@ -163,12 +163,12 @@ export function FloatingNav() {
                 </div>
 
                 {/* Mobile Contact */}
-                <div className="flex items-center gap-1 pl-2 border-l border-gray-100">
+                <div className="flex items-center gap-1 pl-2 border-l border-white/20">
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleNavClick('#order-form')}
-                    className="p-3 rounded-2xl text-[#6B7280] transition-all"
+                    className="p-3 rounded-2xl text-purple-200/70 hover:text-white transition-all"
                   >
                     <ShoppingCart className="w-5 h-5" />
                   </motion.button>
@@ -179,7 +179,7 @@ export function FloatingNav() {
                     className={`p-3 rounded-2xl transition-all ${
                       showContactMenu
                         ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                        : 'text-[#6B7280]'
+                        : 'text-purple-200/70 hover:text-white'
                     }`}
                   >
                     <MessageCircle className="w-5 h-5" />
@@ -199,10 +199,10 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 mb-4"
               >
-                <div className="bg-white/95 backdrop-blur-2xl border border-gray-100 rounded-3xl p-4 shadow-[0_16px_48px_rgba(0,0,0,0.12)] min-w-[220px]">
+                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 shadow-[0_16px_48px_rgba(139,92,246,0.2)] min-w-[220px]">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-[#A5B4FC]" />
-                    <span className="text-sm font-semibold text-[#2F2F2F]">Hubungi Kami</span>
+                    <span className="text-sm font-semibold text-white">Hubungi Kami</span>
                   </div>
                   <div className="space-y-2">
                     {contactOptions.map((option, index) => (
@@ -216,14 +216,14 @@ export function FloatingNav() {
                         transition={{ delay: index * 0.05 }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 transition-all group"
+                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/10 transition-all group"
                       >
                         <motion.div
                           className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-md shadow-[#A5B4FC]/20 group-hover:shadow-lg group-hover:shadow-[#A5B4FC]/30 group-hover:scale-110 transition-all`}
                         >
                           {option.icon}
                         </motion.div>
-                        <span className="text-sm font-medium text-[#6B7280] group-hover:text-[#A5B4FC] transition-colors">{option.label}</span>
+                        <span className="text-sm font-medium text-purple-200/80 group-hover:text-white transition-colors">{option.label}</span>
                       </motion.a>
                     ))}
                   </div>

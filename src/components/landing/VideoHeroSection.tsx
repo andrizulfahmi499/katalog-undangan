@@ -6,29 +6,11 @@ import { Play, Sparkles, ArrowRight } from 'lucide-react'
 export function VideoHeroSection() {
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-          poster="https://is3.cloudhost.id/zaavitationwp-com/2025/01/Hearder-Motion-Vertical.mp4"
-        >
-          <source
-            src="https://is3.cloudhost.id/zaavitationwp-com/2025/01/Hearder-Motion-Vertical.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Soft Gradient Overlay - Claymorphism Style */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0221]/80 via-[#2a0845]/60 to-transparent" />
-      </div>
+      {/* Subtle Gradient Overlay (starry bg shows through) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0d0221]/40 via-[#2a0845]/20 to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-[180px] sm:pt-[160px] md:pt-[150px]">
+      <div className="relative z-10 h-full flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-[140px] sm:pt-[120px] md:pt-[110px]">
         <div className="text-center max-w-4xl mx-auto mt-8 sm:mt-12 md:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
