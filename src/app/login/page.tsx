@@ -60,10 +60,20 @@ export default function LoginPage() {
       setIsLoading(false)
     }
   }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      style={{
+        backgroundImage: "url('https://i.pinimg.com/originals/44/6e/3b/446e3b79395a287ca3ec24c21dd44d56.gif')", // Aesthetic starry/wedding subtle GIF
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+      <div className="w-full max-w-4xl relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -71,10 +81,10 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-3">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg">
             Selamat Datang
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-white/80 text-lg font-medium drop-shadow-md">
             Pilih jenis akun untuk melanjutkan
           </p>
         </motion.div>
@@ -95,22 +105,25 @@ export default function LoginPage() {
                 whileHover={{ scale: 1.02, y: -5 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setLoginType('admin')}
-                className="bg-white rounded-3xl p-8 shadow-2xl shadow-purple-200/50 hover:shadow-purple-300/60 transition-all duration-300 text-left group"
+                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.3)] hover:bg-white/20 transition-all duration-300 text-left group relative overflow-hidden"
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                    <Shield className="w-8 h-8 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                      <Shield className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Admin</h2>
+                      <p className="text-sm text-purple-200">Portal Pengelola</p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-800">Admin</h2>
-                    <p className="text-sm text-gray-500">Portal Pengelola</p>
+                  <p className="text-white/80 mb-4">
+                    Kelola member, undangan, dan transaksi credit point
+                  </p>
+                  <div className="flex items-center text-white font-semibold group-hover:translate-x-2 transition-transform">
+                    Login sebagai Admin <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Kelola member, undangan, dan transaksi credit point
-                </p>
-                <div className="flex items-center text-purple-600 font-medium group-hover:translate-x-2 transition-transform">
-                  Login sebagai Admin <ArrowRight className="w-5 h-5 ml-2" />
                 </div>
               </motion.button>
 
@@ -119,22 +132,25 @@ export default function LoginPage() {
                 whileHover={{ scale: 1.02, y: -5 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setLoginType('member')}
-                className="bg-white rounded-3xl p-8 shadow-2xl shadow-pink-200/50 hover:shadow-pink-300/60 transition-all duration-300 text-left group"
+                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.3)] hover:bg-white/20 transition-all duration-300 text-left group relative overflow-hidden"
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                    <User className="w-8 h-8 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                      <User className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">Member</h2>
+                      <p className="text-sm text-pink-200">Portal Pengguna</p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-800">Member</h2>
-                    <p className="text-sm text-gray-500">Portal Pengguna</p>
+                  <p className="text-white/80 mb-4">
+                    Kirim undangan digital dengan personalisasi pesan
+                  </p>
+                  <div className="flex items-center text-white font-semibold group-hover:translate-x-2 transition-transform">
+                    Login sebagai Member <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
-                </div>
-                <p className="text-gray-600 mb-4">
-                  Kirim undangan digital dengan personalisasi pesan
-                </p>
-                <div className="flex items-center text-pink-600 font-medium group-hover:translate-x-2 transition-transform">
-                  Login sebagai Member <ArrowRight className="w-5 h-5 ml-2" />
                 </div>
               </motion.button>
             </motion.div>

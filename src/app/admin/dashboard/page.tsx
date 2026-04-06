@@ -257,6 +257,29 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleDeleteInvitation = async (id: string) => {
+    if (!confirm('Yakin ingin menghapus undangan ini? Mengembalikan credit points member.')) return
+
+    try {
+      const response = await fetch(`/api/admin/invitations/${id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        fetchInvitations()
+        fetchMembers() // Refresh members credit points
+      } else {
+        throw new Error(data.error || 'Gagal menghapus undangan')
+      }
+    } catch (error: any) {
+      console.error('Error deleting invitation:', error)
+      alert(error?.message || 'Gagal menghapus undangan')
+    }
+  }
+
+
   const handleLogout = () => {
     // Clear admin data from localStorage
     localStorage.removeItem('adminId')
@@ -502,6 +525,7 @@ export default function AdminDashboard() {
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Link</th>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Member</th>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Points</th>
+                      <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -527,6 +551,17 @@ export default function AdminDashboard() {
                           <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
                             {invitation.costPoints} coin
                           </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleDeleteInvitation(invitation.id)}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Hapus Undangan"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </motion.button>
                         </td>
                       </tr>
                     ))}
