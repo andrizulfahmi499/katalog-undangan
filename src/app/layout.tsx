@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   keywords: ["Undangan Pernikahan Digital", "Wedding Invitation", "Undangan Online", "Undangan Pernikahan", "Digital Wedding", "Wedding Invitation Indonesia"],
   authors: [{ name: "Katalog Undanganku Team" }],
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
+    shortcut: "/logo.svg",
+    apple: "/logo.png",
   },
   openGraph: {
     title: "Katalog Undanganku - Undangan Pernikahan Digital",
@@ -27,11 +29,20 @@ export const metadata: Metadata = {
     url: "https://katalog-undangan-beta.vercel.app",
     siteName: "Katalog Undanganku",
     type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Katalog Undanganku - Undangan Pernikahan Digital",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Katalog Undanganku - Undangan Pernikahan Digital",
     description: "Platform undangan pernikahan digital terbaik di Indonesia",
+    images: ["/logo.png"],
   },
 };
 

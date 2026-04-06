@@ -71,61 +71,81 @@ export function OrderFormSection() {
     setPreviewUrls(prev => prev.filter((_, i) => i !== index))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     // Format pesan WhatsApp
     let message = `🎉 *FORM ORDER UNDANGAN DIGITAL*\n\n`
-    
+
     message += `📋 *INFORMASI PEMESAN*\n`
     message += `Nama: ${formData.namaPemesan}\n`
     message += `No. WhatsApp: ${formData.noWhatsApp}\n\n`
-    
+
     message += `💑 *DATA MEMPELAI*\n`
     message += `Nama Pria: ${formData.namaPria}\n`
     message += `Nama Wanita: ${formData.namaWanita}\n`
     message += `Nama Panggilan: ${formData.namaPanggilan}\n\n`
-    
+
     message += `📅 *DETAIL ACARA*\n`
     message += `Tanggal Akad: ${formData.tanggalAkad}\n`
     message += `Tanggal Resepsi: ${formData.tanggalResepsi}\n`
     message += `Lokasi Akad: ${formData.lokasiAkad}\n`
     message += `Lokasi Resepsi: ${formData.lokasiResepsi}\n\n`
-    
+
     if (formData.linkMaps) {
       message += `📍 *LINK MAPS*\n${formData.linkMaps}\n\n`
     }
-    
+
     message += `🎨 *TEMA PILIHAN*\n${formData.temaPilihan || 'Belum dipilih'}\n\n`
-    
+
     if (formData.linkLagu) {
       message += `🎵 *LINK LAGU*\n${formData.linkLagu}\n\n`
     }
-    
+
     if (formData.turutMengundang) {
       message += `👨‍👩‍👧‍👦 *TURUT MENGUNDANG*\n${formData.turutMengundang}\n\n`
     }
-    
+
     if (formData.catatanTambahan) {
       message += `📝 *CATATAN TAMBAHAN*\n${formData.catatanTambahan}\n\n`
     }
-    
-    message += `📸 *FOTO MEMPELAI*\n`
-    message += `Jumlah foto terlampir: ${uploadedPhotos.length} foto\n\n`
-    
-    message += `Mohon diproses segera. Terima kasih! 🙏`
 
-    // Encode and redirect to WhatsApp
+    message += `📸 *FOTO MEMPELAI*\n`
+    if (uploadedPhotos.length > 0) {
+      message += `Jumlah foto terupload: ${uploadedPhotos.length}\n`
+      uploadedPhotos.forEach((file, index) => {
+        message += `${index + 1}. ${file.name}\n`
+      })
+      message += `\nSaya gunakan tombol share untuk mengirim foto jika didukung oleh perangkat Anda.`
+    } else {
+      message += `Tidak ada foto terlampir.\n`
+    }
+
+    message += `\nMohon diproses segera. Terima kasih! 🙏`
+
     const phoneNumber = '6285299659458'
     const encodedMessage = encodeURIComponent(message)
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-    
-    // Open WhatsApp in new tab
-    window.open(whatsappUrl, '_blank')
-    
+
+    const canShareFiles = typeof navigator !== 'undefined' && 'canShare' in navigator && navigator.canShare?.({ files: uploadedPhotos })
+
+    if (canShareFiles && 'share' in navigator) {
+      try {
+        await navigator.share({
+          title: 'Order Undangan Digital',
+          text: message,
+          files: uploadedPhotos,
+        })
+      } catch (error) {
+        window.open(whatsappUrl, '_blank')
+      }
+    } else {
+      window.open(whatsappUrl, '_blank')
+    }
+
     setIsSubmitting(false)
-    
+
     // Reset form
     setFormData({
       namaPemesan: '',

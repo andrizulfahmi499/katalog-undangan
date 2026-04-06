@@ -5,7 +5,7 @@ import { Play, Sparkles, ArrowRight } from 'lucide-react'
 
 export function VideoHeroSection() {
   return (
-    <section id="home" className="relative h-screen w-full overflow-hidden">
+    <section id="home" className="relative min-h-screen w-full overflow-visible pb-24">
       {/* Subtle Gradient Overlay (starry bg shows through) */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0d0221]/40 via-[#2a0845]/20 to-transparent" />
 
