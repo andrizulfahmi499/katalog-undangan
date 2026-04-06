@@ -123,67 +123,13 @@ export function PhoneShowcase() {
                   }}
                 >
                   {/* Phone Frame */}
-                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] bg-gradient-to-b from-[#1a1a2e] to-[#16162a] rounded-[40px] p-[3px] shadow-[0_25px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(165,180,252,0.15)]">
-                    {/* Inner bezel */}
-                    <div className="relative w-full h-full bg-[#0f0f1a] rounded-[37px] overflow-hidden">
-                      {/* Notch */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[28px] bg-[#0f0f1a] rounded-b-[18px] z-30" />
-
-                      {/* Screen Content — Wedding Invitation Preview */}
-                      <div className="relative w-full h-full overflow-hidden">
-                        {/* Background image gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#2d5a3d] via-[#3a7a4f] to-[#2d5a3d]" />
-
-                        {/* Decorative top pattern */}
-                        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/30 to-transparent z-[5]" />
-
-                        {/* Content */}
-                        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-                          {/* Top ornament */}
-                          <div className="absolute top-10 left-1/2 -translate-x-1/2">
-                            <div className="text-yellow-200/80 text-xs tracking-[0.2em] font-light">THE WEDDING OF</div>
-                          </div>
-
-                          {/* Couple Names */}
-                          <div className="mt-2">
-                            <div className="text-white text-3xl font-serif italic leading-tight">
-                              Abu
-                            </div>
-                            <div className="text-yellow-200/90 text-lg font-light my-1">&</div>
-                            <div className="text-white text-3xl font-serif italic leading-tight">
-                              Faizah
-                            </div>
-                          </div>
-
-                          {/* Photo placeholder - couple silhouette */}
-                          <div className="mt-6 w-28 h-36 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center overflow-hidden">
-                            <div className="text-center">
-                              <div className="text-3xl">👰🤵</div>
-                              <div className="text-white/50 text-[8px] mt-1">Foto Mempelai</div>
-                            </div>
-                          </div>
-
-                          {/* Guest name section */}
-                          <div className="mt-6 text-center">
-                            <div className="text-white/60 text-[10px]">Kepada Yth.</div>
-                            <div className="text-white/60 text-[10px]">Bapak/Ibu/Saudara/i</div>
-                            <div className="text-white font-bold text-sm mt-1">Aldi & Lina</div>
-                          </div>
-
-                          {/* CTA Button */}
-                          <motion.div
-                            animate={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="mt-4 px-6 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full"
-                          >
-                            <span className="text-white text-xs font-semibold">Buka Undangan</span>
-                          </motion.div>
-                        </div>
-
-                        {/* Bottom gradient */}
-                        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/40 to-transparent z-[5]" />
-                      </div>
-                    </div>
+                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px] shadow-[0_25px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(165,180,252,0.15)] overflow-hidden">
+                    <img
+                      src="/phone-mockup.png"
+                      alt="Phone mockup"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/10" />
                   </div>
 
                   {/* Phone reflection/shine effect */}
