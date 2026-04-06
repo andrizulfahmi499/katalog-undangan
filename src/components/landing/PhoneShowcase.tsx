@@ -120,17 +120,14 @@ export function PhoneShowcase() {
                   }}
                 >
                   {/* Phone Frame */}
-                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px] overflow-hidden">
+                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px]">
                     <img
                       src="/phone-mockup.png"
                       alt="Phone mockup"
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="relative inset-0 w-full h-full object-contain"
                     />
-                    <div className="absolute inset-0 bg-black/10" />
                   </div>
 
-                  {/* Phone reflection/shine effect */}
-                  <div className="absolute top-0 left-0 w-full h-full rounded-[40px] bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
                 </motion.div>
               </motion.div>
 
