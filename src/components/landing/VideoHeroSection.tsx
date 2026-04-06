@@ -78,13 +78,12 @@ export function VideoHeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mt-20 flex items-center justify-start gap-4 sm:gap-8 overflow-x-auto no-scrollbar px-4 sm:px-0"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            className="mt-20 flex flex-col items-stretch justify-start gap-4 px-4 sm:px-0"
           >
             <motion.div
               whileHover={{ y: -6, scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              className="w-full text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.1 }}
@@ -95,7 +94,7 @@ export function VideoHeroSection() {
             <motion.div
               whileHover={{ y: -6, scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              className="w-full text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2 }}
@@ -106,7 +105,7 @@ export function VideoHeroSection() {
             <motion.div
               whileHover={{ y: -6, scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              className="flex-shrink-0 min-w-[200px] text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              className="w-full text-center px-6 py-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.3 }}
