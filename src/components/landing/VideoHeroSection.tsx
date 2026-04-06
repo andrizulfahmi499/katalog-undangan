@@ -53,22 +53,24 @@ export function VideoHeroSection() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <motion.button
+            <motion.a
+              href="#order-form"
               whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-10 py-4 rounded-2xl font-semibold text-lg shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all flex items-center justify-center gap-2"
             >
               <Play className="w-5 h-5" />
               Buat Undangan Sekarang
-            </motion.button>
-            <motion.button
+            </motion.a>
+            <motion.a
+              href="#catalog"
               whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
               className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-10 py-4 rounded-2xl font-semibold text-lg hover:bg-white/20 hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
-              Lihat Demo
+              Lihat Tema
               <ArrowRight className="w-5 h-5" />
-            </motion.button>
+            </motion.a>
           </motion.div>
 
           {/* Stats */}
@@ -96,25 +98,6 @@ export function VideoHeroSection() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.5 }}
-        className="hidden sm:block absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-7 h-11 border-2 border-purple-300/50 rounded-2xl flex justify-center pt-2 bg-white/10 backdrop-blur-sm"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1.5 h-1.5 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] rounded-full"
-          />
-        </motion.div>
-      </motion.div>
     </section>
   )
 }
