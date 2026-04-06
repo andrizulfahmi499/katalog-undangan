@@ -10,6 +10,7 @@ import { PricingSection } from '@/components/landing/PricingSection'
 import { OrderFormSection } from '@/components/landing/OrderFormSection'
 import { Footer } from '@/components/landing/Footer'
 import { FloatingNav } from '@/components/landing/FloatingNav'
+import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
 
 function StarryBackground() {
   const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
@@ -61,6 +62,10 @@ export default function Home() {
         @keyframes float-slow {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-20px); }
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
       `}</style>
 
@@ -142,6 +147,9 @@ export default function Home() {
 
       {/* Video Hero Section */}
       <VideoHeroSection />
+
+      {/* Phone Showcase Section */}
+      <PhoneShowcase />
 
       {/* Intro Section */}
       <IntroSection />
