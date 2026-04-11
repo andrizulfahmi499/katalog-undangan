@@ -120,6 +120,51 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
           <path d="M10 40c6-10 20-16 32-14 6 1 12 4 16 9 2 3 1 7-2 10-4 4-11 6-18 6-10 0-23-6-28-11z" fill="currentColor" />
         </motion.svg>
 
+        {/* Complex vine ornament (animated stroke + leaves) */}
+        <motion.svg
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ repeat: Infinity, repeatType: 'reverse', duration: 18 }}
+          className="absolute -left-6 top-6 w-96 h-96 verdant-ornament"
+          viewBox="0 0 200 200"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id={`${uid.current}-vine-grad`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#34d399" />
+              <stop offset="100%" stopColor="#065f46" />
+            </linearGradient>
+          </defs>
+          <path d="M10 180 C40 150 60 130 90 120 C120 110 140 100 170 80" stroke={`url(#${uid.current}-vine-grad)`} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray="180" strokeDashoffset="180">
+            <animate attributeName="stroke-dashoffset" from="180" to="0" dur="6s" repeatCount="indefinite" />
+          </path>
+          <g fill="#10b981">
+            <ellipse cx="30" cy="150" rx="6" ry="10" transform="rotate(-20 30 150)" />
+            <ellipse cx="80" cy="120" rx="6" ry="10" transform="rotate(-10 80 120)" />
+            <ellipse cx="130" cy="100" rx="6" ry="10" transform="rotate(8 130 100)" />
+          </g>
+        </motion.svg>
+
+        {/* Soft top flourish (subtle animated band) */}
+        <motion.svg
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 0.12, scale: 1.0 }}
+          transition={{ repeat: Infinity, repeatType: 'reverse', duration: 14 }}
+          className="absolute inset-x-0 -top-6 w-full h-40 pointer-events-none verdant-ornament"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id={`${uid.current}-flourish`} x1="0" x2="1">
+              <stop offset="0%" stopColor="#ecfccb" />
+              <stop offset="100%" stopColor="#bbf7d0" />
+            </linearGradient>
+          </defs>
+          <path d="M0 60 C300 10 900 110 1200 60 L1200 0 L0 0 Z" fill={`url(#${uid.current}-flourish)`}>
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" values="0 0; 0 8; 0 0" dur="6s" repeatCount="indefinite" />
+          </path>
+        </motion.svg>
+
         <div className="container mx-auto px-4 py-28 text-center">
           <motion.p variants={fadeUp} className="inline-block rounded-full bg-white/60 px-6 py-2 backdrop-blur text-sm uppercase tracking-widest text-emerald-700 font-semibold">
             MY LOVE
