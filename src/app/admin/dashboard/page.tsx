@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react'
+import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText } from 'lucide-react'
+import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
 
 type Member = {
   id: string
@@ -32,7 +33,7 @@ type Invitation = {
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'members' | 'invitations'>('members')
+  const [activeTab, setActiveTab] = useState<'members' | 'invitations' | 'templates'>('members')
   const [members, setMembers] = useState<Member[]>([])
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -48,6 +49,20 @@ export default function AdminDashboard() {
     password: '',
     creditPoints: 0,
     status: 'active'
+  })
+
+  // Templates state
+  const [templates, setTemplates] = useState<TemplateOption[]>(TEMPLATE_OPTIONS)
+  const [showEditTemplateModal, setShowEditTemplateModal] = useState(false)
+  const [editingTemplate, setEditingTemplate] = useState<TemplateOption | null>(null)
+  const [editTemplateForm, setEditTemplateForm] = useState({
+    title: '',
+    category: 'Pernikahan' as 'Pernikahan' | 'Ultah',
+    accent: '',
+    description: '',
+    heroLabel: '',
+    heroLine: '',
+    defaultMessage: ''
   })
 
   // Get admin ID from localStorage
@@ -232,6 +247,46 @@ export default function AdminDashboard() {
     }
   }
 
+  // Template functions
+  const openEditTemplateModal = (template: TemplateOption) => {
+    setEditingTemplate(template)
+    setEditTemplateForm({
+      title: template.title,
+      category: template.category,
+      accent: template.accent,
+      description: template.description,
+      heroLabel: template.heroLabel,
+      heroLine: template.heroLine,
+      defaultMessage: template.defaultMessage
+    })
+    setShowEditTemplateModal(true)
+  }
+
+  const handleEditTemplate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingTemplate) return
+
+    try {
+      // Update template in local state
+      const updatedTemplates = templates.map(template =>
+        template.id === editingTemplate.id
+          ? { ...template, ...editTemplateForm }
+          : template
+      )
+      setTemplates(updatedTemplates)
+
+      // Here you would typically save to a database or file
+      // For now, we'll just update the local state
+      alert('Template berhasil diupdate! (Perubahan tersimpan di memory browser)')
+
+      setShowEditTemplateModal(false)
+      setEditingTemplate(null)
+    } catch (error) {
+      console.error('Error updating template:', error)
+      alert('Terjadi kesalahan saat mengupdate template')
+    }
+  }
+
   const handleDeleteMember = async (id: string) => {
     if (!confirm('Yakin ingin menghapus member ini?')) return
 
@@ -332,7 +387,7 @@ export default function AdminDashboard() {
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -384,6 +439,23 @@ export default function AdminDashboard() {
               </div>
             </div>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-3xl p-6 shadow-xl"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                <FileText className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Template</p>
+                <p className="text-3xl font-bold text-gray-800">{templates.length}</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* Tabs */}
@@ -411,6 +483,18 @@ export default function AdminDashboard() {
             }`}
           >
             Invitations
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setActiveTab('templates')}
+            className={`px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === 'templates'
+                ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Templates
           </motion.button>
         </div>
 
@@ -908,6 +992,191 @@ export default function AdminDashboard() {
                     className="flex-1 py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium"
                   >
                     Simpan
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Templates Tab */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'templates' && (
+          <motion.div
+            key="templates"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="bg-white rounded-3xl shadow-xl overflow-hidden"
+          >
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800">Kelola Template Undangan</h2>
+              <p className="text-sm text-gray-600 mt-1">Edit template undangan yang tersedia untuk member</p>
+            </div>
+            <div className="p-6">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {templates.map((template) => (
+                  <motion.div
+                    key={template.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${template.accent} flex items-center justify-center`}>
+                        <Palette className="w-6 h-6 text-white" />
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        template.category === 'Pernikahan'
+                          ? 'bg-pink-100 text-pink-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {template.category}
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-gray-800 mb-2">{template.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{template.description}</p>
+
+                    <div className="space-y-2 mb-4">
+                      <div className="text-xs text-gray-500">
+                        <strong>Hero Label:</strong> {template.heroLabel}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        <strong>Hero Line:</strong> {template.heroLine}
+                      </div>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => openEditTemplateModal(template)}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium hover:shadow-md transition"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Edit Template
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Template Modal */}
+      <AnimatePresence>
+        {showEditTemplateModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto"
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Edit Template</h3>
+              <form onSubmit={handleEditTemplate} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama Template</label>
+                    <input
+                      type="text"
+                      value={editTemplateForm.title}
+                      onChange={(e) => setEditTemplateForm({ ...editTemplateForm, title: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                    <select
+                      value={editTemplateForm.category}
+                      onChange={(e) => setEditTemplateForm({ ...editTemplateForm, category: e.target.value as 'Pernikahan' | 'Ultah' })}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none"
+                    >
+                      <option value="Pernikahan">Pernikahan</option>
+                      <option value="Ultah">Ultah</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Accent Color (Tailwind Classes)</label>
+                  <input
+                    type="text"
+                    value={editTemplateForm.accent}
+                    onChange={(e) => setEditTemplateForm({ ...editTemplateForm, accent: e.target.value })}
+                    placeholder="from-pink-300 to-yellow-200"
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                  <textarea
+                    value={editTemplateForm.description}
+                    onChange={(e) => setEditTemplateForm({ ...editTemplateForm, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Hero Label</label>
+                    <input
+                      type="text"
+                      value={editTemplateForm.heroLabel}
+                      onChange={(e) => setEditTemplateForm({ ...editTemplateForm, heroLabel: e.target.value })}
+                      placeholder="Dengan Kebanggaan"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Hero Line</label>
+                    <input
+                      type="text"
+                      value={editTemplateForm.heroLine}
+                      onChange={(e) => setEditTemplateForm({ ...editTemplateForm, heroLine: e.target.value })}
+                      placeholder="Bersama segenap keluarga kami"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Default Message</label>
+                  <textarea
+                    value={editTemplateForm.defaultMessage}
+                    onChange={(e) => setEditTemplateForm({ ...editTemplateForm, defaultMessage: e.target.value })}
+                    rows={6}
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-green-400 focus:outline-none resize-none"
+                    placeholder="Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*..."
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => setShowEditTemplateModal(false)}
+                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
+                  >
+                    Batal
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="flex-1 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium"
+                  >
+                    Simpan Perubahan
                   </motion.button>
                 </div>
               </form>
