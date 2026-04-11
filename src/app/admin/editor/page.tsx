@@ -90,6 +90,16 @@ const TEMPLATE_OPTIONS: TemplateOption[] = [
     heroLine: 'Pesta ulang tahun spesial',
     defaultMessage: 'Hai *{nama_tamu}*\n\nKami mengundangmu untuk datang ke perayaan ulang tahun kami.\n\nBuka link undangan untuk informasi lengkap:\n{link_undangan}\n\nJangan lupa hadir ya!',
   },
+  {
+    id: 'dream-land',
+    title: 'Dream Land',
+    category: 'Pernikahan',
+    accent: 'from-pink-300 to-yellow-200',
+    description: 'Tema elegan dengan dekorasi floral, countdown, gallery, video, RSVP, dan wishing well.',
+    heroLabel: 'Dengan Kebanggaan',
+    heroLine: 'Bersama segenap keluarga kami',
+    defaultMessage: 'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}* _di tempat_\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk memeriahkan acara pernikahan kami.\n\nMerupakan suatu kehormatan bagi kami apabila Bapak/Ibu/Saudara/i dapat hadir untuk memberi doa dan restu.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih dan sampai jumpa!',
+  },
 ]
 
 export default function AdminEditorPage() {

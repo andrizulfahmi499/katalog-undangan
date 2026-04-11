@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { CalendarDays, MapPin, Heart, ArrowLeft, Sparkles, Eye } from 'lucide-react'
 import CopyLinkButton from '@/components/CopyLinkButton'
 import CountdownTimer from '@/components/CountdownTimer'
+import DreamLandTemplate from '@/components/DreamLandTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 
@@ -56,6 +57,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
     invitation.invitationLink,
     invitation.eventName
   )
+
+  // If Dream Land template, render special layout
+  if (invitation.templateId === 'dream-land') {
+    return <DreamLandTemplate invitation={invitation} formattedDate={formattedDate} />
+  }
 
   return (
     <div className="min-h-screen bg-[#f7efe7] text-slate-900">
