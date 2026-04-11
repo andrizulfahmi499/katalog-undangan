@@ -78,6 +78,11 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Playfair font variable fallback mapping */
+:root {
+  --font-playfair: var(--font-playfair, Georgia, 'Times New Roman', serif);
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -119,6 +124,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Utility class to apply Playfair Display for headings */
+.font-playfair {
+  font-family: var(--font-playfair), Georgia, 'Times New Roman', serif;
 }
 
 /* ===== Theme Transition ===== */

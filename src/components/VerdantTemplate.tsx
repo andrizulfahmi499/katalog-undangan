@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, MapPin, CalendarDays, Gift, Copy, Share2 } from 'lucide-react'
 import CopyLinkButton from './CopyLinkButton'
@@ -40,20 +40,50 @@ const fadeUp = {
 export default function VerdantTemplate({ invitation, formattedDate }: VerdantTemplateProps) {
   const [groomName, brideName] = invitation.title.split(/\s*&\s*/).map((name) => name.trim())
   const [showGallery, setShowGallery] = useState(false)
+  const bgRef = useRef<HTMLDivElement | null>(null)
+  const headingRef = useRef<HTMLDivElement | null>(null)
+  const uid = useRef(`v-${Math.random().toString(36).slice(2,9)}`)
+
+  useEffect(() => {
+    let rafId: number | null = null
+    const handleScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        const scrollY = window.scrollY || window.pageYOffset
+        const heroHeight = headingRef.current?.offsetHeight ?? 600
+        const factor = Math.min(1, scrollY / heroHeight)
+        const bgTranslate = factor * 30
+        const textTranslate = factor * -16
+        if (bgRef.current) {
+          bgRef.current.style.transform = `translateY(${bgTranslate}px)`
+        }
+        if (headingRef.current) {
+          headingRef.current.style.transform = `translateY(${textTranslate}px)`
+        }
+      })
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-emerald-50 antialiased">
       <motion.div initial="hidden" animate="show" variants={container} className="relative overflow-hidden">
         {/* Background image with slow parallax-like scale */}
-        <motion.img
-          src="/images/templates/verdant/couple2.jpg"
-          alt="couple"
-          className="absolute inset-0 -z-10 w-full h-full object-cover"
-          initial={{ scale: 1.06 }}
-          animate={{ scale: 1.0 }}
-          transition={{ duration: 10, ease: 'linear' }}
-          style={{ filter: 'brightness(0.78) saturate(0.95)' }}
-        />
+        <motion.div ref={bgRef} className="absolute inset-0 -z-10 overflow-hidden">
+          <motion.img
+            src="/images/templates/verdant/couple2.jpg"
+            alt="couple"
+            className="w-full h-full object-cover"
+            initial={{ scale: 1.06 }}
+            animate={{ scale: 1.0 }}
+            transition={{ duration: 10, ease: 'linear' }}
+            style={{ filter: 'brightness(0.78) saturate(0.95)' }}
+          />
+        </motion.div>
 
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/12 via-transparent to-white/80" />
 
@@ -74,11 +104,30 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
             MY LOVE
           </motion.p>
 
-          <motion.h1 variants={fadeUp} className="mt-8 text-6xl sm:text-7xl font-serif font-extrabold text-emerald-900 drop-shadow-md tracking-tight leading-tight">
-            <span className="block text-5xl sm:text-6xl">{groomName}</span>
-            <span className="block mx-auto w-max text-emerald-500 text-4xl mt-1">&</span>
-            <span className="block text-5xl sm:text-6xl">{brideName}</span>
-          </motion.h1>
+          <motion.div variants={fadeUp} className="mt-8" ref={headingRef}>
+            <h1 className="sr-only">{`${groomName} & ${brideName}`}</h1>
+            <div className="mx-auto max-w-4xl">
+              <svg viewBox="0 0 1200 120" preserveAspectRatio="xMidYMid meet" className="w-full h-32">
+                <defs>
+                  <linearGradient id={`${uid.current}-grad`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1200" y2="0">
+                    <stop offset="0%" stopColor="#065f46" />
+                    <stop offset="50%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#047857" />
+                    <animateTransform attributeName="gradientTransform" type="translate" values="-200 0;200 0;-200 0" dur="8s" repeatCount="indefinite" />
+                  </linearGradient>
+                  <clipPath id={`${uid.current}-clip`}>
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fontSize="48" fontWeight="700" fontFamily="var(--font-playfair), serif">
+                      {`${groomName} & ${brideName}`}
+                    </text>
+                  </clipPath>
+                </defs>
+                <rect width="100%" height="100%" fill={`url(#${uid.current}-grad)`} clipPath={`url(#${uid.current}-clip)`} />
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fontSize="48" fontWeight="700" fill="rgba(2,6,23,0.06)" fontFamily="var(--font-playfair), serif" transform="translate(6,6)">
+                  {`${groomName} & ${brideName}`}
+                </text>
+              </svg>
+            </div>
+          </motion.div>
 
           <motion.p variants={fadeUp} className="mt-4 text-lg text-emerald-700 max-w-2xl mx-auto">
             {invitation.eventName || 'Dengan Kebanggaan dan Cinta'}
