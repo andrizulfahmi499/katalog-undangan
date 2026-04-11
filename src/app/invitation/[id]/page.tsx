@@ -3,6 +3,7 @@ import { CalendarDays, MapPin, Heart, ArrowLeft, Sparkles, Eye } from 'lucide-re
 import CopyLinkButton from '@/components/CopyLinkButton'
 import CountdownTimer from '@/components/CountdownTimer'
 import DreamLandTemplate from '@/components/DreamLandTemplate'
+import VerdantTemplate from '@/components/VerdantTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 
@@ -57,6 +58,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
     invitation.invitationLink,
     invitation.eventName
   )
+
+  // If Verdant template, render special layout
+  if (invitation.templateId === 'verdant') {
+    return <VerdantTemplate invitation={invitation} formattedDate={formattedDate} />
+  }
 
   // If Dream Land template, render special layout
   if (invitation.templateId === 'dream-land') {
