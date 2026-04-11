@@ -12,8 +12,15 @@ type InvitationPreviewPageProps = {
 }
 
 export default async function InvitationPreviewPage({ params }: InvitationPreviewPageProps) {
+  console.error('InvitationPreviewPage params', params)
+  const invitationId = params?.id
+  if (!invitationId) {
+    console.error('Missing invitation id param', params)
+    notFound()
+  }
+
   const invitation = await db.invitations.findUnique({
-    where: { id: params.id },
+    where: { id: invitationId },
     include: {
       assignedMember: true,
     },
