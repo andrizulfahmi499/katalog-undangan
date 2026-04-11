@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Heart, MapPin, CalendarDays, Gift, Copy, Share2 } from 'lucide-react'
 import CopyLinkButton from './CopyLinkButton'
 import CountdownTimer from './CountdownTimer'
@@ -22,44 +23,81 @@ interface VerdantTemplateProps {
   formattedDate: string
 }
 
+const container = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+}
+
 export default function VerdantTemplate({ invitation, formattedDate }: VerdantTemplateProps) {
   const [groomName, brideName] = invitation.title.split(/\s*&\s*/).map((name) => name.trim())
   const [showGallery, setShowGallery] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-emerald-50">
-      {/* Hero */}
-      <div className="relative overflow-hidden bg-emerald-50">
-        <div className="absolute inset-0 -z-10">
-          <img src="/images/templates/verdant/couple2.jpg" alt="couple" className="w-full h-full object-cover opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/20 via-transparent to-white/80"></div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-emerald-50 antialiased">
+      <motion.div initial="hidden" animate="show" variants={container} className="relative overflow-hidden">
+        {/* Background image with slow parallax-like scale */}
+        <motion.img
+          src="/images/templates/verdant/couple2.jpg"
+          alt="couple"
+          className="absolute inset-0 -z-10 w-full h-full object-cover"
+          initial={{ scale: 1.06 }}
+          animate={{ scale: 1.0 }}
+          transition={{ duration: 10, ease: 'linear' }}
+          style={{ filter: 'brightness(0.78) saturate(0.95)' }}
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/12 via-transparent to-white/80" />
+
+        {/* Decorative floating leaf (subtle) */}
+        <motion.svg
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 0.12, y: 0 }}
+          transition={{ repeat: Infinity, repeatType: 'reverse', duration: 6 }}
+          className="absolute left-6 top-12 w-40 h-40 text-emerald-300"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <path d="M2 12c5-6 14-8 20-6-2 6-8 12-14 14C5 20 2 18 2 12z" fill="currentColor" />
+        </motion.svg>
 
         <div className="container mx-auto px-4 py-28 text-center">
-          <p className="inline-block rounded-full bg-white/60 px-6 py-2 backdrop-blur text-sm uppercase tracking-widest text-emerald-700 font-semibold">The Wedding Of</p>
+          <motion.p variants={fadeUp} className="inline-block rounded-full bg-white/60 px-6 py-2 backdrop-blur text-sm uppercase tracking-widest text-emerald-700 font-semibold">
+            MY LOVE
+          </motion.p>
 
-          <h1 className="mt-8 text-6xl sm:text-7xl font-extrabold text-emerald-900 drop-shadow-md">
-            {groomName}
-            <span className="block text-emerald-500 text-4xl">&</span>
-            {brideName}
-          </h1>
+          <motion.h1 variants={fadeUp} className="mt-8 text-6xl sm:text-7xl font-serif font-extrabold text-emerald-900 drop-shadow-md tracking-tight leading-tight">
+            <span className="block text-5xl sm:text-6xl">{groomName}</span>
+            <span className="block mx-auto w-max text-emerald-500 text-4xl mt-1">&</span>
+            <span className="block text-5xl sm:text-6xl">{brideName}</span>
+          </motion.h1>
 
-          <p className="mt-4 text-lg text-emerald-700 max-w-2xl mx-auto">{invitation.eventName || 'Dengan Kebanggaan dan Cinta'}</p>
+          <motion.p variants={fadeUp} className="mt-4 text-lg text-emerald-700 max-w-2xl mx-auto">
+            {invitation.eventName || 'Dengan Kebanggaan dan Cinta'}
+          </motion.p>
 
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <a href={invitation.invitationLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400 px-6 py-3 text-white font-semibold shadow-lg hover:scale-105 transition">
+          <motion.div variants={fadeUp} className="mt-8 flex items-center justify-center gap-4">
+            <a href={invitation.invitationLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400 px-6 py-3 text-white font-semibold shadow-lg transform hover:-translate-y-0.5 hover:scale-105 transition">
               <Heart className="w-5 h-5" /> OPEN INVITATION
             </a>
             <CopyLinkButton link={invitation.invitationLink} label="Copy Link" />
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Details / Countdown */}
-      <div className="py-16">
+      <div className="py-16 -mt-12">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <div className="rounded-2xl bg-white/80 backdrop-blur p-8 shadow-md">
-            <h2 className="text-2xl font-bold text-emerald-900">Save The Date</h2>
+          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-white/90 backdrop-blur p-8 shadow-xl border border-emerald-100">
+            <h2 className="text-2xl font-semibold text-emerald-900">Save The Date</h2>
             <p className="text-emerald-700 mt-2">{formattedDate}</p>
             <div className="mt-6">
               <CountdownTimer targetDate={new Date(invitation.eventDate)} />
@@ -68,7 +106,7 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
               <a href={invitation.invitationLink} className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 px-4 py-2 text-emerald-800 hover:bg-emerald-50 transition"><CalendarDays className="w-4 h-4"/> Add to Calendar</a>
               <a href={`https://maps.app.goo.gl/?q=${encodeURIComponent(invitation.location || '')}`} className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 px-4 py-2 text-emerald-800 hover:bg-emerald-50 transition"><MapPin className="w-4 h-4"/> Get Directions</a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -76,17 +114,13 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
       <div className="py-12 bg-white/50">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h3 className="text-3xl font-bold text-emerald-900 mb-4">Our Gallery</h3>
+            <h3 className="text-3xl font-bold text-emerald-900 mb-6">Our Gallery</h3>
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="overflow-hidden rounded-2xl shadow-lg">
-                <img src="/images/templates/verdant/gallery1.jpg" alt="gallery1" className="w-full h-64 object-cover transform hover:scale-105 transition" />
-              </div>
-              <div className="overflow-hidden rounded-2xl shadow-lg">
-                <img src="/images/templates/verdant/gallery2.jpg" alt="gallery2" className="w-full h-64 object-cover transform hover:scale-105 transition" />
-              </div>
-              <div className="overflow-hidden rounded-2xl shadow-lg cursor-pointer" onClick={() => setShowGallery(true)}>
-                <img src="/images/templates/verdant/couple1.jpg" alt="gallery3" className="w-full h-64 object-cover transform hover:scale-105 transition" />
-              </div>
+              {["gallery1.jpg","gallery2.jpg","couple1.jpg"].map((img, i) => (
+                <motion.div key={i} whileHover={{ scale: 1.04 }} className="overflow-hidden rounded-2xl shadow-lg cursor-pointer" onClick={() => setShowGallery(true)}>
+                  <motion.img src={`/images/templates/verdant/${img}`} alt={`gallery-${i}`} className="w-full h-64 object-cover transform transition" />
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
@@ -97,7 +131,7 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h4 className="text-2xl font-bold text-emerald-900 mb-4">RSVP</h4>
+              <h4 className="text-2xl font-semibold text-emerald-900 mb-4">RSVP</h4>
               <form className="space-y-4 bg-white rounded-2xl p-6 shadow-md">
                 <input type="text" placeholder="Nama Lengkap" className="w-full rounded-lg border border-emerald-200 px-4 py-3" />
                 <div className="flex gap-4">
@@ -110,7 +144,7 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
             </div>
 
             <div>
-              <h4 className="text-2xl font-bold text-emerald-900 mb-4">Wishing Well</h4>
+              <h4 className="text-2xl font-semibold text-emerald-900 mb-4">Wishing Well</h4>
               <div className="rounded-2xl bg-white p-6 shadow-md space-y-4">
                 <p className="text-emerald-700">Your presence is the greatest gift. If you would like to contribute, please use the bank details below.</p>
                 <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
