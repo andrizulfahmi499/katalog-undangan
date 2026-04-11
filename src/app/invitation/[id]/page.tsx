@@ -6,16 +6,17 @@ import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 
 type InvitationPreviewPageProps = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function InvitationPreviewPage({ params }: InvitationPreviewPageProps) {
-  console.error('InvitationPreviewPage params', params)
-  const invitationId = params?.id
+  const resolvedParams = await params
+  console.error('InvitationPreviewPage params', resolvedParams)
+  const invitationId = resolvedParams?.id
   if (!invitationId) {
-    console.error('Missing invitation id param', params)
+    console.error('Missing invitation id param', resolvedParams)
     notFound()
   }
 
