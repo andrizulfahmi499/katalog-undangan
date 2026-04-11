@@ -4,8 +4,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { Sparkles, User, Heart, Calendar, MapPin, Image, Music, Send, Upload, X, Check } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 export function OrderFormSection() {
+  const { isLight } = useTheme()
   const [formData, setFormData] = useState({
     // Informasi Pemesan
     namaPemesan: '',
@@ -180,14 +182,14 @@ export function OrderFormSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className="w-6 h-6 text-[#A5B4FC]" />
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
                   Form Order Undangan
                 </h2>
-                <Sparkles className="w-6 h-6 text-[#C4B5FD]" />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} />
               </div>
             </motion.div>
-            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
+            <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${isLight ? 'text-[#6b7280]' : 'text-purple-200/80'}`}>
               Lengkapi formulir di bawah ini untuk memesan undangan digital impian Anda
             </p>
           </div>
@@ -201,19 +203,19 @@ export function OrderFormSection() {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto"
           >
-            <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 overflow-hidden">
+            <form onSubmit={handleSubmit} className={`rounded-3xl overflow-hidden ${isLight ? 'neu-raised-lg' : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15'}`}>
               {/* Informasi Pemesan */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
-                    <User className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
+                    <User className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Informasi Pemesan</h3>
+                  <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Informasi Pemesan</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Nama Lengkap <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -222,12 +224,12 @@ export function OrderFormSection() {
                       value={formData.namaPemesan}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Masukkan nama lengkap"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       No. WhatsApp <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -236,7 +238,7 @@ export function OrderFormSection() {
                       value={formData.noWhatsApp}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Contoh: 081234567890"
                     />
                   </div>
@@ -244,17 +246,17 @@ export function OrderFormSection() {
               </div>
 
               {/* Data Mempelai */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FBCFE8] to-[#F9A8D4] flex items-center justify-center shadow-lg shadow-[#FBCFE8]/30">
-                    <Heart className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#FBCFE8] to-[#F9A8D4] shadow-lg shadow-[#FBCFE8]/30'}`}>
+                    <Heart className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Data Mempelai</h3>
+                  <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Data Mempelai</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Nama Lengkap Pria <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -263,12 +265,12 @@ export function OrderFormSection() {
                       value={formData.namaPria}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Nama lengkap mempelai pria"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Nama Lengkap Wanita <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -277,13 +279,13 @@ export function OrderFormSection() {
                       value={formData.namaWanita}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Nama lengkap mempelai wanita"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                     Nama Panggilan (Keduanya) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -292,24 +294,24 @@ export function OrderFormSection() {
                     value={formData.namaPanggilan}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#C4B5FD] focus:ring-2 focus:ring-[#C4B5FD]/20 outline-none transition-all bg-gray-50"
+                    className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     placeholder="Contoh: Ahmad & Siti"
                   />
                 </div>
               </div>
 
               {/* Detail Acara */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
-                    <Calendar className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
+                    <Calendar className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Detail Acara</h3>
+                  <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Detail Acara</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Tanggal Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -318,11 +320,11 @@ export function OrderFormSection() {
                       value={formData.tanggalAkad}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Tanggal Resepsi
                     </label>
                     <input
@@ -330,13 +332,13 @@ export function OrderFormSection() {
                       name="tanggalResepsi"
                       value={formData.tanggalResepsi}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Lokasi Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -345,12 +347,12 @@ export function OrderFormSection() {
                       value={formData.lokasiAkad}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Nama gedung/lokasi akad"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Lokasi Resepsi
                     </label>
                     <input
@@ -358,13 +360,13 @@ export function OrderFormSection() {
                       name="lokasiResepsi"
                       value={formData.lokasiResepsi}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Nama gedung/lokasi resepsi"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                     Link Google Maps
                   </label>
                   <input
@@ -372,23 +374,23 @@ export function OrderFormSection() {
                     name="linkMaps"
                     value={formData.linkMaps}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     placeholder="https://maps.google.com/..."
                   />
                 </div>
               </div>
 
               {/* Tema Pilihan */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
-                    <Sparkles className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] shadow-lg shadow-[#C4B5FD]/30'}`}>
+                    <Sparkles className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Tema Pilihan</h3>
+                  <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tema Pilihan</h3>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                     Pilih Tema
                   </label>
                   <input
@@ -396,28 +398,28 @@ export function OrderFormSection() {
                     name="temaPilihan"
                     value={formData.temaPilihan}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50"
+                    className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     placeholder="Masukkan nama tema yang diinginkan"
                   />
-                  <p className="text-xs text-purple-300/60 mt-2">
+                  <p className={`text-xs mt-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
                     💡 Lihat katalog tema di atas untuk memilih
                   </p>
                 </div>
               </div>
 
               {/* Upload Foto Mempelai */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A5B4FC]/30">
-                    <Image className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
+                    <Image className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">Foto Mempelai</h3>
-                    <p className="text-xs text-purple-300/60">Maksimal {MAX_PHOTOS} foto</p>
+                    <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Foto Mempelai</h3>
+                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>Maksimal {MAX_PHOTOS} foto</p>
                   </div>
                 </div>
                 
-                <div className="border-2 border-dashed border-white/20 rounded-3xl p-8 text-center hover:border-[#A5B4FC] transition-colors">
+                <div className={`border-2 border-dashed rounded-3xl p-8 text-center transition-colors ${isLight ? 'border-[#b8bec7] hover:border-[#8b8fa3]' : 'border-white/20 hover:border-[#A5B4FC]'}`}>
                   <input
                     type="file"
                     id="photoUpload"
@@ -431,13 +433,13 @@ export function OrderFormSection() {
                     htmlFor="photoUpload"
                     className={`cursor-pointer flex flex-col items-center ${uploadedPhotos.length >= MAX_PHOTOS ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10 flex items-center justify-center mb-4">
-                      <Upload className="w-8 h-8 text-[#A5B4FC]" />
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${isLight ? 'neu-pressed' : 'bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10'}`}>
+                      <Upload className={`w-8 h-8 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
                     </div>
-                    <p className="text-sm font-medium text-white mb-1">
+                    <p className={`text-sm font-medium mb-1 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
                       Klik untuk upload foto
                     </p>
-                    <p className="text-xs text-purple-300/60">
+                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
                       {uploadedPhotos.length}/{MAX_PHOTOS} foto terupload
                     </p>
                   </label>
@@ -469,17 +471,17 @@ export function OrderFormSection() {
               </div>
 
               {/* Tambahan */}
-              <div className="p-6 sm:p-8 border-b border-white/10">
+              <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center shadow-lg shadow-[#C4B5FD]/30">
-                    <Music className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] shadow-lg shadow-[#C4B5FD]/30'}`}>
+                    <Music className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Tambahan</h3>
+                  <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tambahan</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Link Lagu (YouTube/Spotify)
                     </label>
                     <input
@@ -487,12 +489,12 @@ export function OrderFormSection() {
                       name="linkLagu"
                       value={formData.linkLagu}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="https://youtube.com/..."
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                       Turut Mengundang
                     </label>
                     <input
@@ -500,13 +502,13 @@ export function OrderFormSection() {
                       name="turutMengundang"
                       value={formData.turutMengundang}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-2xl border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-white/10 backdrop-blur-sm text-white placeholder-white/40"
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Keluarga besar, sahabat, dll"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#2F2F2F] mb-2">
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
                     Catatan Tambahan
                   </label>
                   <textarea
@@ -514,20 +516,20 @@ export function OrderFormSection() {
                     value={formData.catatanTambahan}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 outline-none transition-all bg-gray-50 resize-none"
+                    className={`w-full px-4 py-3 rounded-2xl outline-none transition-all resize-none ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     placeholder="Tuliskan catatan atau permintaan khusus..."
                   />
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="p-6 sm:p-8 bg-white/5">
+              <div className={`p-6 sm:p-8 ${isLight ? '' : 'bg-white/5'}`}>
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`w-full px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${isLight ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]' : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'}`}
                 >
                   {isSubmitting ? (
                     <>
@@ -544,7 +546,7 @@ export function OrderFormSection() {
                     </>
                   )}
                 </motion.button>
-                <p className="text-center text-xs text-purple-300/60 mt-4">
+                <p className={`text-center text-xs mt-4 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
                   Anda akan diarahkan ke WhatsApp untuk mengirim pesanan
                 </p>
               </div>

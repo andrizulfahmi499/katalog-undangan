@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Home, Grid3X3, Tag, User, Menu, X, MessageCircle, Phone, Mail, Sparkles, ShoppingCart, Heart } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 interface NavItem {
   id: string
@@ -28,6 +29,7 @@ export function FloatingNav() {
   const [showContactMenu, setShowContactMenu] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const { isLight } = useTheme()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,7 +86,11 @@ export function FloatingNav() {
           className="relative"
         >
           {/* Main Nav Bar */}
-          <div className="bg-white/10 backdrop-blur-2xl border-t border-white/20 shadow-[0_-8px_32px_rgba(139,92,246,0.15)]">
+          <div className={`${
+            isLight
+              ? 'bg-[#e0e5ec] border-t border-[#d1d9e6] shadow-[0_-4px_12px_rgba(0,0,0,0.05)]'
+              : 'bg-white/10 backdrop-blur-2xl border-t border-white/20 shadow-[0_-8px_32px_rgba(139,92,246,0.15)]'
+          }`}>
             {/* Desktop: Show all items */}
             <div className="hidden md:flex items-center justify-between px-8 py-4 max-w-4xl mx-auto">
               <div className="flex items-center gap-2">
@@ -95,14 +101,18 @@ export function FloatingNav() {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleNavClick(item.href)}
                     className={`relative px-6 py-3 rounded-2xl flex items-center gap-2 transition-all ${
-                      activeSection === item.id
-                        ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                        : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
+                      isLight
+                        ? activeSection === item.id
+                          ? 'neu-pressed text-[#2d3748] font-semibold'
+                          : 'text-[#6b7280] hover:text-[#2d3748]'
+                        : activeSection === item.id
+                          ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                          : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
                     }`}
                   >
                     {item.icon}
                     <span className="text-sm font-medium">{item.label}</span>
-                    {activeSection === item.id && (
+                    {!isLight && activeSection === item.id && (
                       <motion.div
                         layoutId="activeIndicator"
                         className="absolute inset-0 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] rounded-2xl -z-10"
@@ -120,7 +130,11 @@ export function FloatingNav() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleNavClick('#order-form')}
-                  className="px-5 py-3 bg-gradient-to-r from-[#FBCFE8] to-[#F9A8D4] text-white rounded-2xl font-semibold text-sm shadow-lg shadow-[#FBCFE8]/30 hover:shadow-xl hover:shadow-[#F9A8D4]/40 transition-all flex items-center gap-2"
+                  className={`px-5 py-3 rounded-2xl font-semibold text-sm transition-all flex items-center gap-2 ${
+                    isLight
+                      ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                      : 'bg-gradient-to-r from-[#FBCFE8] to-[#F9A8D4] text-white shadow-lg shadow-[#FBCFE8]/30 hover:shadow-xl hover:shadow-[#F9A8D4]/40'
+                  }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
                   Pesan
@@ -129,10 +143,14 @@ export function FloatingNav() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowContactMenu(!showContactMenu)}
-                    className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
-                    showContactMenu
-                      ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                      : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
+                  className={`p-3 rounded-2xl flex items-center gap-2 transition-all ${
+                    isLight
+                      ? showContactMenu
+                        ? 'neu-pressed text-[#2d3748]'
+                        : 'text-[#6b7280] hover:text-[#2d3748]'
+                      : showContactMenu
+                        ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                        : 'hover:bg-white/10 text-purple-200/70 hover:text-white'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5" />
@@ -151,9 +169,13 @@ export function FloatingNav() {
                       whileTap={{ scale: 0.9 }}
                       onClick={() => handleNavClick(item.href)}
                       className={`flex-1 max-w-[80px] py-3 rounded-2xl flex flex-col items-center gap-1 transition-all ${
-                        activeSection === item.id
-                          ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                          : 'text-purple-200/70'
+                        isLight
+                          ? activeSection === item.id
+                            ? 'neu-pressed text-[#2d3748]'
+                            : 'text-[#6b7280]'
+                          : activeSection === item.id
+                            ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                            : 'text-purple-200/70'
                       }`}
                     >
                       {item.icon}
@@ -163,12 +185,16 @@ export function FloatingNav() {
                 </div>
 
                 {/* Mobile Contact */}
-                <div className="flex items-center gap-1 pl-2 border-l border-white/20">
+                <div className={`flex items-center gap-1 pl-2 ${
+                  isLight ? 'border-l border-[#d1d9e6]' : 'border-l border-white/20'
+                }`}>
                   <motion.button
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleNavClick('#order-form')}
-                    className="p-3 rounded-2xl text-purple-200/70 hover:text-white transition-all"
+                    className={`p-3 rounded-2xl transition-all ${
+                      isLight ? 'text-[#6b7280] hover:text-[#2d3748]' : 'text-purple-200/70 hover:text-white'
+                    }`}
                   >
                     <ShoppingCart className="w-5 h-5" />
                   </motion.button>
@@ -177,9 +203,13 @@ export function FloatingNav() {
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setShowContactMenu(!showContactMenu)}
                     className={`p-3 rounded-2xl transition-all ${
-                      showContactMenu
-                        ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                        : 'text-purple-200/70 hover:text-white'
+                      isLight
+                        ? showContactMenu
+                          ? 'neu-pressed-sm text-[#2d3748]'
+                          : 'text-[#6b7280] hover:text-[#2d3748]'
+                        : showContactMenu
+                          ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                          : 'text-purple-200/70 hover:text-white'
                     }`}
                   >
                     <MessageCircle className="w-5 h-5" />
@@ -199,10 +229,14 @@ export function FloatingNav() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-full right-4 md:right-auto md:left-1/2 md:-translate-x-1/2 mb-4"
               >
-                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 shadow-[0_16px_48px_rgba(139,92,246,0.2)] min-w-[220px]">
+                <div className={`rounded-3xl p-4 min-w-[220px] ${
+                  isLight
+                    ? 'neu-raised-lg'
+                    : 'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-[0_16px_48px_rgba(139,92,246,0.2)]'
+                }`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="w-4 h-4 text-[#A5B4FC]" />
-                    <span className="text-sm font-semibold text-white">Hubungi Kami</span>
+                    <Sparkles className={`w-4 h-4 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                    <span className={`text-sm font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Hubungi Kami</span>
                   </div>
                   <div className="space-y-2">
                     {contactOptions.map((option, index) => (
@@ -216,14 +250,24 @@ export function FloatingNav() {
                         transition={{ delay: index * 0.05 }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/10 transition-all group"
+                        className={`flex items-center gap-3 p-3 rounded-2xl transition-all group ${
+                          isLight ? 'hover:bg-[#d1d9e6]' : 'hover:bg-white/10'
+                        }`}
                       >
                         <motion.div
-                          className={`p-2.5 rounded-xl bg-gradient-to-br ${option.color} text-white shadow-md shadow-[#A5B4FC]/20 group-hover:shadow-lg group-hover:shadow-[#A5B4FC]/30 group-hover:scale-110 transition-all`}
+                          className={`p-2.5 rounded-xl text-white shadow-md transition-all ${
+                            isLight
+                              ? 'neu-raised-sm group-hover:shadow-[4px_4px_8px_#b8bec7,-4px_-4px_8px_#ffffff]'
+                              : `bg-gradient-to-br ${option.color} shadow-[#A5B4FC]/20 group-hover:shadow-lg group-hover:shadow-[#A5B4FC]/30 group-hover:scale-110`
+                          }`}
                         >
                           {option.icon}
                         </motion.div>
-                        <span className="text-sm font-medium text-purple-200/80 group-hover:text-white transition-colors">{option.label}</span>
+                        <span className={`text-sm font-medium transition-colors ${
+                          isLight
+                            ? 'text-[#6b7280] group-hover:text-[#2d3748]'
+                            : 'text-purple-200/80 group-hover:text-white'
+                        }`}>{option.label}</span>
                       </motion.a>
                     ))}
                   </div>

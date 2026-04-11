@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { Play, Globe, Palette, Users, CheckCircle, QrCode } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 const features = [
   { icon: <Play className="w-4 h-4" />, label: 'Video Undangan', position: 'left-top' },
@@ -16,6 +17,8 @@ const features = [
 const marqueeText = 'Wedding • Birthday • Aqiqah • Khitan • Graduation • Party & Dinner • '
 
 export function PhoneShowcase() {
+  const { isLight } = useTheme()
+
   return (
     <>
       <section className="relative py-20 sm:py-32 overflow-hidden">
@@ -28,11 +31,11 @@ export function PhoneShowcase() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
+                className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}
               >
                 Semua Fitur dalam
                 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A5B4FC] to-[#FBCFE8]">
+                <span className={isLight ? 'text-[#8b8fa3]' : 'text-transparent bg-clip-text bg-gradient-to-r from-[#A5B4FC] to-[#FBCFE8]'}>
                   Satu Undangan
                 </span>
               </motion.h2>
@@ -41,7 +44,7 @@ export function PhoneShowcase() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-purple-200/70 text-lg max-w-xl mx-auto"
+                className={`text-lg max-w-xl mx-auto ${isLight ? 'text-[#6b7280]' : 'text-purple-200/70'}`}
               >
                 Undangan digital lengkap dengan fitur premium untuk momen spesial Anda
               </motion.p>
@@ -64,12 +67,20 @@ export function PhoneShowcase() {
                     <motion.div
                       animate={{ y: [0, -8 + i * 2, 0] }}
                       transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
-                      className="flex items-center gap-3 px-5 py-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15 transition-all cursor-default"
+                      className={`flex items-center gap-3 px-5 py-3 rounded-2xl cursor-default transition-all ${
+                        isLight
+                          ? 'neu-raised-sm hover:shadow-[8px_8px_16px_#b8bec7,-8px_-8px_16px_#ffffff]'
+                          : 'bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15'
+                      }`}
                     >
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center text-white shadow-lg shadow-[#A5B4FC]/30">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                        isLight
+                          ? 'neu-pressed-sm text-[#8b8fa3]'
+                          : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                      }`}>
                         {feature.icon}
                       </div>
-                      <span className="text-white font-semibold text-sm whitespace-nowrap">{feature.label}</span>
+                      <span className={`font-semibold text-sm whitespace-nowrap ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>{feature.label}</span>
                     </motion.div>
                   </motion.div>
                 ))}
@@ -89,12 +100,20 @@ export function PhoneShowcase() {
                     <motion.div
                       animate={{ y: [0, -6 + i * 3, 0] }}
                       transition={{ duration: 3.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut' }}
-                      className="flex items-center gap-3 px-5 py-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15 transition-all cursor-default"
+                      className={`flex items-center gap-3 px-5 py-3 rounded-2xl cursor-default transition-all ${
+                        isLight
+                          ? 'neu-raised-sm hover:shadow-[8px_8px_16px_#b8bec7,-8px_-8px_16px_#ffffff]'
+                          : 'bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:bg-white/15'
+                      }`}
                     >
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] flex items-center justify-center text-white shadow-lg shadow-[#C4B5FD]/30">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                        isLight
+                          ? 'neu-pressed-sm text-[#8b8fa3]'
+                          : 'bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] text-white shadow-lg shadow-[#C4B5FD]/30'
+                      }`}>
                         {feature.icon}
                       </div>
-                      <span className="text-white font-semibold text-sm whitespace-nowrap">{feature.label}</span>
+                      <span className={`font-semibold text-sm whitespace-nowrap ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>{feature.label}</span>
                     </motion.div>
                   </motion.div>
                 ))}
@@ -120,7 +139,9 @@ export function PhoneShowcase() {
                   }}
                 >
                   {/* Phone Frame */}
-                  <div className="relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px]">
+                  <div className={`relative w-[260px] h-[520px] sm:w-[280px] sm:h-[560px] rounded-[40px] ${
+                    isLight ? 'drop-shadow-[0_20px_40px_rgba(0,0,0,0.1)]' : ''
+                  }`}>
                     <img
                       src="/phone-mockup.png"
                       alt="Phone mockup"
@@ -141,12 +162,20 @@ export function PhoneShowcase() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: 0.2 + i * 0.1 }}
-                      className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl"
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl ${
+                        isLight
+                          ? 'neu-flat text-[#2d3748]'
+                          : 'bg-white/10 backdrop-blur-xl border border-white/20'
+                      }`}
                     >
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] flex items-center justify-center text-white">
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                        isLight
+                          ? 'text-[#8b8fa3]'
+                          : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] text-white'
+                      }`}>
                         {feature.icon}
                       </div>
-                      <span className="text-white font-medium text-xs">{feature.label}</span>
+                      <span className={`font-medium text-xs ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>{feature.label}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -168,7 +197,9 @@ export function PhoneShowcase() {
           {[...Array(4)].map((_, i) => (
             <span
               key={i}
-              className="text-[60px] sm:text-[80px] lg:text-[120px] font-black text-white/[0.03] uppercase tracking-wider select-none mx-4"
+              className={`text-[60px] sm:text-[80px] lg:text-[120px] font-black uppercase tracking-wider select-none mx-4 ${
+                isLight ? 'text-[#d1d9e6]' : 'text-white/[0.03]'
+              }`}
               style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
             >
               {marqueeText}
@@ -177,8 +208,16 @@ export function PhoneShowcase() {
         </div>
 
         {/* Edge fade */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#0d0221] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0d0221] to-transparent z-10 pointer-events-none" />
+        <div className={`absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none ${
+          isLight
+            ? 'bg-gradient-to-r from-[#e0e5ec] to-transparent'
+            : 'bg-gradient-to-r from-[#0d0221] to-transparent'
+        }`} />
+        <div className={`absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none ${
+          isLight
+            ? 'bg-gradient-to-l from-[#e0e5ec] to-transparent'
+            : 'bg-gradient-to-l from-[#0d0221] to-transparent'
+        }`} />
       </div>
     </>
   )

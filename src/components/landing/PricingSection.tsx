@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { Check, Star, Crown, Sparkles } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 interface PricingPlan {
   name: string
@@ -105,6 +106,8 @@ const pricingPlans: PricingPlan[] = [
 ]
 
 export function PricingSection() {
+  const { isLight } = useTheme()
+
   return (
     <section
       id="pricing"
@@ -114,10 +117,14 @@ export function PricingSection() {
         {/* Section Header */}
         <ScrollReveal>
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+            <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 ${
+              isLight ? 'text-[#2d3748]' : 'text-white'
+            }`}>
               Pilih Paket yang Sesuai
             </h2>
-            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
+            <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${
+              isLight ? 'text-[#6b7280]' : 'text-purple-200/80'
+            }`}>
               Harga terjangkau dengan fitur lengkap untuk pernikahan impian Anda
             </p>
           </div>
@@ -130,18 +137,26 @@ export function PricingSection() {
               <motion.div
                 whileHover={{ y: -12, scale: plan.highlighted ? 1.03 : 1.02, rotate: index % 2 === 0 ? 1 : -1 }}
                 whileTap={{ scale: 0.98 }}
-                className={`relative rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 ${
-                  plan.highlighted
-                    ? `${plan.color} shadow-[0_20px_60px_rgba(165,180,252,0.25)] border-[#A5B4FC]/50`
-                    : `bg-white/10 backdrop-blur-xl hover:bg-white/15 hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)]`
-                } transition-all duration-500`}
+                className={`relative rounded-3xl p-8 transition-all duration-500 ${
+                  isLight
+                    ? plan.highlighted
+                      ? 'neu-raised-lg border-2 border-[#b8bec7]'
+                      : 'neu-raised hover:shadow-[10px_10px_20px_#b8bec7,-10px_-10px_20px_#ffffff]'
+                    : plan.highlighted
+                      ? `${plan.color} shadow-[0_20px_60px_rgba(165,180,252,0.25)] border border-[#A5B4FC]/50`
+                      : `bg-white/10 backdrop-blur-xl hover:bg-white/15 hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15`
+                }`}
               >
                 {/* Popular Badge */}
                 {plan.highlighted && (
                   <motion.div
                     animate={{ scale: [1, 1.1, 1], rotate: [0, 3, -3, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-5 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-[#A5B4FC]/30"
+                    className={`absolute -top-4 left-1/2 transform -translate-x-1/2 px-5 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 ${
+                      isLight
+                        ? 'neu-raised-sm text-[#2d3748]'
+                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                    }`}
                   >
                     <Star className="w-4 h-4 fill-current" />
                     POPULER
@@ -152,19 +167,27 @@ export function PricingSection() {
                 <div className="text-center mb-8">
                   <div
                     className={`inline-flex items-center justify-center w-16 h-16 rounded-3xl mb-5 ${
-                      plan.highlighted
-                        ? 'bg-white/30 backdrop-blur-sm'
-                        : `bg-gradient-to-br ${plan.gradient} shadow-lg shadow-[#A5B4FC]/20`
+                      isLight
+                        ? plan.highlighted
+                          ? 'neu-pressed text-[#2d3748]'
+                          : 'neu-pressed text-[#8b8fa3]'
+                        : plan.highlighted
+                          ? 'bg-white/30 backdrop-blur-sm'
+                          : `bg-gradient-to-br ${plan.gradient} shadow-lg shadow-[#A5B4FC]/20`
                     }`}
                   >
-                    <div className={plan.highlighted ? 'text-white' : 'text-white'}>
+                    <div className={isLight ? '' : 'text-white'}>
                       {plan.icon}
                     </div>
                   </div>
-                  <h3 className={`text-2xl font-bold mb-3 ${plan.highlighted ? 'text-white' : 'text-white'}`}>
+                  <h3 className={`text-2xl font-bold mb-3 ${
+                    isLight ? 'text-[#2d3748]' : 'text-white'
+                  }`}>
                     {plan.name}
                   </h3>
-                  <p className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-purple-200/70'}`}>
+                  <p className={`text-base ${
+                    isLight ? 'text-[#6b7280]' : plan.highlighted ? 'text-white/90' : 'text-purple-200/70'
+                  }`}>
                     {plan.description}
                   </p>
                 </div>
@@ -172,12 +195,16 @@ export function PricingSection() {
                 {/* Price */}
                 <div className="text-center mb-8">
                   <div
-                    className={`text-5xl lg:text-6xl font-bold ${plan.highlighted ? 'text-white' : 'text-white'}`}
+                    className={`text-5xl lg:text-6xl font-bold ${
+                      isLight ? 'text-[#2d3748]' : 'text-white'
+                    }`}
                   >
                     {plan.price}
                   </div>
                   <div
-                    className={`text-base ${plan.highlighted ? 'text-white/80' : 'text-purple-300/60'}`}
+                    className={`text-base ${
+                      isLight ? 'text-[#9ca3af]' : plan.highlighted ? 'text-white/80' : 'text-purple-300/60'
+                    }`}
                   >
                     per {plan.period}
                   </div>
@@ -189,11 +216,13 @@ export function PricingSection() {
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check
                         className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                          plan.highlighted ? 'text-[#FBCFE8]' : 'text-[#A5B4FC]'
+                          isLight ? 'text-[#8b8fa3]' : plan.highlighted ? 'text-[#FBCFE8]' : 'text-[#A5B4FC]'
                         }`}
                       />
                       <span
-                        className={`text-base ${plan.highlighted ? 'text-white/90' : 'text-purple-200/70'}`}
+                        className={`text-base ${
+                          isLight ? 'text-[#6b7280]' : plan.highlighted ? 'text-white/90' : 'text-purple-200/70'
+                        }`}
                       >
                         {feature}
                       </span>
@@ -206,9 +235,13 @@ export function PricingSection() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`w-full py-4 px-6 rounded-2xl font-semibold transition-all ${
-                    plan.highlighted
-                      ? 'bg-white text-[#A5B4FC] hover:bg-gray-50 shadow-lg'
-                      : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30'
+                    isLight
+                      ? plan.highlighted
+                        ? 'neu-btn text-[#2d3748] font-bold hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                        : 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                      : plan.highlighted
+                        ? 'bg-white text-[#A5B4FC] hover:bg-gray-50 shadow-lg'
+                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30'
                   }`}
                 >
                   {plan.highlighted ? 'Pilih Paket Ini' : 'Mulai Sekarang'}
@@ -221,13 +254,17 @@ export function PricingSection() {
         {/* Additional Info */}
         <ScrollReveal delay={0.5}>
           <div className="mt-20 text-center">
-            <p className="text-purple-200/70 mb-6 text-lg">
+            <p className={`mb-6 text-lg ${isLight ? 'text-[#6b7280]' : 'text-purple-200/70'}`}>
               Butuh paket kustom untuk pernikahan besar?
             </p>
             <motion.button
               whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white/10 backdrop-blur-xl text-white border border-white/20 px-10 py-4 rounded-2xl font-semibold hover:bg-white/20 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
+              className={`px-10 py-4 rounded-2xl font-semibold transition-all ${
+                isLight
+                  ? 'neu-btn text-[#2d3748]'
+                  : 'bg-white/10 backdrop-blur-xl text-white border border-white/20 hover:bg-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)]'
+              }`}
             >
               Hubungi Kami untuk Penawaran Khusus
             </motion.button>

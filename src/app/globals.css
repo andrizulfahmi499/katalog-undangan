@@ -120,3 +120,83 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ===== Theme Transition ===== */
+.theme-transition {
+  transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.theme-transition * {
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* ===== Neumorphism Design System ===== */
+:root {
+  --neu-bg: #e0e5ec;
+  --neu-bg-dark: #d1d9e6;
+  --neu-shadow-dark: #b8bec7;
+  --neu-shadow-light: #ffffff;
+  --neu-text-primary: #2d3748;
+  --neu-text-secondary: #6b7280;
+  --neu-text-muted: #9ca3af;
+  --neu-accent: #8b8fa3;
+  --neu-accent-soft: #a0a4b8;
+}
+
+/* Raised element (timbul) */
+.neu-raised {
+  background: var(--neu-bg);
+  box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
+}
+
+.neu-raised-sm {
+  background: var(--neu-bg);
+  box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+}
+
+.neu-raised-lg {
+  background: var(--neu-bg);
+  box-shadow: 10px 10px 20px var(--neu-shadow-dark), -10px -10px 20px var(--neu-shadow-light);
+}
+
+/* Pressed/Inset element (tenggelam) */
+.neu-pressed {
+  background: var(--neu-bg);
+  box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+}
+
+.neu-pressed-sm {
+  background: var(--neu-bg);
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+}
+
+/* Flat with subtle shadow */
+.neu-flat {
+  background: var(--neu-bg);
+  box-shadow: 2px 2px 5px var(--neu-shadow-dark), -2px -2px 5px var(--neu-shadow-light);
+}
+
+/* Hover states for neumorphism */
+.neu-raised:hover {
+  box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+}
+
+.neu-btn {
+  background: var(--neu-bg);
+  box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+  color: var(--neu-text-primary);
+  border: none;
+}
+
+.neu-btn:hover {
+  box-shadow: 2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light);
+}
+
+.neu-btn:active {
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+}
+
+/* Theme backgrounds */
+.theme-light {
+  background-color: var(--neu-bg) !important;
+}

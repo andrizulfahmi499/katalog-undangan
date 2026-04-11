@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { Sparkles, Grid, TrendingUp, Clock, ArrowRight, ChevronDown, Eye } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 // Types
 interface Theme {
@@ -27,16 +28,22 @@ interface Category {
 }
 
 // Loading Skeleton Component
-function ThemeCardSkeleton() {
+function ThemeCardSkeleton({ isLight }: { isLight: boolean }) {
   return (
-    <div className="bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15">
-      <div className="aspect-[3/4] bg-gradient-to-br from-purple-900/50 to-purple-800/50 animate-pulse" />
+    <div className={`rounded-3xl overflow-hidden ${
+      isLight
+        ? 'neu-raised'
+        : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15'
+    }`}>
+      <div className={`aspect-[3/4] animate-pulse ${
+        isLight ? 'bg-[#d1d9e6]' : 'bg-gradient-to-br from-purple-900/50 to-purple-800/50'
+      }`} />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-white/10 rounded animate-pulse" />
-        <div className="h-3 bg-white/10 rounded w-2/3 animate-pulse" />
+        <div className={`h-4 rounded animate-pulse ${isLight ? 'bg-[#d1d9e6]' : 'bg-white/10'}`} />
+        <div className={`h-3 rounded w-2/3 animate-pulse ${isLight ? 'bg-[#d1d9e6]' : 'bg-white/10'}`} />
         <div className="grid grid-cols-2 gap-2">
-          <div className="h-10 bg-white/10 rounded-xl animate-pulse" />
-          <div className="h-10 bg-white/10 rounded-xl animate-pulse" />
+          <div className={`h-10 rounded-xl animate-pulse ${isLight ? 'bg-[#d1d9e6]' : 'bg-white/10'}`} />
+          <div className={`h-10 rounded-xl animate-pulse ${isLight ? 'bg-[#d1d9e6]' : 'bg-white/10'}`} />
         </div>
       </div>
     </div>
@@ -53,6 +60,7 @@ export function CatalogSection() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalThemes, setTotalThemes] = useState(0)
+  const { isLight } = useTheme()
 
   // Fetch categories
   useEffect(() => {
@@ -150,30 +158,34 @@ export function CatalogSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className="w-6 h-6 text-[#A5B4FC]" />
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${
+                  isLight ? 'text-[#2d3748]' : 'text-white'
+                }`}>
                   Katalog Tema Undangan
                 </h2>
-                <Sparkles className="w-6 h-6 text-[#C4B5FD]" />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} />
               </div>
             </motion.div>
-            <p className="text-xl text-purple-200/80 max-w-2xl mx-auto mb-8 leading-relaxed">
+            <p className={`text-xl max-w-2xl mx-auto mb-8 leading-relaxed ${
+              isLight ? 'text-[#6b7280]' : 'text-purple-200/80'
+            }`}>
               Temukan tema undangan pernikahan digital yang sesuai dengan impian Anda
             </p>
 
             {/* Stats */}
             <div className="flex items-center justify-center gap-8 flex-wrap">
-              <div className="flex items-center gap-2 text-purple-300/70">
-                <Grid className="w-5 h-5 text-[#A5B4FC]" />
-                <span className="font-semibold text-white">{totalThemes}+ Tema</span>
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
+                <Grid className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>{totalThemes}+ Tema</span>
               </div>
-              <div className="flex items-center gap-2 text-purple-300/70">
-                <TrendingUp className="w-5 h-5 text-[#C4B5FD]" />
-                <span className="font-semibold text-white">Trending Now</span>
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
+                <TrendingUp className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#C4B5FD]'}`} />
+                <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Trending Now</span>
               </div>
-              <div className="flex items-center gap-2 text-purple-300/70">
-                <Clock className="w-5 h-5 text-[#FBCFE8]" />
-                <span className="font-semibold text-white">Update Harian</span>
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
+                <Clock className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#FBCFE8]'}`} />
+                <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Update Harian</span>
               </div>
             </div>
           </div>
@@ -187,7 +199,11 @@ export function CatalogSection() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white rounded-full font-semibold shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all duration-300"
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                  isLight
+                    ? 'neu-btn text-[#2d3748]'
+                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                }`}
               >
                 <Grid className="w-4 h-4" />
                 <span>Pilih Kategori</span>
@@ -217,9 +233,13 @@ export function CatalogSection() {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleCategoryChange(category.id)}
                       className={`px-5 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 ${
-                        selectedCategory === category.id
-                          ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                          : 'bg-white/10 backdrop-blur-sm text-purple-200/80 hover:bg-white/15 border border-white/15 shadow-sm'
+                        isLight
+                          ? selectedCategory === category.id
+                            ? 'neu-pressed text-[#2d3748]'
+                            : 'neu-flat text-[#6b7280] hover:text-[#2d3748]'
+                          : selectedCategory === category.id
+                            ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                            : 'bg-white/10 backdrop-blur-sm text-purple-200/80 hover:bg-white/15 border border-white/15 shadow-sm'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -236,7 +256,7 @@ export function CatalogSection() {
           {isLoading ? (
             // Loading Skeleton
             Array.from({ length: 8 }).map((_, index) => (
-              <ThemeCardSkeleton key={index} />
+              <ThemeCardSkeleton key={index} isLight={isLight} />
             ))
           ) : (
             // Theme Cards
@@ -249,7 +269,11 @@ export function CatalogSection() {
                   className="group"
                 >
                   {/* Card */}
-                  <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 hover:bg-white/15 hover:shadow-[0_20px_60px_rgba(165,180,252,0.2)] transition-all duration-500">
+                  <div className={`relative rounded-3xl overflow-hidden transition-all duration-500 ${
+                    isLight
+                      ? 'neu-raised hover:shadow-[10px_10px_20px_#b8bec7,-10px_-10px_20px_#ffffff]'
+                      : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 hover:bg-white/15 hover:shadow-[0_20px_60px_rgba(165,180,252,0.2)]'
+                  }`}>
                     {/* Theme Preview Image */}
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <img
@@ -266,16 +290,26 @@ export function CatalogSection() {
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-4 bg-white/5 backdrop-blur-sm border-t border-white/10">
+                    <div className={`p-4 ${
+                      isLight
+                        ? 'bg-[#e0e5ec] border-t border-[#d1d9e6]'
+                        : 'bg-white/5 backdrop-blur-sm border-t border-white/10'
+                    }`}>
                       {/* Category Badge */}
                       <div className="mb-2">
-                        <span className="text-xs font-medium text-[#A5B4FC] bg-gradient-to-r from-[#A5B4FC]/10 to-[#C4B5FD]/10 px-3 py-1 rounded-full">
+                        <span className={`text-xs font-medium px-3 py-1 rounded-full ${
+                          isLight
+                            ? 'text-[#8b8fa3] bg-[#d1d9e6]'
+                            : 'text-[#A5B4FC] bg-gradient-to-r from-[#A5B4FC]/10 to-[#C4B5FD]/10'
+                        }`}>
                           {theme.category}
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold text-white mb-3 line-clamp-2 min-h-[3rem]">
+                      <h3 className={`text-base font-bold mb-3 line-clamp-2 min-h-[3rem] ${
+                        isLight ? 'text-[#2d3748]' : 'text-white'
+                      }`}>
                         {theme.name}
                       </h3>
 
@@ -285,7 +319,11 @@ export function CatalogSection() {
                           href={theme.previewUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-semibold py-2.5 px-3 text-center rounded-2xl bg-white/10 text-purple-200 hover:bg-gradient-to-r hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                          className={`text-xs font-semibold py-2.5 px-3 text-center rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
+                            isLight
+                              ? 'neu-flat text-[#6b7280] hover:text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                              : 'bg-white/10 text-purple-200 hover:bg-gradient-to-r hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white'
+                          }`}
                         >
                           <Eye className="w-3.5 h-3.5" />
                           Preview
@@ -294,7 +332,11 @@ export function CatalogSection() {
                           href={theme.orderUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs font-semibold py-2.5 px-3 text-center rounded-2xl bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30 transition-all duration-300"
+                          className={`text-xs font-semibold py-2.5 px-3 text-center rounded-2xl transition-all duration-300 ${
+                            isLight
+                              ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                              : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30'
+                          }`}
                         >
                           Pesan Sekarang
                         </a>
@@ -312,13 +354,17 @@ export function CatalogSection() {
           <ScrollReveal>
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-bold text-white mb-2">Tidak ada tema ditemukan</h3>
-              <p className="text-purple-200/70 mb-4">Coba pilih kategori lain</p>
+              <h3 className={`text-xl font-bold mb-2 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tidak ada tema ditemukan</h3>
+              <p className={`mb-4 ${isLight ? 'text-[#6b7280]' : 'text-purple-200/70'}`}>Coba pilih kategori lain</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedCategory('all')}
-                className="px-8 py-3 bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white rounded-2xl font-medium shadow-lg shadow-[#A5B4FC]/30"
+                className={`px-8 py-3 rounded-2xl font-medium ${
+                  isLight
+                    ? 'neu-btn text-[#2d3748]'
+                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                }`}
               >
                 Lihat Semua Tema
               </motion.button>
@@ -335,7 +381,11 @@ export function CatalogSection() {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white px-12 py-4 rounded-full font-semibold shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40 transition-all inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-12 py-4 rounded-full font-semibold inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                  isLight
+                    ? 'neu-btn text-[#2d3748]'
+                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                }`}
               >
                 {isLoadingMore ? (
                   <>
