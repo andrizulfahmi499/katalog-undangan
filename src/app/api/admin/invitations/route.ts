@@ -3,15 +3,13 @@ import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
-
-// Helper function to detect invitation domain
-function detectInvitationDomain(link: string): 'satumomen' | 'akainvitation' {
+function resolveInvitationDomain(link: string): 'satumomen' | 'akainvitation' | 'vercel' {
   if (link.includes('satumomen.com')) {
     return 'satumomen'
   } else if (link.includes('id.akainvitation.com')) {
     return 'akainvitation'
   }
-  throw new Error('Domain undangan tidak didukung. Gunakan satumomen.com atau id.akainvitation.com')
+  return 'vercel'
 }
 
 // GET all invitations
@@ -71,17 +69,16 @@ export async function POST(request: NextRequest) {
     } = await request.json()
 
     // Validate required fields
-    if (!title || !eventName || !eventDate || !location || !invitationLink || !assignedMemberId || !createdById) {
+    if (!title || !eventName || !eventDate || !location || !assignedMemberId || !createdById) {
       return NextResponse.json(
         { error: 'Semua field harus diisi' },
         { status: 400 }
       )
     }
 
-    // Detect and validate domain
-    const invitationDomain = detectInvitationDomain(invitationLink)
+    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || ''
 
-    // Check if member exists and has enough credit points
+    // Check if member exists
     const member = await db.member.findUnique({
       where: { id: assignedMemberId },
     })
@@ -95,9 +92,6 @@ export async function POST(request: NextRequest) {
 
     const pointsCost = costPoints || 20
 
-    // Admin tidak dibatasi oleh credit point member, sehingga validasi ini dihapus.
-    // Poin member akan tetap terpotong secara otomatis di bawah.
-
     // Check if admin exists
     const admin = await db.admin.findUnique({
       where: { id: createdById },
@@ -110,15 +104,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create invitation
+    // Create invitation with temporary link if necessary
     const invitation = await db.invitations.create({
       data: {
         title,
         eventName,
         eventDate: new Date(eventDate),
         location,
-        invitationLink,
-        invitationDomain,
+        invitationLink: invitationLink?.trim() || '',
+        invitationDomain: invitationLink?.trim()
+          ? resolveInvitationDomain(invitationLink.trim())
+          : 'vercel',
         templateId: templateId || null,
         templateMessage: templateMessage || `Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}* _di tempat_
 
@@ -134,6 +130,18 @@ Terima kasih.`,
         status: 'published',
         createdById,
         assignedMemberId,
+      },
+    })
+
+    const finalLink = invitationLink?.trim()
+      ? invitationLink.trim()
+      : `${origin}/invitation/${invitation.id}`
+
+    const updatedInvitation = await db.invitations.update({
+      where: { id: invitation.id },
+      data: {
+        invitationLink: finalLink,
+        invitationDomain: resolveInvitationDomain(finalLink),
       },
     })
 
@@ -153,7 +161,7 @@ Terima kasih.`,
         data: {
           memberId: assignedMemberId,
           adminId: createdById,
-          invitationId: invitation.id,
+          invitationId: updatedInvitation.id,
           type: 'debit',
           amount: pointsCost,
           description: `Pembuatan undangan: ${title}`,
@@ -165,7 +173,7 @@ Terima kasih.`,
 
     return NextResponse.json({
       success: true,
-      data: invitation,
+      data: updatedInvitation,
     })
   } catch (error: any) {
     console.error('Error creating invitation:', error)

@@ -3,14 +3,16 @@ import { db } from '@/lib/db'
 
 // Helper function to get guest query parameter
 function getGuestQueryParam(domain: string): string {
-  switch (domain) {
-    case 'satumomen':
-      return 'guest'
-    case 'akainvitation':
-      return 'to'
-    default:
-      throw new Error('Domain tidak valid')
+  return domain === 'satumomen' ? 'guest' : 'to'
+}
+
+// Helper function to normalize invitation link
+function normalizeInvitationLink(invitationLink: string): string {
+  if (invitationLink.startsWith('/')) {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || ''
+    return siteUrl ? `${siteUrl}${invitationLink}` : invitationLink
   }
+  return invitationLink
 }
 
 // Helper function to generate guest link
@@ -85,10 +87,11 @@ export async function POST(request: NextRequest) {
         const guestEmail = guest.email
 
         // Generate guest link
+        const normalizedLink = normalizeInvitationLink(invitation.invitationLink)
         const generatedLink = generateGuestLink(
-          invitation.invitationLink,
+          normalizedLink,
           guestName,
-          invitation.invitationDomain
+          invitation.invitationDomain || 'vercel'
         )
 
         // Generate message with placeholders replaced

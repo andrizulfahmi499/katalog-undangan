@@ -106,7 +106,7 @@ export default function AdminEditorPage() {
     eventName: 'Resepsi Pernikahan',
     eventDate: new Date().toISOString().slice(0, 10),
     location: 'Bali, Indonesia',
-    invitationLink: 'https://id.akainvitation.com/akbar-and-madia',
+    invitationLink: '',
     templateMessage: TEMPLATE_OPTIONS[0].defaultMessage,
     assignedMemberId: '',
     costPoints: 20,
@@ -204,21 +204,26 @@ export default function AdminEditorPage() {
     }
 
     try {
+      const payload: any = {
+        title: form.title,
+        eventName: form.eventName,
+        eventDate: form.eventDate,
+        location: form.location,
+        templateMessage: form.templateMessage,
+        templateId: selectedTemplateId,
+        costPoints: form.costPoints,
+        assignedMemberId: form.assignedMemberId,
+        createdById: adminId,
+      }
+
+      if (form.invitationLink.trim()) {
+        payload.invitationLink = form.invitationLink.trim()
+      }
+
       const response = await fetch('/api/admin/invitations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: form.title,
-          eventName: form.eventName,
-          eventDate: form.eventDate,
-          location: form.location,
-          invitationLink: form.invitationLink,
-          templateMessage: form.templateMessage,
-          templateId: selectedTemplateId,
-          costPoints: form.costPoints,
-          assignedMemberId: form.assignedMemberId,
-          createdById: adminId,
-        }),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
@@ -236,7 +241,7 @@ export default function AdminEditorPage() {
   }
 
   const copyShareLink = async () => {
-    const link = createdInvitation?.invitationLink || form.invitationLink
+    const link = createdInvitation?.invitationLink || (form.invitationLink.trim() ? form.invitationLink.trim() : `${window.location.origin}/invitation/preview`)
     if (!link) return
     await navigator.clipboard.writeText(link)
     setSuccessMessage('Link undangan berhasil disalin.')
@@ -247,7 +252,7 @@ export default function AdminEditorPage() {
   }
 
   const previewMessage = currentTemplate.defaultMessage
-    .replace('{link_undangan}', form.invitationLink)
+    .replace('{link_undangan}', form.invitationLink || `${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/preview`)
     .replace('{nama_tamu}', 'Nama Tamu')
     .replace('{event_name}', form.eventName)
 
@@ -273,7 +278,7 @@ export default function AdminEditorPage() {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
-                const previewUrl = createdInvitation ? `/invitation/${createdInvitation.id}` : form.invitationLink
+                const previewUrl = createdInvitation?.invitationLink || (createdInvitation ? `/invitation/${createdInvitation.id}` : form.invitationLink)
                 window.open(previewUrl, '_blank')
               }}
               disabled={!createdInvitation && !form.invitationLink}

@@ -131,11 +131,12 @@ export default function MemberDashboard() {
   const generateGuestLink = (guestName: string, invitationLink: string): string => {
     if (!guestName.trim()) return invitationLink
 
+    const normalizedLink = invitationLink.startsWith('/') ? `${window.location.origin}${invitationLink}` : invitationLink
     const paramName = invitationLink.includes('satumomen.com') ? 'guest' : 'to'
-    const separator = invitationLink.includes('?') ? '&' : '?'
+    const separator = normalizedLink.includes('?') ? '&' : '?'
     const encodedName = encodeURIComponent(guestName.trim())
 
-    return `${invitationLink}${separator}${paramName}=${encodedName}`
+    return `${normalizedLink}${separator}${paramName}=${encodedName}`
   }
 
   // Copy link to clipboard
