@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
       location,
       invitationLink,
       templateMessage,
+      templateId,
       costPoints,
       assignedMemberId,
       createdById,
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
         location,
         invitationLink,
         invitationDomain,
+        templateId: templateId || null,
         templateMessage: templateMessage || `Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}* _di tempat_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, untuk menghadiri acara {event_name}.

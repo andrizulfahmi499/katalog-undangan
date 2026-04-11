@@ -305,15 +305,26 @@ export default function AdminDashboard() {
               </motion.button>
               <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-gray-700 font-medium"
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
-            </motion.button>
+            <div className="flex items-center gap-3">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.location.href = '/admin/editor'}
+                className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:bg-sky-700"
+              >
+                <Plus className="w-4 h-4" />
+                Buat Undangan
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-gray-700 font-medium"
+              >
+                <LogOut className="w-5 h-5" />
+                Logout
+              </motion.button>
+            </div>
           </div>
         </div>
       </header>

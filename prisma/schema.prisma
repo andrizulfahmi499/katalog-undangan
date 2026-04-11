@@ -58,6 +58,7 @@ model Invitations {
   location          String
   invitationLink    String
   invitationDomain  String                // 'satumomen' | 'akainvitation'
+  templateId        String?
   templateMessage   String
   costPoints        Int                   @default(20)
   status            String                @default("draft") // 'draft' | 'published' | 'completed'
