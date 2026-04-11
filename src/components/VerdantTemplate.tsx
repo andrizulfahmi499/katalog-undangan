@@ -92,11 +92,32 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 0.12, y: 0 }}
           transition={{ repeat: Infinity, repeatType: 'reverse', duration: 6 }}
-          className="absolute left-6 top-12 w-40 h-40 text-emerald-300"
+          className="absolute left-6 top-12 w-40 h-40 text-emerald-300 verdant-ornament"
           viewBox="0 0 24 24"
           fill="none"
         >
           <path d="M2 12c5-6 14-8 20-6-2 6-8 12-14 14C5 20 2 18 2 12z" fill="currentColor" />
+        </motion.svg>
+
+        {/* Additional hero ornaments */}
+        <motion.svg
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 0.14, scale: 1.02 }}
+          transition={{ repeat: Infinity, repeatType: 'reverse', duration: 9 }}
+          className="absolute right-6 top-20 w-56 h-56 text-emerald-200 verdant-ornament"
+          viewBox="0 0 64 64"
+        >
+          <path d="M45.5 12c3 6-2 13-9 18-8 5-19 9-26 6-5-2-6-10-2-16 4-7 12-13 21-14 6-1 12 1 16 6z" fill="currentColor" />
+        </motion.svg>
+
+        <motion.svg
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 0.08, y: 0 }}
+          transition={{ repeat: Infinity, repeatType: 'reverse', duration: 11 }}
+          className="absolute left-10 bottom-28 w-48 h-48 text-emerald-100 verdant-ornament"
+          viewBox="0 0 64 64"
+        >
+          <path d="M10 40c6-10 20-16 32-14 6 1 12 4 16 9 2 3 1 7-2 10-4 4-11 6-18 6-10 0-23-6-28-11z" fill="currentColor" />
         </motion.svg>
 
         <div className="container mx-auto px-4 py-28 text-center">
@@ -167,7 +188,7 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
             <div className="grid md:grid-cols-3 gap-4">
               {["gallery1.jpg","gallery2.jpg","couple1.jpg"].map((img, i) => (
                 <motion.div key={i} whileHover={{ scale: 1.04 }} className="overflow-hidden rounded-2xl shadow-lg cursor-pointer" onClick={() => setShowGallery(true)}>
-                  <motion.img src={`/images/templates/verdant/${img}`} alt={`gallery-${i}`} className="w-full h-64 object-cover transform transition" />
+                  <motion.img src={`/images/templates/verdant/${img}`} alt={`gallery-${i}`} className="w-full h-64 object-cover transform transition verdant-parallax" />
                 </motion.div>
               ))}
             </div>
