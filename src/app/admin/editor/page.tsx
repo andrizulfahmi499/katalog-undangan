@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useMemo, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import {
   ArrowLeft,
   Copy,
-  Link as LinkIcon,
   Save,
   Eye,
   Share2,
@@ -16,9 +15,24 @@ import {
   Layers,
   Trash2,
   EyeOff,
+  GripVertical,
+  Settings,
+  Music,
+  Monitor,
+  Send,
+  Users,
+  Zap,
+  Mail,
+  X,
+  Check,
   ChevronDown,
+  ChevronUp,
+  MapPin,
+  Calendar,
+  Heart,
+  Gift,
 } from 'lucide-react'
-import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
+import { TEMPLATE_OPTIONS } from '@/lib/invitationTemplates'
 
 type Member = {
   id: string
@@ -33,6 +47,15 @@ type SectionItem = {
   id: string
   label: string
   enabled: boolean
+  expanded?: boolean
+  content?: Record<string, string>
+}
+
+type EditModalState = {
+  open: boolean
+  sectionId: string
+  label: string
+  content: Record<string, string>
 }
 
 export default function AdminEditorPage() {
@@ -43,6 +66,12 @@ export default function AdminEditorPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [isActive, setIsActive] = useState(true)
+  const [invitationType, setInvitationType] = useState(false) // false=scroll, true=paged
+  const [editModal, setEditModal] = useState<EditModalState>({
+    open: false, sectionId: '', label: '', content: {}
+  })
+  const [activeMenu, setActiveMenu] = useState<string | null>(null)
 
   const [form, setForm] = useState({
     title: 'Akbar & Madia',
@@ -58,19 +87,19 @@ export default function AdminEditorPage() {
   })
 
   const [sections, setSections] = useState<SectionItem[]>([
-    { id: 'opening', label: 'Opening', enabled: true },
-    { id: 'quotes', label: 'Quotes', enabled: true },
-    { id: 'groom', label: 'Groom', enabled: true },
-    { id: 'bride', label: 'Bride', enabled: true },
-    { id: 'event', label: 'Event', enabled: true },
-    { id: 'maps', label: 'Maps', enabled: false },
-    { id: 'countdown', label: 'Countdown', enabled: true },
-    { id: 'yangMengundang', label: 'Yang Mengundang', enabled: true },
-    { id: 'turutMengundang', label: 'Turut Mengundang', enabled: true },
-    { id: 'gallery', label: 'Gallery', enabled: true },
-    { id: 'rsvp', label: 'RSVP', enabled: true },
-    { id: 'gift', label: 'Gift', enabled: true },
-    { id: 'thanks', label: 'Thanks', enabled: true },
+    { id: 'opening', label: 'Opening', enabled: true, content: { subtitle: 'The Wedding Of', title: 'Akbar & Madia', guest: 'Tamu Undangan', place: 'di Tempat' } },
+    { id: 'quotes', label: 'Quotes', enabled: true, content: { verse: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri...', source: '(QS Ar-Rum : 21)' } },
+    { id: 'groom', label: 'Groom', enabled: true, content: { name: 'Ahmad Akbar', parents: 'Putra dari Bpk. Mansur Mading dan Ibu Ratnawati Baharuddin', instagram: 'https://instagram.com/' } },
+    { id: 'bride', label: 'Bride', enabled: true, content: { name: 'Rahmadia', parents: 'Putri dari Bpk. Marwan Mahmud (Alm) dan Ibu Rapia Hasan L Karama', instagram: 'https://instagram.com/' } },
+    { id: 'event', label: 'Event', enabled: true, content: { eventTitle: 'Mapparola', date: 'Kamis, 16 April 2026', time: '11.00 Wita - Selesai', venue: 'Dusun Silandar Desa Posona', address: 'Kec Kasimbar' } },
+    { id: 'maps', label: 'Maps', enabled: false, content: { venueName: 'Grand Ballroom Hotel Labersa', address: 'Jl. Labersa, Tanah Merah, Kec. Siak Hulu', mapsUrl: '' } },
+    { id: 'countdown', label: 'Countdown', enabled: true, content: { targetDate: '2026-04-16T11:00' } },
+    { id: 'yangMengundang', label: 'Yang Mengundang', enabled: true, content: { families: 'Bpk. Mansur Mading - Hj. Ledeng / Ratnawati Baharuddin - Hayati' } },
+    { id: 'turutMengundang', label: 'Turut Mengundang', enabled: true, content: { maleSide: 'Kel. Darmawan S. Hut (Kades Posona)', femaleSide: 'Kel. Iswandi Idris, S.IP (Kader Siney Tengah)' } },
+    { id: 'gallery', label: 'Gallery', enabled: true, content: {} },
+    { id: 'rsvp', label: 'RSVP', enabled: true, content: { message: 'Please help us prepare by confirming your attendance' } },
+    { id: 'gift', label: 'Gift', enabled: true, content: { bankName: 'BCA', accountNumber: '12345678', accountName: 'Atas Nama Rekening', address: 'Jl. Wildan Sari 1 No 11 Banjarmasin Barat 70119' } },
+    { id: 'thanks', label: 'Thanks', enabled: true, content: { groomName: 'Akbar', brideName: 'Madia', message: 'Atas kehadiran dan do\'a restunya kami ucapkan terima kasih.' } },
   ])
 
   const currentTemplate = useMemo(
@@ -135,6 +164,21 @@ export default function AdminEditorPage() {
     )
   }, [])
 
+  const handleOpenEdit = useCallback((section: SectionItem) => {
+    setEditModal({ open: true, sectionId: section.id, label: section.label, content: { ...section.content } })
+  }, [])
+
+  const handleSaveEdit = useCallback(() => {
+    setSections((prev) =>
+      prev.map((s) => s.id === editModal.sectionId ? { ...s, content: editModal.content } : s)
+    )
+    setEditModal({ open: false, sectionId: '', label: '', content: {} })
+  }, [editModal])
+
+  const handleDeleteSection = useCallback((id: string) => {
+    setSections((prev) => prev.filter((s) => s.id !== id))
+  }, [])
+
   const handleTemplateSelect = (id: string) => {
     setSelectedTemplateId(id)
   }
@@ -195,6 +239,18 @@ export default function AdminEditorPage() {
     await navigator.clipboard.writeText(link)
     setSuccessMessage('Link undangan berhasil disalin.')
   }
+
+  const GRID_MENUS = [
+    { id: 'pengaturan', label: 'Pengaturan', color: '#458AF7', icon: Settings },
+    { id: 'tema', label: 'Tema', color: '#4FAB5E', icon: Palette },
+    { id: 'music', label: 'Music', color: '#FF7940', icon: Music },
+    { id: 'background', label: 'Background', color: '#F745BC', icon: ImageIcon },
+    { id: 'rsvp', label: 'RSVP', color: '#2FC6DA', icon: Mail },
+    { id: 'layarSapa', label: 'Layar Sapa', color: '#ED6160', icon: Monitor },
+    { id: 'preview', label: 'Preview', color: '#FF7940', icon: Eye },
+    { id: 'kirim', label: 'Kirim', color: '#77C749', icon: Send },
+    { id: 'luckyDraw', label: 'Lucky Draw', color: '#7445F7', icon: Users },
+  ]
 
   // NEUMORPHIC EDITOR UI
   return (
@@ -307,37 +363,149 @@ export default function AdminEditorPage() {
               </div>
             </div>
 
-            {/* Section Manager */}
-            <div className="rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-[#E0E5EC] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF]">
-                  <Layers className="w-5 h-5 text-[#6C5CE7]" />
+            {/* Grid Menu */}
+            <div className="mb-6 rounded-2xl bg-[#F0F4F8] p-4 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+              <div className="grid grid-cols-3 gap-2">
+                {GRID_MENUS.map((menu) => {
+                  const Icon = menu.icon
+                  return (
+                    <motion.button
+                      key={menu.id}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setActiveMenu(activeMenu === menu.id ? null : menu.id)}
+                      className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${
+                        activeMenu === menu.id
+                          ? 'bg-[#E0E5EC] shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]'
+                          : 'bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: menu.color }} />
+                      <span className="text-xs font-medium text-[#2D3436]">{menu.label}</span>
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Status & Tipe Undangan */}
+            <div className="mb-6 space-y-3">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-emerald-50 border border-emerald-200 shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-emerald-700">Status Undangan</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${isActive ? 'bg-emerald-500 text-white' : 'bg-gray-300 text-gray-600'}`}>
+                    {isActive ? 'Aktif' : 'Nonaktif'}
+                  </span>
                 </div>
-                <span className="font-semibold text-[#2D3436]">Bagian</span>
+                <button
+                  onClick={() => setIsActive(!isActive)}
+                  className={`relative w-12 h-6 rounded-full transition-all ${isActive ? 'bg-emerald-500' : 'bg-gray-300'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isActive ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-amber-50 border border-amber-200 shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-amber-700">Tipe Undangan</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-amber-400 text-white">
+                    {invitationType ? 'Paged' : 'Scroll'}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setInvitationType(!invitationType)}
+                  className={`relative w-12 h-6 rounded-full transition-all ${invitationType ? 'bg-amber-500' : 'bg-gray-300'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${invitationType ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Section Manager - Accordion with Drag */}
+            <div className="rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#E0E5EC] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF]">
+                    <Layers className="w-5 h-5 text-[#6C5CE7]" />
+                  </div>
+                  <span className="font-semibold text-[#2D3436]">Bagian Undangan</span>
+                </div>
               </div>
               
-              <div className="space-y-3">
+              <Reorder.Group axis="y" values={sections} onReorder={setSections} className="space-y-2">
                 {sections.map((section) => (
-                  <div
-                    key={section.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
-                      <button
-                        onClick={() => handleToggleSection(section.id)}
-                        className={`p-2 rounded-lg transition-all ${
-                          section.enabled
-                            ? 'bg-[#6C5CE7] text-white shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF]'
-                            : 'bg-[#E0E5EC] text-[#A3B1C6] shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]'
-                        }`}
-                      >
-                        {section.enabled ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                      </button>
-                      <span className="text-sm font-medium text-[#2D3436]">{section.label}</span>
+                  <Reorder.Item key={section.id} value={section}>
+                    <div className="rounded-xl bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] overflow-hidden">
+                      {/* Section Header */}
+                      <div className="flex items-center gap-2 px-3 py-2">
+                        <div className="cursor-grab active:cursor-grabbing text-[#A3B1C6]">
+                          <GripVertical className="w-4 h-4" />
+                        </div>
+                        <span className="text-sm font-medium text-[#2D3436] flex-1">{section.label}</span>
+                        <button
+                          onClick={() => handleToggleSection(section.id)}
+                          className={`relative w-10 h-5 rounded-full transition-all flex-shrink-0 ${section.enabled ? 'bg-[#6C5CE7]' : 'bg-gray-300'}`}
+                        >
+                          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${section.enabled ? 'left-5' : 'left-0.5'}`} />
+                        </button>
+                        <button
+                          onClick={() => handleOpenEdit(section)}
+                          className="px-2 py-1 rounded-lg bg-[#6C5CE7] text-white text-xs font-semibold shadow-[2px_2px_4px_rgba(108,92,231,0.3)] hover:opacity-90 transition-all"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSection(section.id)}
+                          className="p-1 rounded-lg bg-[#E0E5EC] text-red-400 shadow-[2px_2px_4px_#A3B1C6,-2px_-2px_4px_#FFFFFF] hover:text-red-600 transition-all"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </Reorder.Item>
                 ))}
-              </div>
+              </Reorder.Group>
+
+              {/* Tambah Halaman */}
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSections(prev => [...prev, { id: `section-${Date.now()}`, label: 'Halaman Baru', enabled: true, content: {} }])}
+                className="w-full mt-4 py-3 rounded-xl bg-[#6C5CE7] text-white font-semibold flex items-center justify-center gap-2 shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF] hover:opacity-90 transition-all"
+              >
+                <Plus className="w-4 h-4" /> Tambah Halaman
+              </motion.button>
+            </div>
+
+            {/* Member & Save */}
+            <div className="mt-6 rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+              <label className="block text-sm font-medium text-[#2D3436] mb-2">Pilih Member</label>
+              <select
+                value={form.assignedMemberId}
+                onChange={(e) => handleChange('assignedMemberId', e.target.value)}
+                className="w-full px-4 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] outline-none shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] mb-4"
+              >
+                {members.length === 0 ? (
+                  <option value="">Tidak ada member tersedia</option>
+                ) : (
+                  members.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name} • {member.email}
+                    </option>
+                  ))
+                )}
+              </select>
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSubmit}
+                disabled={isSaving}
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold flex items-center justify-center gap-2 shadow-[6px_6px_12px_rgba(108,92,231,0.3),-6px_-6px_12px_#FFFFFF] disabled:opacity-60"
+              >
+                <Save className="w-5 h-5" />
+                {isSaving ? 'Menyimpan...' : 'Simpan Undangan'}
+              </motion.button>
+              {error && <p className="mt-3 text-sm text-red-500 text-center">{error}</p>}
+              {successMessage && <p className="mt-3 text-sm text-emerald-600 text-center">{successMessage}</p>}
             </div>
           </div>
 
@@ -349,7 +517,7 @@ export default function AdminEditorPage() {
               transition={{ duration: 0.3 }}
               className="rounded-3xl bg-[#F0F4F8] p-6 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF] min-h-[600px] flex flex-col"
             >
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-6 flex items-center justify-between relative z-10">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#A3B1C6] font-semibold">Preview Undangan</p>
                   <h3 className="text-xl font-bold text-[#2D3436] mt-1">{form.title || 'Undangan Anda'}</h3>
@@ -358,14 +526,16 @@ export default function AdminEditorPage() {
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+                    onClick={() => { const url = createdInvitation?.invitationLink || form.invitationLink; if (url) window.open(url, '_blank') }}
+                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] cursor-pointer"
                   >
                     <Eye className="w-5 h-5" />
                   </motion.button>
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+                    onClick={copyShareLink}
+                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] cursor-pointer"
                   >
                     <Share2 className="w-5 h-5" />
                   </motion.button>
@@ -562,6 +732,72 @@ export default function AdminEditorPage() {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Edit Modal */}
+        <AnimatePresence>
+          {editModal.open && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+              onClick={(e) => { if (e.target === e.currentTarget) setEditModal({ open: false, sectionId: '', label: '', content: {} }) }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-[#E0E5EC] rounded-3xl p-6 w-full max-w-lg mx-4 shadow-[12px_12px_24px_#A3B1C6,-12px_-12px_24px_#FFFFFF] max-h-[80vh] overflow-y-auto"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-[#2D3436]">Edit {editModal.label}</h3>
+                  <button
+                    onClick={() => setEditModal({ open: false, sectionId: '', label: '', content: {} })}
+                    className="p-2 rounded-xl bg-[#E0E5EC] text-[#A3B1C6] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] hover:text-red-400 transition-all"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {Object.entries(editModal.content).map(([key, value]) => (
+                    <div key={key}>
+                      <label className="block text-sm font-medium text-[#2D3436] mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}</label>
+                      {(value as string).length > 80 ? (
+                        <textarea
+                          value={value as string}
+                          onChange={(e) => setEditModal(prev => ({ ...prev, content: { ...prev.content, [key]: e.target.value } }))}
+                          rows={3}
+                          className="w-full px-4 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] outline-none shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] resize-none"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={value as string}
+                          onChange={(e) => setEditModal(prev => ({ ...prev, content: { ...prev.content, [key]: e.target.value } }))}
+                          className="w-full px-4 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] outline-none shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => setEditModal({ open: false, sectionId: '', label: '', content: {} })}
+                    className="flex-1 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] font-semibold shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold flex items-center justify-center gap-2 shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF] hover:opacity-90 transition-all"
+                  >
+                    <Check className="w-4 h-4" /> Simpan
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Action Buttons */}
         <motion.div
