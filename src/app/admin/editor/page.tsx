@@ -21,7 +21,6 @@ import {
   Send,
   Users,
   Mail,
-  X,
   Check,
 } from 'lucide-react'
 import { TEMPLATE_OPTIONS } from '@/lib/invitationTemplates'
@@ -32,6 +31,7 @@ import {
   defaultTemplateId,
   type InvitationEditorConfig,
 } from '@/lib/invitationEditorConfig'
+import SectionPreview from '@/components/editor/SectionPreview'
 
 type Member = {
   id: string
@@ -50,13 +50,6 @@ type SectionItem = {
   content?: Record<string, string>
 }
 
-type EditModalState = {
-  open: boolean
-  sectionId: string
-  label: string
-  content: Record<string, string>
-}
-
 function AdminEditorPageInner() {
   const searchParams = useSearchParams()
   const editingInvitationId = searchParams.get('id')
@@ -70,13 +63,12 @@ function AdminEditorPageInner() {
   const [successMessage, setSuccessMessage] = useState('')
   const [isActive, setIsActive] = useState(true)
   const [invitationType, setInvitationType] = useState(false) // false=scroll, true=paged
-  const [editModal, setEditModal] = useState<EditModalState>({
-    open: false, sectionId: '', label: '', content: {}
-  })
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [activeToolPanel, setActiveToolPanel] = useState<'tema' | 'music' | 'background' | 'luckyDraw' | null>(null)
   const [isLoadingInvitation, setIsLoadingInvitation] = useState(false)
   const [luckyDraw, setLuckyDraw] = useState({ enabled: false, title: 'Lucky Draw' })
+  const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null)
+  const [inlineEditContent, setInlineEditContent] = useState<Record<string, string>>({})
 
   const refTextBlock = useRef<HTMLDivElement>(null)
   const refMemberSave = useRef<HTMLDivElement>(null)
@@ -208,20 +200,19 @@ function AdminEditorPageInner() {
   }, [])
 
   const handleOpenEdit = useCallback((section: SectionItem) => {
-    setEditModal({
-      open: true,
-      sectionId: section.id,
-      label: section.label,
-      content: { ...(section.content ?? {}) },
+    setExpandedSectionId((prev) => {
+      if (prev === section.id) return null
+      setInlineEditContent({ ...(section.content ?? {}) })
+      return section.id
     })
   }, [])
 
-  const handleSaveEdit = useCallback(() => {
+  const handleSaveInlineEdit = useCallback((sectionId: string) => {
     setSections((prev) =>
-      prev.map((s) => s.id === editModal.sectionId ? { ...s, content: editModal.content } : s)
+      prev.map((s) => s.id === sectionId ? { ...s, content: inlineEditContent } : s)
     )
-    setEditModal({ open: false, sectionId: '', label: '', content: {} })
-  }, [editModal])
+    setExpandedSectionId(null)
+  }, [inlineEditContent])
 
   const handleDeleteSection = useCallback((id: string) => {
     setSections((prev) => prev.filter((s) => s.id !== id))
@@ -748,7 +739,7 @@ function AdminEditorPageInner() {
               </div>
             </div>
 
-            {/* Section Manager - Accordion with Drag */}
+            {/* Section Manager - Inline Expand with Preview */}
             <div
               ref={refSectionsBlock}
               className="rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]"
@@ -761,39 +752,111 @@ function AdminEditorPageInner() {
                   <span className="font-semibold text-[#2D3436]">Bagian Undangan</span>
                 </div>
               </div>
-              
+
               <Reorder.Group axis="y" values={sections} onReorder={setSections} className="space-y-2">
-                {sections.map((section) => (
-                  <Reorder.Item key={section.id} value={section}>
-                    <div className="rounded-xl bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] overflow-hidden">
-                      {/* Section Header */}
-                      <div className="flex items-center gap-2 px-3 py-2">
-                        <div className="cursor-grab active:cursor-grabbing text-[#A3B1C6]">
-                          <GripVertical className="w-4 h-4" />
+                {sections.map((section) => {
+                  const isExpanded = expandedSectionId === section.id
+                  return (
+                    <Reorder.Item key={section.id} value={section}>
+                      <div className={`rounded-xl overflow-hidden transition-all ${isExpanded ? 'bg-white shadow-[0_4px_16px_rgba(108,92,231,0.15)]' : 'bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]'}`}>
+                        {/* Section Header Bar */}
+                        <div className="flex items-center gap-2 px-3 py-2">
+                          <div className="cursor-grab active:cursor-grabbing text-[#A3B1C6]">
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium text-[#2D3436] flex-1">{section.label}</span>
+                          <button
+                            onClick={() => handleToggleSection(section.id)}
+                            className={`relative w-10 h-5 rounded-full transition-all flex-shrink-0 ${section.enabled ? 'bg-[#6C5CE7]' : 'bg-gray-300'}`}
+                          >
+                            <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${section.enabled ? 'left-5' : 'left-0.5'}`} />
+                          </button>
+                          <button
+                            onClick={() => handleOpenEdit(section)}
+                            className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all ${isExpanded ? 'bg-[#6C5CE7] text-white shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]' : 'bg-[#6C5CE7] text-white shadow-[2px_2px_4px_rgba(108,92,231,0.3)]'} hover:opacity-90`}
+                          >
+                            {isExpanded ? 'Tutup' : 'Edit'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSection(section.id)}
+                            className="p-1 rounded-lg bg-[#E0E5EC] text-red-400 shadow-[2px_2px_4px_#A3B1C6,-2px_-2px_4px_#FFFFFF] hover:text-red-600 transition-all"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
                         </div>
-                        <span className="text-sm font-medium text-[#2D3436] flex-1">{section.label}</span>
-                        <button
-                          onClick={() => handleToggleSection(section.id)}
-                          className={`relative w-10 h-5 rounded-full transition-all flex-shrink-0 ${section.enabled ? 'bg-[#6C5CE7]' : 'bg-gray-300'}`}
-                        >
-                          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${section.enabled ? 'left-5' : 'left-0.5'}`} />
-                        </button>
-                        <button
-                          onClick={() => handleOpenEdit(section)}
-                          className="px-2 py-1 rounded-lg bg-[#6C5CE7] text-white text-xs font-semibold shadow-[2px_2px_4px_rgba(108,92,231,0.3)] hover:opacity-90 transition-all"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteSection(section.id)}
-                          className="p-1 rounded-lg bg-[#E0E5EC] text-red-400 shadow-[2px_2px_4px_#A3B1C6,-2px_-2px_4px_#FFFFFF] hover:text-red-600 transition-all"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
+
+                        {/* Inline Expand: Preview + Edit Fields */}
+                        <AnimatePresence>
+                          {isExpanded && (
+                            <motion.div
+                              key={`expand-${section.id}`}
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="px-3 pb-3 space-y-3 border-t border-gray-100">
+                                {/* Live Preview */}
+                                <div className="mt-3">
+                                  <p className="text-xs text-[#A3B1C6] uppercase tracking-wider mb-2 font-semibold">Preview</p>
+                                  <SectionPreview
+                                    section={{ ...section, content: inlineEditContent }}
+                                    primaryColor={form.primaryColor}
+                                    title={form.title}
+                                    eventName={form.eventName}
+                                    eventDate={form.eventDate}
+                                    location={form.location}
+                                    backgroundImageUrl={form.backgroundImageUrl}
+                                  />
+                                </div>
+
+                                {/* Edit Fields */}
+                                {Object.keys(inlineEditContent).length > 0 && (
+                                  <div>
+                                    <p className="text-xs text-[#A3B1C6] uppercase tracking-wider mb-2 font-semibold">Edit Konten</p>
+                                    <div className="space-y-2">
+                                      {Object.entries(inlineEditContent).map(([key, value]) => (
+                                        <div key={key}>
+                                          <label className="block text-xs font-medium text-[#2D3436] mb-1 capitalize">
+                                            {key.replace(/([A-Z])/g, ' $1')}
+                                          </label>
+                                          {(value as string).length > 60 ? (
+                                            <textarea
+                                              value={value as string}
+                                              onChange={(e) => setInlineEditContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                              rows={2}
+                                              className="w-full px-3 py-2 rounded-xl bg-[#E0E5EC] text-[#2D3436] text-xs outline-none shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF] resize-none"
+                                            />
+                                          ) : (
+                                            <input
+                                              type="text"
+                                              value={value as string}
+                                              onChange={(e) => setInlineEditContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                              className="w-full px-3 py-2 rounded-xl bg-[#E0E5EC] text-[#2D3436] text-xs outline-none shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
+                                            />
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Save Button */}
+                                <button
+                                  onClick={() => handleSaveInlineEdit(section.id)}
+                                  className="w-full py-2 rounded-xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-[3px_3px_6px_rgba(108,92,231,0.3)] hover:opacity-90 transition-all"
+                                >
+                                  <Check className="w-3.5 h-3.5" /> Simpan Perubahan
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
-                    </div>
-                  </Reorder.Item>
-                ))}
+                    </Reorder.Item>
+                  )
+                })}
               </Reorder.Group>
 
               {/* Tambah Halaman */}
@@ -883,264 +946,95 @@ function AdminEditorPageInner() {
                 </div>
               </div>
 
-              <motion.div
-                className="flex-1 rounded-2xl overflow-hidden shadow-[6px_6px_12px_rgba(163,177,198,0.2),-6px_-6px_12px_rgba(255,255,255,0.8)]"
-                style={{ backgroundColor: form.backgroundColor || '#FFFFFF' }}
-              >
-                {/* Opening Section - Phinisi Style */}
-                {sections.find(s => s.id === 'opening')?.enabled && (
-                  <div
-                    className="relative w-full overflow-hidden"
-                    style={{
-                      backgroundImage: form.backgroundImageUrl.trim()
-                        ? `url(${form.backgroundImageUrl.trim()})`
-                        : 'url(https://assets.satumomen.com/images/invitation/bg-section-90534941775604513.jpg)',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      minHeight: '520px',
-                    }}
-                  >
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/20" />
+          {/* Preview Panel - iframe dari halaman undangan publik */}
+          <div className="h-full bg-gradient-to-br from-[#E0E5EC] to-[#F0F4F8] rounded-3xl p-6 shadow-lg flex flex-col">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-[#A3B1C6] font-semibold">Preview Undangan</p>
+                <h3 className="text-xl font-bold text-[#2D3436] mt-1">{form.title || 'Undangan Anda'}</h3>
+              </div>
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const origin = window.location.origin
+                    const id = createdInvitation?.id || editingInvitationId
+                    const url = form.invitationLink.trim() || (id ? `${origin}/invitation/${id}` : '')
+                    if (url) window.open(url, '_blank', 'noopener,noreferrer')
+                  }}
+                  className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all"
+                  title="Buka di tab baru"
+                >
+                  <Eye className="w-5 h-5" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={copyShareLink}
+                  className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all"
+                  title="Salin link"
+                >
+                  <Share2 className="w-5 h-5" />
+                </motion.button>
+              </div>
+            </div>
 
-                    {/* Frame Left */}
-                    <motion.div
-                      initial={{ x: -80, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ duration: 1.2, ease: 'easeOut' }}
-                      className="absolute left-0 top-0 h-full w-16 pointer-events-none z-10"
-                      style={{
-                        background: 'linear-gradient(to right, rgba(120,40,40,0.85) 0%, rgba(120,40,40,0.3) 60%, transparent 100%)',
-                      }}
-                    >
-                      <div className="h-full w-full flex flex-col justify-between py-4 pl-2">
-                        {[...Array(8)].map((_, i) => (
-                          <div key={i} className="w-3 h-3 rounded-full bg-yellow-300/60" />
-                        ))}
-                      </div>
-                    </motion.div>
-
-                    {/* Frame Right */}
-                    <motion.div
-                      initial={{ x: 80, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ duration: 1.2, ease: 'easeOut' }}
-                      className="absolute right-0 top-0 h-full w-16 pointer-events-none z-10"
-                      style={{
-                        background: 'linear-gradient(to left, rgba(120,40,40,0.85) 0%, rgba(120,40,40,0.3) 60%, transparent 100%)',
-                      }}
-                    >
-                      <div className="h-full w-full flex flex-col justify-between py-4 pr-2 items-end">
-                        {[...Array(8)].map((_, i) => (
-                          <div key={i} className="w-3 h-3 rounded-full bg-yellow-300/60" />
-                        ))}
-                      </div>
-                    </motion.div>
-
-                    {/* Content */}
-                    <div className="relative z-20 flex flex-col items-center justify-between h-full px-8 pt-8 pb-10" style={{ minHeight: '520px' }}>
-                      {/* Top: Wedding Title */}
-                      <motion.div
-                        initial={{ opacity: 0, y: -30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.3 }}
-                        className="text-center mt-4 mb-auto"
-                      >
-                        <p className="text-white/90 text-sm tracking-widest uppercase mb-2">
-                          The Wedding Of
-                        </p>
-                        <h1
-                          className="text-white font-bold leading-tight"
-                          style={{
-                            fontSize: '2.8rem',
-                            fontFamily: 'Georgia, serif',
-                            textShadow: '0 2px 12px rgba(0,0,0,0.4)',
-                          }}
-                        >
-                          {form.title}
-                        </h1>
-                      </motion.div>
-
-                      {/* Bottom: Guest Card + Button */}
-                      <div className="w-full flex flex-col items-center gap-4">
-                        {/* Guest Card */}
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.8, delay: 0.6 }}
-                          className="text-center px-5 py-4 rounded-xl w-full max-w-[240px]"
-                          style={{
-                            backgroundColor: 'rgba(255,255,255,0.77)',
-                            backdropFilter: 'blur(2px)',
-                          }}
-                        >
-                          <motion.p
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.8 }}
-                            className="text-gray-700 text-sm mb-1"
-                          >
-                            Kepada Yth.<br />Bapak/Ibu/Saudara/i
-                          </motion.p>
-                          <motion.p
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.9 }}
-                            className="font-bold text-base mb-1"
-                            style={{ color: form.primaryColor || '#6C5CE7' }}
-                          >
-                            Tamu Undangan
-                          </motion.p>
-                          <motion.p
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 1.0 }}
-                            className="text-gray-600 text-sm"
-                          >
-                            di Tempat
-                          </motion.p>
-                        </motion.div>
-
-                        {/* Open Invitation Button */}
+            {/* Phone frame wrapper */}
+            <div className="flex-1 flex items-start justify-center">
+              <div className="relative w-full max-w-[380px] mx-auto">
+                {/* Phone bezel */}
+                <div className="rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.2)] border-[6px] border-[#2D3436] bg-[#2D3436]">
+                  {/* Notch */}
+                  <div className="bg-[#2D3436] h-6 flex items-center justify-center">
+                    <div className="w-20 h-3 bg-black rounded-full" />
+                  </div>
+                  {/* Screen */}
+                  <div className="bg-white overflow-hidden" style={{ height: '680px' }}>
+                    {(createdInvitation?.id || editingInvitationId) ? (
+                      <iframe
+                        key={`${createdInvitation?.id || editingInvitationId}-${isSaving ? 'saving' : 'idle'}`}
+                        src={`/invitation/${createdInvitation?.id || editingInvitationId}`}
+                        className="w-full h-full border-0"
+                        title="Preview Undangan"
+                        style={{ transform: 'scale(1)', transformOrigin: 'top left' }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-gray-50 to-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 rounded-2xl bg-[#6C5CE7]/10 flex items-center justify-center">
+                          <Eye className="w-8 h-8 text-[#6C5CE7]" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#2D3436]">Preview Belum Tersedia</p>
+                          <p className="text-sm text-[#A3B1C6] mt-1">Simpan undangan terlebih dahulu untuk melihat preview yang akurat sesuai template yang dipilih.</p>
+                        </div>
                         <motion.button
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 1.1 }}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.97 }}
-                          className="px-8 py-2.5 rounded-full text-white text-sm font-semibold shadow-lg"
-                          style={{ backgroundColor: form.primaryColor || '#6C5CE7' }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={handleSubmit}
+                          disabled={isSaving}
+                          className="px-6 py-2.5 rounded-xl bg-[#6C5CE7] text-white text-sm font-semibold shadow-[4px_4px_8px_rgba(108,92,231,0.3)] hover:opacity-90 disabled:opacity-60"
                         >
-                          Open Invitation
+                          {isSaving ? 'Menyimpan...' : 'Simpan & Preview'}
                         </motion.button>
                       </div>
-                    </div>
+                    )}
                   </div>
-                )}
-
-                {/* Rest of sections */}
-                <div className="p-6">
-                {sections.find(s => s.id === 'event')?.enabled && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="mb-8 pb-8 border-b-2 border-[#E0E5EC]"
-                  >
-                    <h2 className="text-lg font-semibold text-[#2D3436] mb-4">{form.eventName}</h2>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-[#6C5CE7]/10">
-                          <span className="text-xs text-[#A3B1C6] uppercase tracking-wider">Tanggal</span>
-                        </div>
-                        <p className="text-sm font-semibold text-[#2D3436]">{form.eventDate}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-[#6C5CE7]/10">
-                          <span className="text-xs text-[#A3B1C6] uppercase tracking-wider">Lokasi</span>
-                        </div>
-                        <p className="text-sm font-semibold text-[#2D3436]">{form.location}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {sections.find(s => s.id === 'rsvp')?.enabled && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="mb-8 pb-8 border-b-2 border-[#E0E5EC]"
-                  >
-                    <h3 className="text-lg font-semibold text-[#2D3436] mb-4">RSVP</h3>
-                    <button className="w-full py-3 rounded-xl bg-[#6C5CE7] text-white font-semibold shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_rgba(108,92,231,0.4),-3px_-3px_6px_#FFFFFF] transition-all">
-                      Konfirmasi Kehadiran
-                    </button>
-                  </motion.div>
-                )}
-
-                {sections.find(s => s.id === 'thanks')?.enabled && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="text-center"
-                  >
-                    <p className="text-sm text-[#A3B1C6] mb-2">Terima kasih atas kehadiran Anda</p>
-                    <p className="text-lg font-semibold text-[#2D3436]">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
-                  </motion.div>
-                )}
+                  {/* Bottom bar */}
+                  <div className="bg-[#2D3436] h-5 flex items-center justify-center">
+                    <div className="w-24 h-1 bg-gray-600 rounded-full" />
+                  </div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
+
+            {/* Refresh preview note */}
+            {(createdInvitation?.id || editingInvitationId) && (
+              <p className="text-center text-xs text-[#A3B1C6] mt-3">
+                Simpan perubahan untuk memperbarui preview
+              </p>
+            )}
           </div>
         </motion.div>
-
-        {/* Edit Modal */}
-        <AnimatePresence>
-          {editModal.open && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-              onClick={(e) => { if (e.target === e.currentTarget) setEditModal({ open: false, sectionId: '', label: '', content: {} }) }}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-[#E0E5EC] rounded-3xl p-6 w-full max-w-lg mx-4 shadow-[12px_12px_24px_#A3B1C6,-12px_-12px_24px_#FFFFFF] max-h-[80vh] overflow-y-auto"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-[#2D3436]">Edit {editModal.label}</h3>
-                  <button
-                    onClick={() => setEditModal({ open: false, sectionId: '', label: '', content: {} })}
-                    className="p-2 rounded-xl bg-[#E0E5EC] text-[#A3B1C6] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] hover:text-red-400 transition-all"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  {Object.entries(editModal.content).map(([key, value]) => (
-                    <div key={key}>
-                      <label className="block text-sm font-medium text-[#2D3436] mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}</label>
-                      {(value as string).length > 80 ? (
-                        <textarea
-                          value={value as string}
-                          onChange={(e) => setEditModal(prev => ({ ...prev, content: { ...prev.content, [key]: e.target.value } }))}
-                          rows={3}
-                          className="w-full px-4 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] outline-none shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] resize-none"
-                        />
-                      ) : (
-                        <input
-                          type="text"
-                          value={value as string}
-                          onChange={(e) => setEditModal(prev => ({ ...prev, content: { ...prev.content, [key]: e.target.value } }))}
-                          className="w-full px-4 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] outline-none shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={() => setEditModal({ open: false, sectionId: '', label: '', content: {} })}
-                    className="flex-1 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] font-semibold shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={handleSaveEdit}
-                    className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold flex items-center justify-center gap-2 shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF] hover:opacity-90 transition-all"
-                  >
-                    <Check className="w-4 h-4" /> Simpan
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Action Buttons */}
         <motion.div
