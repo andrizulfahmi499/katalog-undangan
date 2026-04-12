@@ -906,46 +906,6 @@ function AdminEditorPageInner() {
             </div>
           </div>
 
-          {/* Preview */}
-          <div className="h-full overflow-y-auto bg-gradient-to-br from-[#E0E5EC] to-[#F0F4F8] rounded-3xl p-6 shadow-lg">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="rounded-3xl bg-[#F0F4F8] p-6 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF] min-h-[600px] flex flex-col"
-            >
-              <div className="mb-6 flex items-center justify-between relative z-10">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-[#A3B1C6] font-semibold">Preview Undangan</p>
-                  <h3 className="text-xl font-bold text-[#2D3436] mt-1">{form.title || 'Undangan Anda'}</h3>
-                </div>
-                <div className="flex gap-2">
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      const origin = window.location.origin
-                      const id = createdInvitation?.id || editingInvitationId
-                      const url =
-                        form.invitationLink.trim() ||
-                        (id ? `${origin}/invitation/${id}` : '')
-                      if (url) window.open(url, '_blank', 'noopener,noreferrer')
-                    }}
-                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] cursor-pointer"
-                  >
-                    <Eye className="w-5 h-5" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={copyShareLink}
-                    className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] cursor-pointer"
-                  >
-                    <Share2 className="w-5 h-5" />
-                  </motion.button>
-                </div>
-              </div>
-
           {/* Preview Panel - iframe dari halaman undangan publik */}
           <div className="h-full bg-gradient-to-br from-[#E0E5EC] to-[#F0F4F8] rounded-3xl p-6 shadow-lg flex flex-col">
             <div className="mb-4 flex items-center justify-between">
