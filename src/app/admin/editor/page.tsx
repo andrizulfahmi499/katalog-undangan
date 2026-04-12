@@ -1,28 +1,26 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   Copy,
   Link as LinkIcon,
   Save,
-  Sparkles,
-  Heart,
-  CalendarDays,
-  MapPin,
-  Settings2,
-  Palette,
-  Music2,
-  Image as ImageIcon,
-  MessageCircle,
-  Layers,
   Eye,
   Share2,
-  Zap,
   Plus,
+  Type,
+  Palette,
+  Image as ImageIcon,
+  Layers,
+  Trash2,
+  EyeOff,
+  ChevronDown,
 } from 'lucide-react'
 import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
+import NeumorphicControlPanel from '@/components/editor/NeumorphicControlPanel'
+import NeumorphicPreview from '@/components/editor/NeumorphicPreview'
 
 type Member = {
   id: string
@@ -47,6 +45,7 @@ export default function AdminEditorPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [showNeumorphicEditor, setShowNeumorphicEditor] = useState(true)
 
   const [form, setForm] = useState({
     title: 'Akbar & Madia',
@@ -57,6 +56,8 @@ export default function AdminEditorPage() {
     templateMessage: TEMPLATE_OPTIONS[0].defaultMessage,
     assignedMemberId: '',
     costPoints: 20,
+    backgroundColor: '#FFFFFF',
+    primaryColor: '#6C5CE7',
   })
 
   const [sections, setSections] = useState<SectionItem[]>([
@@ -133,6 +134,40 @@ export default function AdminEditorPage() {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
+  const handleTextChange = useCallback((field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }))
+  }, [])
+
+  const handleColorChange = useCallback((field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }))
+  }, [])
+
+  const handleImageUpload = useCallback((file: File) => {
+    console.log('Image uploaded:', file.name)
+    // TODO: Implement image upload to AWS S3
+  }, [])
+
+  const handleToggleSection = useCallback((id: string) => {
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === id ? { ...section, enabled: !section.enabled } : section
+      )
+    )
+  }, [])
+
+  const handleAddSection = useCallback(() => {
+    const newSection: SectionItem = {
+      id: `section-${Date.now()}`,
+      label: 'Bagian Baru',
+      enabled: true,
+    }
+    setSections((prev) => [...prev, newSection])
+  }, [])
+
+  const handleDeleteSection = useCallback((id: string) => {
+    setSections((prev) => prev.filter((section) => section.id !== id))
+  }, [])
+
   const handleTemplateSelect = (id: string) => {
     setSelectedTemplateId(id)
   }
@@ -194,6 +229,143 @@ export default function AdminEditorPage() {
     setSuccessMessage('Link undangan berhasil disalin.')
   }
 
+  const toggleSection = (id: string) => {
+    handleToggleSection(id)
+  }
+
+  const handlePreviewMode = () => {
+    const previewUrl = createdInvitation?.invitationLink || (createdInvitation ? `/invitation/${createdInvitation.id}` : form.invitationLink)
+    window.open(previewUrl, '_blank')
+  }
+
+  const handleShare = () => {
+    copyShareLink()
+  }
+
+  // Render Neumorphic Editor
+  if (showNeumorphicEditor) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#E0E5EC] via-[#F0F4F8] to-[#E0E5EC] py-8">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-sm uppercase tracking-widest text-[#6C5CE7] font-semibold">Editor Undangan</p>
+              <h1 className="text-4xl font-bold text-[#2D3436] mt-2">Buat Undangan Digital</h1>
+              <p className="text-[#A3B1C6] mt-2 max-w-2xl">
+                Desain undangan modern dengan neumorphism style. Customize setiap detail dan lihat preview secara real-time.
+              </p>
+            </div>
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/admin/dashboard'}
+              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#E0E5EC] text-[#2D3436] font-semibold shadow-[6px_6px_12px_#A3B1C6,-6px_-6px_12px_#FFFFFF] hover:shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Kembali
+            </motion.button>
+          </motion.div>
+
+          {/* Main Editor Layout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6 mb-8"
+          >
+            {/* Control Panel */}
+            <NeumorphicControlPanel
+              sections={sections}
+              onToggleSection={handleToggleSection}
+              onAddSection={handleAddSection}
+              onDeleteSection={handleDeleteSection}
+              onTextChange={handleTextChange}
+              onColorChange={handleColorChange}
+              onImageUpload={handleImageUpload}
+              formData={form}
+            />
+
+            {/* Preview */}
+            <NeumorphicPreview
+              formData={form}
+              sections={sections}
+              onPreviewMode={handlePreviewMode}
+              onShare={handleShare}
+            />
+          </motion.div>
+
+          {/* Action Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row gap-4 justify-end"
+          >
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handlePreviewMode}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#E0E5EC] text-[#6C5CE7] font-semibold shadow-[6px_6px_12px_#A3B1C6,-6px_-6px_12px_#FFFFFF] hover:shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+            >
+              <Eye className="w-5 h-5" />
+              Preview
+            </motion.button>
+
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#E0E5EC] text-[#6C5CE7] font-semibold shadow-[6px_6px_12px_#A3B1C6,-6px_-6px_12px_#FFFFFF] hover:shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF]"
+            >
+              <Share2 className="w-5 h-5" />
+              Share
+            </motion.button>
+
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSubmit}
+              disabled={isSaving}
+              className="flex items-center justify-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold shadow-[6px_6px_12px_rgba(108,92,231,0.3),-6px_-6px_12px_#FFFFFF] hover:shadow-[4px_4px_8px_rgba(108,92,231,0.4),-4px_-4px_8px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.2),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] disabled:opacity-60"
+            >
+              <Save className="w-5 h-5" />
+              {isSaving ? 'Menyimpan...' : 'Simpan'}
+            </motion.button>
+          </motion.div>
+
+          {/* Success Message */}
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="fixed bottom-8 right-8 px-6 py-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold shadow-lg"
+            >
+              {successMessage}
+            </motion.div>
+          )}
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="fixed bottom-8 right-8 px-6 py-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 font-semibold shadow-lg"
+            >
+              {error}
+            </motion.div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Original Editor (fallback)
   const toggleSection = (id: string) => {
     setSections((prev) => prev.map((section) => (section.id === id ? { ...section, enabled: !section.enabled } : section)))
   }
