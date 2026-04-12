@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
+import { editorConfigToJson, parseEditorConfig } from '@/lib/invitationEditorConfig'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,6 +68,7 @@ export async function POST(request: NextRequest) {
       costPoints,
       assignedMemberId,
       createdById,
+      editorConfig: editorConfigBody,
     } = await request.json()
 
     // Validate required fields
@@ -104,6 +107,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const editorConfigJson: Prisma.InputJsonValue | typeof Prisma.JsonNull | undefined =
+      editorConfigBody !== undefined && editorConfigBody !== null
+        ? (editorConfigToJson(parseEditorConfig(editorConfigBody)) as Prisma.InputJsonValue)
+        : undefined
+
     // Create invitation with temporary link if necessary
     const invitation = await db.invitations.create({
       data: {
@@ -116,6 +124,7 @@ export async function POST(request: NextRequest) {
           ? resolveInvitationDomain(invitationLink.trim())
           : 'vercel',
         templateId: templateId || null,
+        ...(editorConfigJson !== undefined ? { editorConfig: editorConfigJson } : {}),
         templateMessage: templateMessage || `Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}* _di tempat_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, untuk menghadiri acara {event_name}.

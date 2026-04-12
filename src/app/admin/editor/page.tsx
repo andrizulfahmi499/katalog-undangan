@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import {
   ArrowLeft,
-  Copy,
   Save,
   Eye,
   Share2,
@@ -14,25 +14,24 @@ import {
   Image as ImageIcon,
   Layers,
   Trash2,
-  EyeOff,
   GripVertical,
   Settings,
   Music,
   Monitor,
   Send,
   Users,
-  Zap,
   Mail,
   X,
   Check,
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  Calendar,
-  Heart,
-  Gift,
 } from 'lucide-react'
 import { TEMPLATE_OPTIONS } from '@/lib/invitationTemplates'
+import {
+  defaultEditorConfig,
+  editorConfigToJson,
+  parseEditorConfig,
+  defaultTemplateId,
+  type InvitationEditorConfig,
+} from '@/lib/invitationEditorConfig'
 
 type Member = {
   id: string
@@ -58,10 +57,13 @@ type EditModalState = {
   content: Record<string, string>
 }
 
-export default function AdminEditorPage() {
+function AdminEditorPageInner() {
+  const searchParams = useSearchParams()
+  const editingInvitationId = searchParams.get('id')
+
   const [adminId, setAdminId] = useState<string>('')
   const [members, setMembers] = useState<Member[]>([])
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>(TEMPLATE_OPTIONS[0].id)
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>(defaultTemplateId())
   const [createdInvitation, setCreatedInvitation] = useState<any>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
@@ -72,6 +74,13 @@ export default function AdminEditorPage() {
     open: false, sectionId: '', label: '', content: {}
   })
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
+  const [activeToolPanel, setActiveToolPanel] = useState<'tema' | 'music' | 'background' | 'luckyDraw' | null>(null)
+  const [isLoadingInvitation, setIsLoadingInvitation] = useState(false)
+  const [luckyDraw, setLuckyDraw] = useState({ enabled: false, title: 'Lucky Draw' })
+
+  const refTextBlock = useRef<HTMLDivElement>(null)
+  const refMemberSave = useRef<HTMLDivElement>(null)
+  const refSectionsBlock = useRef<HTMLDivElement>(null)
 
   const [form, setForm] = useState({
     title: 'Akbar & Madia',
@@ -84,23 +93,12 @@ export default function AdminEditorPage() {
     costPoints: 20,
     backgroundColor: '#FFFFFF',
     primaryColor: '#6C5CE7',
+    backgroundImageUrl: '',
+    musicUrl: '',
+    musicEnabled: false,
   })
 
-  const [sections, setSections] = useState<SectionItem[]>([
-    { id: 'opening', label: 'Opening', enabled: true, content: { subtitle: 'The Wedding Of', title: 'Akbar & Madia', guest: 'Tamu Undangan', place: 'di Tempat' } },
-    { id: 'quotes', label: 'Quotes', enabled: true, content: { verse: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri...', source: '(QS Ar-Rum : 21)' } },
-    { id: 'groom', label: 'Groom', enabled: true, content: { name: 'Ahmad Akbar', parents: 'Putra dari Bpk. Mansur Mading dan Ibu Ratnawati Baharuddin', instagram: 'https://instagram.com/' } },
-    { id: 'bride', label: 'Bride', enabled: true, content: { name: 'Rahmadia', parents: 'Putri dari Bpk. Marwan Mahmud (Alm) dan Ibu Rapia Hasan L Karama', instagram: 'https://instagram.com/' } },
-    { id: 'event', label: 'Event', enabled: true, content: { eventTitle: 'Mapparola', date: 'Kamis, 16 April 2026', time: '11.00 Wita - Selesai', venue: 'Dusun Silandar Desa Posona', address: 'Kec Kasimbar' } },
-    { id: 'maps', label: 'Maps', enabled: false, content: { venueName: 'Grand Ballroom Hotel Labersa', address: 'Jl. Labersa, Tanah Merah, Kec. Siak Hulu', mapsUrl: '' } },
-    { id: 'countdown', label: 'Countdown', enabled: true, content: { targetDate: '2026-04-16T11:00' } },
-    { id: 'yangMengundang', label: 'Yang Mengundang', enabled: true, content: { families: 'Bpk. Mansur Mading - Hj. Ledeng / Ratnawati Baharuddin - Hayati' } },
-    { id: 'turutMengundang', label: 'Turut Mengundang', enabled: true, content: { maleSide: 'Kel. Darmawan S. Hut (Kades Posona)', femaleSide: 'Kel. Iswandi Idris, S.IP (Kader Siney Tengah)' } },
-    { id: 'gallery', label: 'Gallery', enabled: true, content: {} },
-    { id: 'rsvp', label: 'RSVP', enabled: true, content: { message: 'Please help us prepare by confirming your attendance' } },
-    { id: 'gift', label: 'Gift', enabled: true, content: { bankName: 'BCA', accountNumber: '12345678', accountName: 'Atas Nama Rekening', address: 'Jl. Wildan Sari 1 No 11 Banjarmasin Barat 70119' } },
-    { id: 'thanks', label: 'Thanks', enabled: true, content: { groomName: 'Akbar', brideName: 'Madia', message: 'Atas kehadiran dan do\'a restunya kami ucapkan terima kasih.' } },
-  ])
+  const [sections, setSections] = useState<SectionItem[]>(() => defaultEditorConfig().sections)
 
   const currentTemplate = useMemo(
     () => TEMPLATE_OPTIONS.find((template) => template.id === selectedTemplateId) ?? TEMPLATE_OPTIONS[0],
@@ -123,11 +121,56 @@ export default function AdminEditorPage() {
   }, [adminId])
 
   useEffect(() => {
-    setForm((prev) => ({
-      ...prev,
-      templateMessage: currentTemplate.defaultMessage,
-    }))
-  }, [currentTemplate.id])
+    if (!adminId || !editingInvitationId) return
+    let cancelled = false
+    setIsLoadingInvitation(true)
+    setError('')
+    fetch(`/api/admin/invitations/${editingInvitationId}?_t=${Date.now()}`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return
+        if (!data.success || !data.data) {
+          setError(data.error || 'Gagal memuat undangan.')
+          return
+        }
+        const inv = data.data
+        const ec = parseEditorConfig(inv.editorConfig)
+        const d = new Date(inv.eventDate)
+        const eventDateStr = Number.isNaN(d.getTime())
+          ? new Date().toISOString().slice(0, 10)
+          : d.toISOString().slice(0, 10)
+        setForm({
+          title: inv.title ?? '',
+          eventName: inv.eventName ?? '',
+          eventDate: eventDateStr,
+          location: inv.location ?? '',
+          invitationLink: inv.invitationLink ?? '',
+          templateMessage: inv.templateMessage ?? TEMPLATE_OPTIONS[0].defaultMessage,
+          assignedMemberId: inv.assignedMemberId ?? '',
+          costPoints: inv.costPoints ?? 20,
+          backgroundColor: ec.ui.backgroundColor,
+          primaryColor: ec.ui.primaryColor,
+          backgroundImageUrl: ec.ui.backgroundImageUrl,
+          musicUrl: ec.ui.musicUrl,
+          musicEnabled: ec.ui.musicEnabled,
+        })
+        setSections(ec.sections)
+        setSelectedTemplateId(inv.templateId || defaultTemplateId())
+        setIsActive(ec.isActive)
+        setInvitationType(ec.invitationType === 'paged')
+        setLuckyDraw(ec.luckyDraw)
+        setCreatedInvitation(inv)
+      })
+      .catch(() => {
+        if (!cancelled) setError('Gagal memuat undangan.')
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingInvitation(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [adminId, editingInvitationId])
 
   const fetchMembers = async () => {
     try {
@@ -165,7 +208,12 @@ export default function AdminEditorPage() {
   }, [])
 
   const handleOpenEdit = useCallback((section: SectionItem) => {
-    setEditModal({ open: true, sectionId: section.id, label: section.label, content: { ...section.content } })
+    setEditModal({
+      open: true,
+      sectionId: section.id,
+      label: section.label,
+      content: { ...(section.content ?? {}) },
+    })
   }, [])
 
   const handleSaveEdit = useCallback(() => {
@@ -181,14 +229,44 @@ export default function AdminEditorPage() {
 
   const handleTemplateSelect = (id: string) => {
     setSelectedTemplateId(id)
+    const t = TEMPLATE_OPTIONS.find((opt) => opt.id === id)
+    if (t) {
+      setForm((prev) => ({ ...prev, templateMessage: t.defaultMessage }))
+    }
   }
+
+  const buildEditorConfig = useCallback((): InvitationEditorConfig => {
+    return {
+      version: 1,
+      sections,
+      ui: {
+        primaryColor: form.primaryColor,
+        backgroundColor: form.backgroundColor,
+        backgroundImageUrl: form.backgroundImageUrl,
+        musicUrl: form.musicUrl,
+        musicEnabled: form.musicEnabled,
+      },
+      isActive,
+      invitationType: invitationType ? 'paged' : 'scroll',
+      luckyDraw,
+    }
+  }, [
+    sections,
+    form.primaryColor,
+    form.backgroundColor,
+    form.backgroundImageUrl,
+    form.musicUrl,
+    form.musicEnabled,
+    isActive,
+    invitationType,
+    luckyDraw,
+  ])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setIsSaving(true)
     setError('')
     setSuccessMessage('')
-    setCreatedInvitation(null)
 
     if (!form.assignedMemberId) {
       setError('Pilih member yang akan menerima undangan terlebih dahulu.')
@@ -196,60 +274,136 @@ export default function AdminEditorPage() {
       return
     }
 
+    const editorPayload = editorConfigToJson(buildEditorConfig())
+
     try {
-      const payload: any = {
-        title: form.title,
-        eventName: form.eventName,
-        eventDate: form.eventDate,
-        location: form.location,
-        templateMessage: form.templateMessage,
-        templateId: selectedTemplateId,
-        costPoints: form.costPoints,
-        assignedMemberId: form.assignedMemberId,
-        createdById: adminId,
-      }
-
-      if (form.invitationLink.trim()) {
-        payload.invitationLink = form.invitationLink.trim()
-      }
-
-      const response = await fetch('/api/admin/invitations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      const data = await response.json()
-      if (!response.ok || !data.success) {
-        setError(data.error || 'Gagal menyimpan undangan. Periksa kembali data Anda.')
+      if (editingInvitationId) {
+        const response = await fetch(`/api/admin/invitations/${editingInvitationId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: form.title,
+            eventName: form.eventName,
+            eventDate: form.eventDate,
+            location: form.location,
+            templateMessage: form.templateMessage,
+            templateId: selectedTemplateId,
+            invitationLink: form.invitationLink.trim(),
+            editorConfig: editorPayload,
+            status: isActive ? 'published' : 'draft',
+          }),
+        })
+        const data = await response.json()
+        if (!response.ok || !data.success) {
+          setError(data.error || 'Gagal memperbarui undangan.')
+        } else {
+          setSuccessMessage('Undangan berhasil diperbarui!')
+          setCreatedInvitation(data.data)
+        }
       } else {
-        setSuccessMessage('Undangan berhasil disimpan!')
-        setCreatedInvitation(data.data)
+        setCreatedInvitation(null)
+        const payload: Record<string, unknown> = {
+          title: form.title,
+          eventName: form.eventName,
+          eventDate: form.eventDate,
+          location: form.location,
+          templateMessage: form.templateMessage,
+          templateId: selectedTemplateId,
+          costPoints: form.costPoints,
+          assignedMemberId: form.assignedMemberId,
+          createdById: adminId,
+          editorConfig: editorPayload,
+        }
+        if (form.invitationLink.trim()) {
+          payload.invitationLink = form.invitationLink.trim()
+        }
+        const response = await fetch('/api/admin/invitations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        const data = await response.json()
+        if (!response.ok || !data.success) {
+          setError(data.error || 'Gagal menyimpan undangan. Periksa kembali data Anda.')
+        } else {
+          setSuccessMessage('Undangan berhasil disimpan!')
+          setCreatedInvitation(data.data)
+        }
       }
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan saat menyimpan undangan')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Terjadi kesalahan saat menyimpan undangan'
+      setError(msg)
     } finally {
       setIsSaving(false)
     }
   }
 
-  const copyShareLink = async () => {
-    const link = createdInvitation?.invitationLink || (form.invitationLink.trim() ? form.invitationLink.trim() : `${window.location.origin}/invitation/preview`)
+  const copyShareLink = useCallback(async () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const id = createdInvitation?.id || editingInvitationId
+    const link =
+      form.invitationLink.trim() ||
+      (id ? `${origin}/invitation/${id}` : `${origin}/invitation/preview`)
     if (!link) return
     await navigator.clipboard.writeText(link)
     setSuccessMessage('Link undangan berhasil disalin.')
+  }, [createdInvitation?.id, editingInvitationId, form.invitationLink])
+
+  const scrollToRef = (r: React.RefObject<HTMLDivElement | null>) => {
+    r.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const handleGridMenuAction = useCallback(
+    (menuId: string) => {
+      setActiveMenu(menuId)
+      if (menuId === 'pengaturan') {
+        setActiveToolPanel(null)
+        scrollToRef(refTextBlock)
+        setTimeout(() => scrollToRef(refMemberSave), 400)
+      } else if (menuId === 'tema') {
+        setActiveToolPanel((p) => (p === 'tema' ? null : 'tema'))
+      } else if (menuId === 'music') {
+        setActiveToolPanel((p) => (p === 'music' ? null : 'music'))
+      } else if (menuId === 'background') {
+        setActiveToolPanel((p) => (p === 'background' ? null : 'background'))
+      } else if (menuId === 'rsvp') {
+        setActiveToolPanel(null)
+        const sec = sections.find((s) => s.id === 'rsvp')
+        if (sec) handleOpenEdit(sec)
+        else scrollToRef(refSectionsBlock)
+      } else if (menuId === 'layarSapa') {
+        setActiveToolPanel(null)
+        const sec = sections.find((s) => s.id === 'opening')
+        if (sec) handleOpenEdit(sec)
+        else scrollToRef(refSectionsBlock)
+      } else if (menuId === 'preview') {
+        setActiveToolPanel(null)
+        const origin = window.location.origin
+        const id = createdInvitation?.id || editingInvitationId
+        const url =
+          form.invitationLink.trim() ||
+          (id ? `${origin}/invitation/${id}` : '')
+        if (url) window.open(url, '_blank', 'noopener,noreferrer')
+      } else if (menuId === 'kirim') {
+        setActiveToolPanel(null)
+        void copyShareLink()
+      } else if (menuId === 'luckyDraw') {
+        setActiveToolPanel((p) => (p === 'luckyDraw' ? null : 'luckyDraw'))
+      }
+    },
+    [sections, handleOpenEdit, copyShareLink, createdInvitation?.id, editingInvitationId, form.invitationLink]
+  )
+
   const GRID_MENUS = [
-    { id: 'pengaturan', label: 'Pengaturan', color: '#458AF7', icon: Settings },
-    { id: 'tema', label: 'Tema', color: '#4FAB5E', icon: Palette },
-    { id: 'music', label: 'Music', color: '#FF7940', icon: Music },
-    { id: 'background', label: 'Background', color: '#F745BC', icon: ImageIcon },
-    { id: 'rsvp', label: 'RSVP', color: '#2FC6DA', icon: Mail },
-    { id: 'layarSapa', label: 'Layar Sapa', color: '#ED6160', icon: Monitor },
-    { id: 'preview', label: 'Preview', color: '#FF7940', icon: Eye },
-    { id: 'kirim', label: 'Kirim', color: '#77C749', icon: Send },
-    { id: 'luckyDraw', label: 'Lucky Draw', color: '#7445F7', icon: Users },
+    { id: 'pengaturan', domId: 'menuPengaturan', label: 'Pengaturan', color: '#458AF7', icon: Settings },
+    { id: 'tema', domId: 'menuTema', label: 'Tema', color: '#4FAB5E', icon: Palette },
+    { id: 'music', domId: 'menuMusic', label: 'Music', color: '#FF7940', icon: Music },
+    { id: 'background', domId: 'menuBackground', label: 'Background', color: '#F745BC', icon: ImageIcon },
+    { id: 'rsvp', domId: 'menuRsvp', label: 'RSVP', color: '#2FC6DA', icon: Mail },
+    { id: 'layarSapa', domId: 'menuLayarSapa', label: 'Layar Sapa', color: '#ED6160', icon: Monitor },
+    { id: 'preview', domId: 'menuPreview', label: 'Preview', color: '#FF7940', icon: Eye },
+    { id: 'kirim', domId: 'menuKirim', label: 'Kirim', color: '#77C749', icon: Send },
+    { id: 'luckyDraw', domId: 'menuBukuTamu', label: 'Lucky Draw', color: '#7445F7', icon: Users },
   ]
 
   // NEUMORPHIC EDITOR UI
@@ -292,10 +446,22 @@ export default function AdminEditorPage() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-[#2D3436] mb-2">Editor Undangan</h2>
               <p className="text-sm text-[#A3B1C6]">Customize setiap detail undangan Anda</p>
+              {editingInvitationId && (
+                <p className="text-xs text-[#6C5CE7] font-semibold mt-2">Mode edit · ID: {editingInvitationId}</p>
+              )}
             </div>
 
+            {isLoadingInvitation && (
+              <div className="mb-4 rounded-xl bg-[#E0E5EC] px-4 py-3 text-sm text-[#2D3436] shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]">
+                Memuat undangan…
+              </div>
+            )}
+
             {/* Text Editor Section */}
-            <div className="mb-6 rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+            <div
+              ref={refTextBlock}
+              className="mb-6 rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]"
+            >
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-[#E0E5EC] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF]">
                   <Type className="w-5 h-5 text-[#6C5CE7]" />
@@ -368,14 +534,22 @@ export default function AdminEditorPage() {
               <div className="grid grid-cols-3 gap-2">
                 {GRID_MENUS.map((menu) => {
                   const Icon = menu.icon
+                  const isHighlighted =
+                    activeMenu === menu.id ||
+                    (menu.id === 'tema' && activeToolPanel === 'tema') ||
+                    (menu.id === 'music' && activeToolPanel === 'music') ||
+                    (menu.id === 'background' && activeToolPanel === 'background') ||
+                    (menu.id === 'luckyDraw' && activeToolPanel === 'luckyDraw')
                   return (
                     <motion.button
                       key={menu.id}
+                      id={menu.domId}
+                      type="button"
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setActiveMenu(activeMenu === menu.id ? null : menu.id)}
+                      onClick={() => handleGridMenuAction(menu.id)}
                       className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${
-                        activeMenu === menu.id
+                        isHighlighted
                           ? 'bg-[#E0E5EC] shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]'
                           : 'bg-[#E0E5EC] shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF]'
                       }`}
@@ -386,6 +560,160 @@ export default function AdminEditorPage() {
                   )
                 })}
               </div>
+
+              <AnimatePresence>
+                {activeToolPanel === 'tema' && (
+                  <motion.div
+                    key="panel-tema"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-[#2D3436]">Pilih tema</span>
+                      <button
+                        type="button"
+                        onClick={() => setActiveToolPanel(null)}
+                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                      {TEMPLATE_OPTIONS.map((t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => handleTemplateSelect(t.id)}
+                          className={`text-left rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                            selectedTemplateId === t.id
+                              ? 'bg-[#6C5CE7] text-white'
+                              : 'bg-[#F0F4F8] text-[#2D3436] hover:bg-[#6C5CE7]/15'
+                          }`}
+                        >
+                          {t.title}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeToolPanel === 'music' && (
+                  <motion.div
+                    key="panel-music"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-[#2D3436]">Musik</span>
+                      <button
+                        type="button"
+                        onClick={() => setActiveToolPanel(null)}
+                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                    <label className="block text-xs font-medium text-[#2D3436] mb-1">URL audio (mp3/ogg)</label>
+                    <input
+                      type="url"
+                      value={form.musicUrl}
+                      onChange={(e) => handleTextChange('musicUrl', e.target.value)}
+                      placeholder="https://..."
+                      className="w-full px-3 py-2 rounded-xl bg-[#F0F4F8] text-sm outline-none mb-3 shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]"
+                    />
+                    <label className="flex items-center gap-2 text-sm text-[#2D3436]">
+                      <input
+                        type="checkbox"
+                        checked={form.musicEnabled}
+                        onChange={(e) =>
+                          setForm((prev) => ({ ...prev, musicEnabled: e.target.checked }))
+                        }
+                      />
+                      Aktifkan musik di undangan
+                    </label>
+                  </motion.div>
+                )}
+
+                {activeToolPanel === 'background' && (
+                  <motion.div
+                    key="panel-bg"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-[#2D3436]">Background</span>
+                      <button
+                        type="button"
+                        onClick={() => setActiveToolPanel(null)}
+                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                    <label className="block text-xs font-medium text-[#2D3436] mb-1">Warna latar preview</label>
+                    <input
+                      type="color"
+                      value={form.backgroundColor}
+                      onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
+                      className="w-full h-10 rounded-xl cursor-pointer mb-3"
+                    />
+                    <label className="block text-xs font-medium text-[#2D3436] mb-1">URL gambar latar (opsional)</label>
+                    <input
+                      type="url"
+                      value={form.backgroundImageUrl}
+                      onChange={(e) => handleTextChange('backgroundImageUrl', e.target.value)}
+                      placeholder="https://..."
+                      className="w-full px-3 py-2 rounded-xl bg-[#F0F4F8] text-sm outline-none shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]"
+                    />
+                  </motion.div>
+                )}
+
+                {activeToolPanel === 'luckyDraw' && (
+                  <motion.div
+                    key="panel-lucky"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-[#2D3436]">Lucky Draw</span>
+                      <button
+                        type="button"
+                        onClick={() => setActiveToolPanel(null)}
+                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                    <label className="flex items-center gap-2 text-sm text-[#2D3436] mb-3">
+                      <input
+                        type="checkbox"
+                        checked={luckyDraw.enabled}
+                        onChange={(e) =>
+                          setLuckyDraw((prev) => ({ ...prev, enabled: e.target.checked }))
+                        }
+                      />
+                      Aktifkan Lucky Draw
+                    </label>
+                    <label className="block text-xs font-medium text-[#2D3436] mb-1">Judul</label>
+                    <input
+                      type="text"
+                      value={luckyDraw.title}
+                      onChange={(e) =>
+                        setLuckyDraw((prev) => ({ ...prev, title: e.target.value }))
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-[#F0F4F8] text-sm outline-none shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Status & Tipe Undangan */}
@@ -421,7 +749,10 @@ export default function AdminEditorPage() {
             </div>
 
             {/* Section Manager - Accordion with Drag */}
-            <div className="rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+            <div
+              ref={refSectionsBlock}
+              className="rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]"
+            >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-[#E0E5EC] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF]">
@@ -477,7 +808,10 @@ export default function AdminEditorPage() {
             </div>
 
             {/* Member & Save */}
-            <div className="mt-6 rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]">
+            <div
+              ref={refMemberSave}
+              className="mt-6 rounded-2xl bg-[#F0F4F8] p-5 shadow-[inset_6px_6px_12px_#A3B1C6,inset_-6px_-6px_12px_#FFFFFF]"
+            >
               <label className="block text-sm font-medium text-[#2D3436] mb-2">Pilih Member</label>
               <select
                 value={form.assignedMemberId}
@@ -502,7 +836,7 @@ export default function AdminEditorPage() {
                 className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold flex items-center justify-center gap-2 shadow-[6px_6px_12px_rgba(108,92,231,0.3),-6px_-6px_12px_#FFFFFF] disabled:opacity-60"
               >
                 <Save className="w-5 h-5" />
-                {isSaving ? 'Menyimpan...' : 'Simpan Undangan'}
+                {isSaving ? 'Menyimpan...' : editingInvitationId ? 'Perbarui undangan' : 'Simpan Undangan'}
               </motion.button>
               {error && <p className="mt-3 text-sm text-red-500 text-center">{error}</p>}
               {successMessage && <p className="mt-3 text-sm text-emerald-600 text-center">{successMessage}</p>}
@@ -526,7 +860,14 @@ export default function AdminEditorPage() {
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => { const url = createdInvitation?.invitationLink || form.invitationLink; if (url) window.open(url, '_blank') }}
+                    onClick={() => {
+                      const origin = window.location.origin
+                      const id = createdInvitation?.id || editingInvitationId
+                      const url =
+                        form.invitationLink.trim() ||
+                        (id ? `${origin}/invitation/${id}` : '')
+                      if (url) window.open(url, '_blank', 'noopener,noreferrer')
+                    }}
                     className="p-3 rounded-xl bg-[#E0E5EC] text-[#6C5CE7] shadow-[4px_4px_8px_#A3B1C6,-4px_-4px_8px_#FFFFFF] hover:shadow-[3px_3px_6px_#A3B1C6,-3px_-3px_6px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_#A3B1C6,inset_-4px_-4px_8px_#FFFFFF] cursor-pointer"
                   >
                     <Eye className="w-5 h-5" />
@@ -551,7 +892,9 @@ export default function AdminEditorPage() {
                   <div
                     className="relative w-full overflow-hidden"
                     style={{
-                      backgroundImage: 'url(https://assets.satumomen.com/images/invitation/bg-section-90534941775604513.jpg)',
+                      backgroundImage: form.backgroundImageUrl.trim()
+                        ? `url(${form.backgroundImageUrl.trim()})`
+                        : 'url(https://assets.satumomen.com/images/invitation/bg-section-90534941775604513.jpg)',
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                       minHeight: '520px',
@@ -814,7 +1157,7 @@ export default function AdminEditorPage() {
             className="flex items-center justify-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#6C5CE7] to-[#7B68EE] text-white font-semibold shadow-[6px_6px_12px_rgba(108,92,231,0.3),-6px_-6px_12px_#FFFFFF] hover:shadow-[4px_4px_8px_rgba(108,92,231,0.4),-4px_-4px_8px_#FFFFFF] transition-all active:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.2),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] disabled:opacity-60"
           >
             <Save className="w-5 h-5" />
-            {isSaving ? 'Menyimpan...' : 'Simpan'}
+            {isSaving ? 'Menyimpan...' : editingInvitationId ? 'Perbarui' : 'Simpan'}
           </motion.button>
         </motion.div>
 
@@ -842,5 +1185,19 @@ export default function AdminEditorPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function AdminEditorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#E0E5EC] to-[#F0F4F8] text-[#2D3436] font-medium">
+          Memuat editor…
+        </div>
+      }
+    >
+      <AdminEditorPageInner />
+    </Suspense>
   )
 }

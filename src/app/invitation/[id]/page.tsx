@@ -7,6 +7,7 @@ import VerdantTemplate from '@/components/VerdantTemplate'
 import ElgazeTemplate from '@/components/ElgazeTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
+import { parseEditorConfig } from '@/lib/invitationEditorConfig'
 
 type InvitationPreviewPageProps = {
   params: Promise<{
@@ -33,6 +34,12 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   if (!invitation) {
     notFound()
   }
+
+  const editorCfg = parseEditorConfig(invitation.editorConfig)
+  const ui = editorCfg.ui
+  const primaryColor = ui.primaryColor || '#e11d48'
+  const pageBackground = ui.backgroundColor || '#f7efe7'
+  const heroImageSrc = ui.backgroundImageUrl?.trim() || '/icons/bg.webp'
 
   const template =
     getTemplateById(invitation.templateId || '') || {
@@ -76,14 +83,22 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   }
 
   return (
-    <div className="min-h-screen bg-[#f7efe7] text-slate-900">
+    <div className="min-h-screen text-slate-900" style={{ backgroundColor: pageBackground }}>
+      {ui.musicEnabled && ui.musicUrl?.trim() ? (
+        <audio className="hidden" autoPlay loop src={ui.musicUrl.trim()} />
+      ) : null}
       <div className="relative overflow-hidden py-10">
         <div className="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(244,226,214,0.85),transparent_65%)]" />
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="space-y-3">
-                <p className="text-sm uppercase tracking-[0.32em] text-rose-600 font-semibold">Undangan Pernikahan</p>
+                <p
+                  className="text-sm uppercase tracking-[0.32em] font-semibold"
+                  style={{ color: primaryColor }}
+                >
+                  Undangan Pernikahan
+                </p>
                 <h1 className="text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl">{invitation.title}</h1>
                 <p className="max-w-2xl text-base leading-8 text-slate-700">{template.description}</p>
               </div>
@@ -98,7 +113,8 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
                   href={invitation.invitationLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-rose-700"
+                  className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-md transition opacity-90 hover:opacity-100"
+                  style={{ backgroundColor: primaryColor }}
                 >
                   <Sparkles className="w-4 h-4" /> Lihat Undangan
                 </a>
@@ -107,11 +123,13 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
 
             <section className="overflow-hidden rounded-[48px] border border-slate-200 bg-white shadow-2xl">
               <div className="relative h-[520px] overflow-hidden">
-                <img src="/icons/bg.webp" alt="Background Undangan" className="absolute inset-0 h-full w-full object-cover" />
+                <img src={heroImageSrc} alt="Background Undangan" className="absolute inset-0 h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/0 to-slate-950/80" />
                 <div className="relative z-10 flex h-full flex-col justify-end p-8 sm:p-12">
                   <div className="max-w-3xl rounded-[36px] bg-white/90 p-6 shadow-xl shadow-slate-950/10 backdrop-blur-sm">
-                    <p className="text-xs uppercase tracking-[0.32em] text-rose-600">{template.heroLabel}</p>
+                    <p className="text-xs uppercase tracking-[0.32em]" style={{ color: primaryColor }}>
+                      {template.heroLabel}
+                    </p>
                     <h2 className="mt-4 text-4xl font-semibold text-slate-950 sm:text-5xl">{template.heroLine}</h2>
                     <p className="mt-4 text-sm leading-7 text-slate-700">{previewMessage}</p>
                     <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -148,7 +166,9 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
                       <img src="/icons/frame-mempelai.webp" alt="The Groom" className="h-64 w-full object-cover" />
                     </div>
                     <div className="mt-6">
-                      <p className="text-xs uppercase tracking-[0.3em] text-rose-600">The Groom</p>
+                      <p className="text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>
+                        The Groom
+                      </p>
                       <h3 className="mt-3 text-2xl font-semibold text-slate-950">{groomName || 'Mempelai Pria'}</h3>
                       <p className="mt-2 text-sm text-slate-600">Pendamping acara dan bagian dari kisah cinta kami.</p>
                     </div>
@@ -158,7 +178,9 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
                       <img src="/icons/frame-mempelai.webp" alt="The Bride" className="h-64 w-full object-cover" />
                     </div>
                     <div className="mt-6">
-                      <p className="text-xs uppercase tracking-[0.3em] text-rose-600">The Bride</p>
+                      <p className="text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>
+                        The Bride
+                      </p>
                       <h3 className="mt-3 text-2xl font-semibold text-slate-950">{brideName || 'Mempelai Wanita'}</h3>
                       <p className="mt-2 text-sm text-slate-600">Dengan senyum dan doa, mengundang Anda ikut merayakan acara kami.</p>
                     </div>
@@ -183,7 +205,8 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
                         href={invitation.invitationLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-2 block break-all text-sm font-semibold text-slate-900 hover:text-rose-600"
+                        className="mt-2 block break-all text-sm font-semibold hover:underline"
+                        style={{ color: primaryColor }}
                       >
                         {invitation.invitationLink}
                       </a>

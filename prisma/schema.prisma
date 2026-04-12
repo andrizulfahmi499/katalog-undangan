@@ -62,6 +62,7 @@ model Invitations {
   templateMessage   String
   costPoints        Int                   @default(20)
   status            String                @default("draft") // 'draft' | 'published' | 'completed'
+  editorConfig      Json?
   createdById       String
   assignedMemberId  String
   createdAt         DateTime              @default(now())

@@ -648,15 +648,28 @@ export default function AdminDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleDeleteInvitation(invitation.id)}
-                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Hapus Undangan"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </motion.button>
+                          <div className="flex items-center gap-1">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => {
+                                window.location.href = `/admin/editor?id=${invitation.id}`
+                              }}
+                              className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                              title="Buka editor"
+                            >
+                              <Edit className="w-5 h-5" />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleDeleteInvitation(invitation.id)}
+                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Hapus Undangan"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </motion.button>
+                          </div>
                         </td>
                       </tr>
                     ))}

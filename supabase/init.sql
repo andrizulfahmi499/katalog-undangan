@@ -46,6 +46,7 @@ CREATE TABLE "Invitations" (
     "templateMessage" TEXT NOT NULL,
     "costPoints" INTEGER NOT NULL DEFAULT 20,
     status TEXT NOT NULL DEFAULT 'draft',
+    "editorConfig" JSONB,
     "createdById" TEXT NOT NULL,
     "assignedMemberId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
