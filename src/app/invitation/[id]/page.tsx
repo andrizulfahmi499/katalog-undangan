@@ -5,6 +5,7 @@ import CountdownTimer from '@/components/CountdownTimer'
 import DreamLandTemplate from '@/components/DreamLandTemplate'
 import VerdantTemplate from '@/components/VerdantTemplate'
 import ElgazeTemplate from '@/components/ElgazeTemplate'
+import CoreliTemplate from '@/components/CoreliTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 import { parseEditorConfig } from '@/lib/invitationEditorConfig'
@@ -80,6 +81,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   // If Elgaze template, render special layout
   if (invitation.templateId === 'elgaze') {
     return <ElgazeTemplate invitation={invitation} formattedDate={formattedDate} />
+  }
+
+  // If Corelia template, render special layout
+  if (invitation.templateId === 'corelia') {
+    return <CoreliTemplate invitation={invitation} formattedDate={formattedDate} />
   }
 
   return (

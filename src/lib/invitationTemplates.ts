@@ -77,6 +77,16 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.\n\nAcara akan dilaksanakan pada:\n- Akad Nikah: {tanggal_akad} pukul {waktu_akad} WIB\n- Resepsi: {tanggal_resepsi} pukul {waktu_resepsi} WIB\n- Lokasi: {lokasi}\n\nLink undangan lengkap:\n{link_undangan}\n\nKehadiran dan doa restu Bapak/Ibu/Saudara/i merupakan karunia terbesar bagi kami.',
   },
   {
+    id: 'corelia',
+    title: 'Corelia',
+    category: 'Pernikahan',
+    accent: 'from-stone-100 to-amber-50',
+    description: 'Template elegan dengan nuansa cream dan tipografi mewah. Dilengkapi gallery foto, countdown, RSVP, dan wedding gift.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Together Forever',
+    defaultMessage: 'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih atas kehadiran dan doanya.',
+  },
+  {
     id: 'elgaze',
     title: 'Elgaze Luxury',
     category: 'Pernikahan',
