@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@source not "../components/corelia/**/*.html";
+@source not "../components/corelia/**/*.js";
+@source not "../components/corelia/**/*.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
