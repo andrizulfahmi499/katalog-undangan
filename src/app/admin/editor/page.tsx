@@ -373,20 +373,140 @@ export default function AdminEditorPage() {
               </div>
 
               <motion.div
-                className="flex-1 rounded-2xl bg-white p-8 shadow-[6px_6px_12px_rgba(163,177,198,0.2),-6px_-6px_12px_rgba(255,255,255,0.8)]"
+                className="flex-1 rounded-2xl overflow-hidden shadow-[6px_6px_12px_rgba(163,177,198,0.2),-6px_-6px_12px_rgba(255,255,255,0.8)]"
                 style={{ backgroundColor: form.backgroundColor || '#FFFFFF' }}
               >
+                {/* Opening Section - Phinisi Style */}
                 {sections.find(s => s.id === 'opening')?.enabled && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-8 pb-8 border-b-2 border-[#E0E5EC]"
+                  <div
+                    className="relative w-full overflow-hidden"
+                    style={{
+                      backgroundImage: 'url(https://assets.satumomen.com/images/invitation/bg-section-90534941775604513.jpg)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      minHeight: '520px',
+                    }}
                   >
-                    <h1 className="text-3xl font-bold text-[#2D3436] mb-2">{form.title}</h1>
-                    <p className="text-[#A3B1C6] text-sm">Dengan hormat mengundang Anda</p>
-                  </motion.div>
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/20" />
+
+                    {/* Frame Left */}
+                    <motion.div
+                      initial={{ x: -80, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 1.2, ease: 'easeOut' }}
+                      className="absolute left-0 top-0 h-full w-16 pointer-events-none z-10"
+                      style={{
+                        background: 'linear-gradient(to right, rgba(120,40,40,0.85) 0%, rgba(120,40,40,0.3) 60%, transparent 100%)',
+                      }}
+                    >
+                      <div className="h-full w-full flex flex-col justify-between py-4 pl-2">
+                        {[...Array(8)].map((_, i) => (
+                          <div key={i} className="w-3 h-3 rounded-full bg-yellow-300/60" />
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    {/* Frame Right */}
+                    <motion.div
+                      initial={{ x: 80, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 1.2, ease: 'easeOut' }}
+                      className="absolute right-0 top-0 h-full w-16 pointer-events-none z-10"
+                      style={{
+                        background: 'linear-gradient(to left, rgba(120,40,40,0.85) 0%, rgba(120,40,40,0.3) 60%, transparent 100%)',
+                      }}
+                    >
+                      <div className="h-full w-full flex flex-col justify-between py-4 pr-2 items-end">
+                        {[...Array(8)].map((_, i) => (
+                          <div key={i} className="w-3 h-3 rounded-full bg-yellow-300/60" />
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    {/* Content */}
+                    <div className="relative z-20 flex flex-col items-center justify-between h-full px-8 pt-8 pb-10" style={{ minHeight: '520px' }}>
+                      {/* Top: Wedding Title */}
+                      <motion.div
+                        initial={{ opacity: 0, y: -30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.3 }}
+                        className="text-center mt-4 mb-auto"
+                      >
+                        <p className="text-white/90 text-sm tracking-widest uppercase mb-2">
+                          The Wedding Of
+                        </p>
+                        <h1
+                          className="text-white font-bold leading-tight"
+                          style={{
+                            fontSize: '2.8rem',
+                            fontFamily: 'Georgia, serif',
+                            textShadow: '0 2px 12px rgba(0,0,0,0.4)',
+                          }}
+                        >
+                          {form.title}
+                        </h1>
+                      </motion.div>
+
+                      {/* Bottom: Guest Card + Button */}
+                      <div className="w-full flex flex-col items-center gap-4">
+                        {/* Guest Card */}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.8, delay: 0.6 }}
+                          className="text-center px-5 py-4 rounded-xl w-full max-w-[240px]"
+                          style={{
+                            backgroundColor: 'rgba(255,255,255,0.77)',
+                            backdropFilter: 'blur(2px)',
+                          }}
+                        >
+                          <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8 }}
+                            className="text-gray-700 text-sm mb-1"
+                          >
+                            Kepada Yth.<br />Bapak/Ibu/Saudara/i
+                          </motion.p>
+                          <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9 }}
+                            className="font-bold text-base mb-1"
+                            style={{ color: form.primaryColor || '#6C5CE7' }}
+                          >
+                            Tamu Undangan
+                          </motion.p>
+                          <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1.0 }}
+                            className="text-gray-600 text-sm"
+                          >
+                            di Tempat
+                          </motion.p>
+                        </motion.div>
+
+                        {/* Open Invitation Button */}
+                        <motion.button
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.1 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.97 }}
+                          className="px-8 py-2.5 rounded-full text-white text-sm font-semibold shadow-lg"
+                          style={{ backgroundColor: form.primaryColor || '#6C5CE7' }}
+                        >
+                          Open Invitation
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
+                {/* Rest of sections */}
+                <div className="p-6">
                 {sections.find(s => s.id === 'event')?.enabled && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -437,6 +557,7 @@ export default function AdminEditorPage() {
                     <p className="text-lg font-semibold text-[#2D3436]">Wassalamu'alaikum Warahmatullahi Wabarakatuh</p>
                   </motion.div>
                 )}
+                </div>
               </motion.div>
             </motion.div>
           </div>
