@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Heart, MapPin, CalendarDays, Music, Users, Gift, MessageCircle, Copy, Share2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { Heart, MapPin, CalendarDays, Music, Users, Gift, MessageCircle, Copy, Share2, ArrowRight } from 'lucide-react'
 import CopyLinkButton from './CopyLinkButton'
 import CountdownTimer from './CountdownTimer'
 
@@ -24,397 +25,311 @@ interface DreamLandTemplateProps {
 
 export default function DreamLandTemplate({ invitation, formattedDate }: DreamLandTemplateProps) {
   const [groomName, brideName] = invitation.title.split(/\s*&\s*/).map((name) => name.trim())
-  const [activeTab, setActiveTab] = useState<'all' | 'blessings'>('all')
-  const [wishesData] = useState([
-    { name: 'Keluarga & Kerabat', message: 'Selamat atas pernikahan kalian. Semoga lancar sampai hari H dan bahagia selama-lamanya.', date: '23-07-2024, 15:20' },
-    { name: 'Teman Karib', message: 'Congratulations on your wedding! Wishing you endless love and happiness together.', date: '24-07-2024, 09:15' },
-    { name: 'Saudara', message: 'Bahagia selalu untuk kalian berdua. Terima kasih sudah mengundang kami.', date: '25-07-2024, 14:30' },
-  ])
+  const [isOpened, setIsOpened] = useState(false)
+  
+  // Parallax effects
+  const scrollRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: scrollRef,
+    offset: ["start start", "end end"]
+  })
+  const leftOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0.8])
+  const leftScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1])
+
+  if (!isOpened) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#faf8f3]">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center space-y-8 px-4"
+        >
+          <div className="space-y-4">
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm uppercase tracking-[0.4em] text-rose-600 font-semibold"
+            >
+              The Wedding Of
+            </motion.p>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-5xl sm:text-7xl font-bold font-playfair text-slate-900"
+            >
+              {groomName} <span className="text-pink-400">&</span> {brideName}
+            </motion.h1>
+          </div>
+          
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpened(true)}
+            className="group relative inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 text-white font-semibold overflow-hidden transition-all duration-300 hover:shadow-2xl"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <MessageCircle className="w-5 h-5" /> BUKA UNDANGAN
+            </span>
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-pink-500 to-rose-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          </motion.button>
+        </motion.div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#faf8f3] via-[#f5f0eb] to-[#f9f5f1]">
-      {/* Hero Section with Ornaments */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#f9f4ee] to-[#faf8f3] py-16 sm:py-24">
-        {/* Decorative elements */}
-        <div className="absolute right-0 top-0 opacity-20">
-          <svg className="h-64 w-64" viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#E6A8D7" strokeWidth="2"/>
-            <circle cx="50" cy="50" r="30" fill="none" stroke="#F4D4E8" strokeWidth="1.5"/>
-          </svg>
-        </div>
-        <div className="absolute left-0 bottom-0 opacity-10">
-          <svg className="h-96 w-96" viewBox="0 0 100 100">
-            <path d="M50,10 Q70,30 70,50 Q70,70 50,90 Q30,70 30,50 Q30,30 50,10" fill="none" stroke="#D4A574" strokeWidth="2"/>
-          </svg>
-        </div>
-
-        <div className="container relative z-10 mx-auto px-4">
-          <div className="text-center space-y-6">
-            <div className="inline-block rounded-full bg-white/60 px-6 py-2 backdrop-blur">
-              <p className="text-sm uppercase tracking-[0.3em] text-rose-600 font-semibold">Bersama Keluarga Kami</p>
-            </div>
-
-            <h1 className="text-5xl sm:text-6xl font-bold text-slate-900">
-              {groomName}
-              <span className="block text-pink-400">&</span>
-              {brideName}
-            </h1>
-
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Dengan hormat dan kebanggaan kami mengundang Anda untuk merayakan hari istimewa kami di pernikahan yang akan menjadi awal kehidupan baru kami bersama.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <a
-                href={invitation.invitationLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-400 to-rose-500 px-8 py-3 text-white font-semibold shadow-lg hover:shadow-xl transition hover:scale-105"
-              >
-                <Heart className="w-5 h-5" /> Lihat Undangan Lengkap
-              </a>
-              <CopyLinkButton link={invitation.invitationLink} label="Bagikan Link" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Couple Profiles Section */}
-      <div className="relative py-16 sm:py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center text-3xl font-bold text-slate-900 mb-12">Pasangan Pengantin</h2>
-
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            {/* Groom */}
-            <div className="text-center space-y-4">
-              <div className="relative inline-block">
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-200 to-rose-200 blur-lg opacity-40"></div>
-                <div className="relative w-48 h-48 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center shadow-xl border-4 border-white">
-                  <span className="text-slate-400">👰</span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold">Mempelai Pria</p>
-                <h3 className="text-3xl font-bold text-slate-900">{groomName}</h3>
-                <p className="text-slate-600">Putra dari keluarga besar...</p>
-              </div>
-            </div>
-
-            {/* Bride */}
-            <div className="text-center space-y-4">
-              <div className="relative inline-block">
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-200 to-rose-200 blur-lg opacity-40"></div>
-                <div className="relative w-48 h-48 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center shadow-xl border-4 border-white">
-                  <span className="text-slate-400">🤵</span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold">Mempelai Wanita</p>
-                <h3 className="text-3xl font-bold text-slate-900">{brideName}</h3>
-                <p className="text-slate-600">Putri dari keluarga besar...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Events Section */}
-      <div className="py-16 sm:py-20 bg-white/50 backdrop-blur">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center text-3xl font-bold text-slate-900 mb-12">Acara Pernikahan</h2>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Event 1: Holy Matrimony */}
-            <div className="rounded-2xl border-2 border-pink-200 bg-white p-6 shadow-md hover:shadow-lg transition">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="rounded-full bg-pink-100 p-3">
-                  <CalendarDays className="w-5 h-5 text-pink-600" />
-                </div>
-                <h3 className="font-bold text-slate-900">Holy Matrimony</h3>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Hari</p>
-                  <p className="font-semibold text-slate-900">Kamis, 27 Juli 2023</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Waktu</p>
-                  <p className="font-semibold text-slate-900">11:00 WIB</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Lokasi</p>
-                  <p className="font-semibold text-slate-900">{invitation.location}</p>
-                </div>
-              </div>
-              <button className="mt-4 w-full rounded-lg bg-gradient-to-r from-pink-400 to-rose-500 px-4 py-2 text-sm font-semibold text-white hover:shadow-md transition">
-                <MapPin className="inline w-4 h-4 mr-2" /> Lihat Maps
-              </button>
-            </div>
-
-            {/* Event 2: Reception */}
-            <div className="rounded-2xl border-2 border-rose-200 bg-white p-6 shadow-md hover:shadow-lg transition">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="rounded-full bg-rose-100 p-3">
-                  <Users className="w-5 h-5 text-rose-600" />
-                </div>
-                <h3 className="font-bold text-slate-900">Resepsi</h3>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Hari</p>
-                  <p className="font-semibold text-slate-900">Sabtu, 29 Juli 2023</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Waktu</p>
-                  <p className="font-semibold text-slate-900">17:00 WIB</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Lokasi</p>
-                  <p className="font-semibold text-slate-900">Grand Ballroom...</p>
-                </div>
-              </div>
-              <button className="mt-4 w-full rounded-lg bg-gradient-to-r from-rose-400 to-pink-500 px-4 py-2 text-sm font-semibold text-white hover:shadow-md transition">
-                <MapPin className="inline w-4 h-4 mr-2" /> Lihat Maps
-              </button>
-            </div>
-
-            {/* Event 3: Tea Ceremony */}
-            <div className="rounded-2xl border-2 border-amber-200 bg-white p-6 shadow-md hover:shadow-lg transition">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="rounded-full bg-amber-100 p-3">
-                  <Music className="w-5 h-5 text-amber-600" />
-                </div>
-                <h3 className="font-bold text-slate-900">Tea Ceremony</h3>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Hari</p>
-                  <p className="font-semibold text-slate-900">Minggu, 30 Juli 2023</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Waktu</p>
-                  <p className="font-semibold text-slate-900">16:00 WIB</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Lokasi</p>
-                  <p className="font-semibold text-slate-900">Heritage Room...</p>
-                </div>
-              </div>
-              <button className="mt-4 w-full rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-2 text-sm font-semibold text-white hover:shadow-md transition">
-                <MapPin className="inline w-4 h-4 mr-2" /> Lihat Maps
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Countdown Section */}
-      <div className="py-16 sm:py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center space-y-8">
-            <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold mb-2">Hitung Mundur</p>
-              <h2 className="text-3xl font-bold text-slate-900">Save the Date</h2>
-            </div>
-            <CountdownTimer targetDate={new Date(invitation.eventDate)} />
-            <button className="inline-flex items-center gap-2 rounded-full bg-white border-2 border-pink-300 px-6 py-3 font-semibold text-slate-900 hover:bg-pink-50 transition">
-              <CalendarDays className="w-5 h-5" /> Tambah ke Kalender
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Gallery Section */}
-      <div className="py-16 sm:py-20 bg-white/50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center text-3xl font-bold text-slate-900 mb-3">Galeri Kami</h2>
-          <p className="text-center text-slate-600 mb-12">Momen-momen berharga kami bersama</p>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 aspect-square shadow-md hover:shadow-xl transition cursor-pointer"
-              >
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
-                  <span className="text-slate-400 text-4xl">📷</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Video Section */}
-      <div className="py-16 sm:py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center text-3xl font-bold text-slate-900 mb-12">Video Kami</h2>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Prewed Video */}
-            <div className="space-y-3">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 shadow-lg flex items-center justify-center">
-                <button className="rounded-full bg-white/90 p-4 hover:bg-white transition">
-                  <span className="text-3xl">▶️</span>
-                </button>
-              </div>
-              <p className="font-semibold text-slate-900">Pre-Wedding Video</p>
-              <p className="text-sm text-slate-600">Momen indah persiapan kami menjelang hari istimewa</p>
-            </div>
-
-            {/* Live Stream */}
-            <div className="space-y-3">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 shadow-lg flex items-center justify-center">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                  <button className="rounded-full bg-white/90 p-4 hover:bg-white transition">
-                    <span className="text-3xl">▶️</span>
-                  </button>
-                </div>
-              </div>
-              <p className="font-semibold text-slate-900">Live Streaming</p>
-              <p className="text-sm text-slate-600">Saksikan pernikahan kami secara langsung</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* RSVP Section */}
-      <div className="py-16 sm:py-20 bg-white/50">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="text-center mb-8">
-            <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold mb-2">Konfirmasi</p>
-            <h2 className="text-3xl font-bold text-slate-900">Formulir RSVP</h2>
-            <p className="text-slate-600 mt-2">Bantu kami untuk mempersiapkan segala sesuatu dengan memberitahu kehadiran Anda</p>
-          </div>
-
-          <form className="space-y-5 bg-white rounded-2xl p-6 shadow-md">
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap</label>
-              <input
-                type="text"
-                placeholder="Masukkan nama Anda"
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Akan Hadir?</label>
-              <div className="flex gap-4">
-                {['Ya', 'Tidak'].map((option) => (
-                  <label key={option} className="flex items-center gap-2">
-                    <input type="radio" name="attend" value={option} className="w-4 h-4" />
-                    <span className="text-slate-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Acara Mana yang Akan Dihadiri?</label>
-              <div className="space-y-2">
-                {['Holy Matrimony', 'Reception', 'Tea Ceremony'].map((event) => (
-                  <label key={event} className="flex items-center gap-2">
-                    <input type="checkbox" className="w-4 h-4 rounded" />
-                    <span className="text-slate-700">{event}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Ucapan & Doa</label>
-              <textarea
-                placeholder="Sampaikan ucapan terbaik Anda untuk kami..."
-                rows={4}
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-gradient-to-r from-pink-400 to-rose-500 px-6 py-3 font-semibold text-white hover:shadow-lg transition"
+    <div className="relative min-h-screen bg-[#faf8f3] text-slate-900" ref={scrollRef}>
+      {/* Split Screen Layout for Desktop */}
+      <div className="flex flex-col lg:flex-row">
+        
+        {/* Left Side: Sticky Image / Cover */}
+        <div className="relative w-full lg:w-1/2 lg:h-screen lg:sticky lg:top-0 overflow-hidden order-1 lg:order-1">
+          <motion.div 
+            style={{ opacity: leftOpacity, scale: leftScale }}
+            className="absolute inset-0"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
+              alt="Background" 
+              className="h-full w-full object-cover grayscale-[20%]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 lg:bg-gradient-to-r lg:from-black/10 lg:via-transparent lg:to-black/40"></div>
+          </motion.div>
+          
+          <div className="relative z-10 h-full flex flex-col justify-between p-8 sm:p-12 lg:p-16 text-white min-h-[500px] lg:min-h-0">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
             >
-              Kirim RSVP
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Wishing Well Section */}
-      <div className="py-16 sm:py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold mb-2">Ucapan</p>
-            <h2 className="text-3xl font-bold text-slate-900">Kolom Doa & Ucapan</h2>
-            <p className="text-slate-600 mt-2">Terima kasih atas do'a dan restu untuk pernikahan kami</p>
+              <p className="text-xs sm:text-sm uppercase tracking-[0.5em] font-medium opacity-80 mb-2">Save The Date</p>
+              <h2 className="text-2xl sm:text-3xl font-playfair">{formattedDate}</h2>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <h1 className="text-6xl sm:text-8xl lg:text-9xl font-bold font-playfair mb-4 leading-none">
+                {groomName}<br/>
+                <span className="text-pink-400">&</span><br/>
+                {brideName}
+              </h1>
+              <p className="text-lg opacity-90 max-w-sm font-light leading-relaxed">
+                "Dua hati yang menyatu, mengawali perjalanan indah selamanya."
+              </p>
+            </motion.div>
           </div>
+          
+          {/* Watercolor Ornaments Over Left Side */}
+          <div className="absolute top-0 right-0 p-4 opacity-40 pointer-events-none">
+             <img src="/vectors/ornaments.svg" className="w-32 h-32 rotate-90" alt="" />
+          </div>
+        </div>
 
-          <div className="max-w-3xl mx-auto">
-            <div className="rounded-2xl bg-white/70 backdrop-blur p-6 shadow-md space-y-4">
-              {wishesData.map((wish, i) => (
-                <div key={i} className="border-b border-slate-200 pb-4 last:border-b-0">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <p className="font-semibold text-slate-900">{wish.name}</p>
-                      <p className="text-xs text-slate-500">{wish.date}</p>
-                    </div>
-                    <span className="text-2xl">💕</span>
+        {/* Right Side: Scrollable Content */}
+        <div className="w-full lg:w-1/2 order-2 lg:order-2">
+          
+          {/* Profil Section */}
+          <section className="py-20 px-8 sm:px-12 lg:px-20 space-y-20">
+            <div className="text-center space-y-4">
+              <span className="text-pink-600 text-sm uppercase tracking-[0.4em] font-bold">The Couple</span>
+              <h3 className="text-4xl font-playfair">Mempelai Pengantin</h3>
+              <p className="text-slate-500 font-light italic max-w-md mx-auto">"Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya..."</p>
+            </div>
+
+            <div className="space-y-24">
+              {/* Groom */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="flex flex-col items-center text-center space-y-6"
+              >
+                <div className="relative group">
+                  <div className="absolute -inset-4 bg-pink-100/50 rounded-full blur-2xl group-hover:bg-pink-100 transition-colors"></div>
+                  <div className="relative w-56 h-72 rounded-[4rem] overflow-hidden border-8 border-white shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1550005810-350a417a1505?q=80&w=1974&auto=format&fit=crop" alt="Groom" className="h-full w-full object-cover" />
                   </div>
-                  <p className="text-slate-700 text-sm">{wish.message}</p>
+                  <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-2xl shadow-xl">
+                    <Heart className="w-6 h-6 text-pink-500 fill-pink-500" />
+                  </div>
                 </div>
+                <div className="space-y-2">
+                  <h4 className="text-3xl font-playfair text-slate-900">{groomName}</h4>
+                  <p className="text-sm font-bold tracking-widest text-slate-400 uppercase">Mempelai Pria</p>
+                  <div className="pt-4 text-slate-600">
+                    <p className="font-semibold">Putra dari:</p>
+                    <p>Bapak Fulan & Ibu Fulanah</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bride */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="flex flex-col items-center text-center space-y-6"
+              >
+                <div className="relative group">
+                  <div className="absolute -inset-4 bg-rose-100/50 rounded-full blur-2xl group-hover:bg-rose-100 transition-colors"></div>
+                  <div className="relative w-56 h-72 rounded-[4rem] overflow-hidden border-8 border-white shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop" alt="Bride" className="h-full w-full object-cover" />
+                  </div>
+                  <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-2xl shadow-xl">
+                    <Heart className="w-6 h-6 text-pink-500 fill-pink-500" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="text-3xl font-playfair text-slate-900">{brideName}</h4>
+                  <p className="text-sm font-bold tracking-widest text-slate-400 uppercase">Mempelai Wanita</p>
+                  <div className="pt-4 text-slate-600">
+                    <p className="font-semibold">Putri dari:</p>
+                    <p>Bapak Fulano & Ibu Fulana</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* Events Section */}
+          <section className="bg-white/40 py-24 px-8 sm:px-12 lg:px-20 space-y-16">
+            <div className="text-center space-y-2">
+              <span className="text-pink-600 text-sm uppercase tracking-[0.4em] font-bold">Wedding Events</span>
+              <h3 className="text-4xl font-playfair">Acara Bahagia</h3>
+            </div>
+
+            <div className="grid gap-12">
+              {[
+                { title: 'Holy Matrimony', time: '10:00 - 12:00 WIB', icon: CalendarDays, color: 'bg-blue-50 text-blue-600 border-blue-100' },
+                { title: 'Reception', time: '13:00 - 16:00 WIB', icon: Users, color: 'bg-rose-50 text-rose-600 border-rose-100' },
+                { title: 'Tea Pai', time: '16:30 - 18:00 WIB', icon: Music, color: 'bg-amber-50 text-amber-600 border-amber-100' }
+              ].map((event, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className={`relative p-8 rounded-[2.5rem] border-2 ${event.color} bg-white group hover:shadow-2xl hover:shadow-pink-100 transition-all duration-500`}
+                >
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                    <div className={`p-5 rounded-2xl ${event.color} flex-shrink-0`}>
+                      <event.icon className="w-8 h-8" />
+                    </div>
+                    <div className="text-center sm:text-left space-y-4 flex-grow">
+                      <h4 className="text-2xl font-playfair font-bold text-slate-900">{event.title}</h4>
+                      <div className="grid gap-2 text-slate-600 font-light">
+                        <p className="flex items-center justify-center sm:justify-start gap-2">
+                           <CalendarDays className="w-4 h-4 opacity-50" /> {formattedDate}
+                        </p>
+                        <p className="flex items-center justify-center sm:justify-start gap-2">
+                           <Music className="w-4 h-4 opacity-50" /> {event.time}
+                        </p>
+                        <p className="flex items-center justify-center sm:justify-start gap-2">
+                           <MapPin className="w-4 h-4 opacity-50" /> {invitation.location}
+                        </p>
+                      </div>
+                      <button className="mt-4 px-6 py-2 rounded-full border border-current text-sm font-semibold hover:bg-current hover:text-white transition-colors">
+                        BUKA GOOGLE MAPS
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-      </div>
+          </section>
 
-      {/* Gift Section */}
-      <div className="py-16 sm:py-20 bg-white/50">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="text-center mb-8">
-            <Gift className="w-12 h-12 mx-auto text-pink-500 mb-4" />
-            <h2 className="text-3xl font-bold text-slate-900">Hadiah Pernikahan</h2>
-            <p className="text-slate-600 mt-2">Kehadiran Anda adalah hadiah terbesar bagi kami. Jika ingin memberikan hadiah, Anda dapat menggunakankan amplop digital berikut:</p>
-          </div>
+          {/* Gallery Section */}
+          <section className="py-24 px-8 sm:px-12 lg:px-20 space-y-12">
+             <div className="text-center space-y-2">
+                <span className="text-pink-600 text-sm uppercase tracking-[0.4em] font-bold">Our Moments</span>
+                <h3 className="text-4xl font-playfair">Galeri Foto</h3>
+             </div>
+             
+             <div className="grid grid-cols-2 gap-4">
+                {[1,2,3,4,5,6].map((i) => (
+                  <motion.div 
+                    key={i}
+                    whileHover={{ scale: 0.98 }}
+                    className="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg"
+                  >
+                    <img src={`https://images.unsplash.com/photo-${1511285560929 + i}?q=80&w=800&auto=format&fit=crop`} className="w-full h-full object-cover" alt="" />
+                  </motion.div>
+                ))}
+             </div>
+          </section>
 
-          <div className="space-y-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200">
-            <div className="text-center">
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-500 font-semibold mb-2">Bank Tujuan</p>
-              <p className="font-bold text-2xl text-slate-900 mb-1">BCA</p>
-              <p className="text-sm text-slate-600">Account Number</p>
-              <p className="font-mono font-bold text-lg text-slate-900">1234 5678 9001</p>
-              <p className="text-sm text-slate-600 mt-2">Atas Nama: {groomName} & {brideName}</p>
+          {/* RSVP Section */}
+          <section className="bg-slate-900 py-24 px-8 sm:px-12 lg:px-20 rounded-t-[4rem] text-white">
+            <div className="max-w-md mx-auto space-y-12">
+              <div className="text-center space-y-4">
+                <h3 className="text-4xl font-playfair">Konfirmasi Kehadiran</h3>
+                <p className="text-slate-400 font-light">Berikan kabar kehadiran Anda melalui form di bawah ini.</p>
+              </div>
+
+              <form className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Nama Lengkap</label>
+                  <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-pink-500 transition-colors" placeholder="Masukkan nama" />
+                </div>
+                
+                <div className="space-y-4">
+                  <label className="text-xs uppercase tracking-widest text-slate-500 font-bold block">Kehadiran</label>
+                  <div className="flex gap-4">
+                    <button type="button" className="flex-1 py-4 rounded-2xl bg-white/5 border border-white/10 hover:border-pink-500 transition-all">YA</button>
+                    <button type="button" className="flex-1 py-4 rounded-2xl bg-white/5 border border-white/10 hover:border-pink-500 transition-all">TIDAK</button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Pesan & Doa</label>
+                  <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-pink-500 transition-colors" placeholder="Tuliskan ucapan..."></textarea>
+                </div>
+
+                <button className="w-full py-5 rounded-2xl bg-pink-600 hover:bg-pink-700 font-bold tracking-widest transition-colors shadow-lg shadow-pink-900/20">
+                  KIRIM KONFIRMASI
+                </button>
+              </form>
             </div>
+          </section>
 
-            <button className="w-full rounded-lg bg-slate-900 text-white py-3 font-semibold hover:bg-slate-800 transition flex items-center justify-center gap-2">
-              <Copy className="w-5 h-5" /> Salin Nomor Rekening
-            </button>
-          </div>
-        </div>
-      </div>
+          {/* Gift Section / Footer */}
+          <footer className="bg-[#faf8f3] py-24 px-8 sm:px-12 lg:px-20 space-y-16 text-center">
+             <div className="space-y-8">
+                <Gift className="w-12 h-12 mx-auto text-pink-500" />
+                <div className="space-y-4">
+                  <h3 className="text-3xl font-playfair">Wedding Gift</h3>
+                  <p className="text-slate-500 max-w-sm mx-auto font-light">Tanpa mengurangi rasa hormat, bagi Anda yang ingin mengirimkan hadiah digital.</p>
+                </div>
+                
+                <div className="max-w-xs mx-auto p-8 rounded-[3rem] bg-white shadow-xl border border-pink-50 space-y-4">
+                   <p className="text-slate-900 font-bold text-xl">BANK BCA</p>
+                   <p className="text-slate-500 text-sm">Transfer atas nama:</p>
+                   <p className="text-slate-900 font-medium">{groomName} & {brideName}</p>
+                   <div className="py-4 border-y border-slate-100">
+                      <p className="text-2xl font-mono tracking-wider font-bold text-pink-600">123 456 7890</p>
+                   </div>
+                   <button className="w-full flex items-center justify-center gap-2 text-pink-600 font-bold text-sm tracking-widest hover:text-pink-700 transition">
+                      <Copy className="w-4 h-4" /> SALIN NO. REKENING
+                   </button>
+                </div>
+             </div>
 
-      {/* Thank You Section */}
-      <div className="py-20 sm:py-28 bg-gradient-to-b from-white/50 to-[#f9f5f1]">
-        <div className="container mx-auto px-4 text-center">
-          <div className="space-y-6 max-w-2xl mx-auto">
-            <p className="text-sm uppercase tracking-[0.3em] text-pink-600 font-semibold">Penutup</p>
-            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900">Terima Kasih</h2>
-            <p className="text-lg text-slate-600 leading-relaxed">
-              Terima kasih telah meluangkan waktu untuk menjadi bagian dari hari istimewa kami. Doa dan restu dari Anda sangat berarti bagi kami. Sampai jumpa di acara pernikahan!
-            </p>
+             <div className="pt-24 space-y-8">
+                <p className="text-slate-400 font-light max-w-md mx-auto italic">"Terima kasih atas doa dan restu Anda di hari bahagia kami."</p>
+                <div className="flex justify-center gap-4">
+                   <CopyLinkButton link={invitation.invitationLink} label="Copy Link" />
+                   <button className="flex items-center gap-2 px-6 py-3 rounded-full border border-slate-300 text-slate-600 font-semibold hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all">
+                      <Share2 className="w-4 h-4" /> Share
+                   </button>
+                </div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400 font-bold">Katalog Undangan &copy; 2026</p>
+             </div>
+          </footer>
 
-            <div className="flex flex-wrap justify-center gap-3 pt-4">
-              <CopyLinkButton link={invitation.invitationLink} label="Bagikan Undangan" />
-              <button className="inline-flex items-center gap-2 rounded-full border-2 border-slate-300 bg-white px-6 py-3 font-semibold text-slate-900 hover:bg-slate-50 transition">
-                <Share2 className="w-5 h-5" /> Bagikan di Media Sosial
-              </button>
-            </div>
-
-            <div className="pt-8 border-t border-slate-200">
-              <p className="text-sm text-slate-500">Created with ❤️ using Katalog Undangan</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

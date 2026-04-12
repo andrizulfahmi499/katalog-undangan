@@ -76,6 +76,17 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     defaultMessage:
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.\n\nAcara akan dilaksanakan pada:\n- Akad Nikah: {tanggal_akad} pukul {waktu_akad} WIB\n- Resepsi: {tanggal_resepsi} pukul {waktu_resepsi} WIB\n- Lokasi: {lokasi}\n\nLink undangan lengkap:\n{link_undangan}\n\nKehadiran dan doa restu Bapak/Ibu/Saudara/i merupakan karunia terbesar bagi kami.',
   },
+  {
+    id: 'elgaze',
+    title: 'Elgaze Luxury',
+    category: 'Pernikahan',
+    accent: 'from-stone-900 to-amber-900',
+    description: 'Template premium dengan tema Dark Luxury, layout cinematic split-screen, dan transisi elegan.',
+    heroLabel: 'The Grand Wedding',
+    heroLine: 'A Journey of Love',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nMenjadi suatu kehormatan bagi kami untuk mengundang Anda merayakan persatuan cinta kami.\n\nDetail lengkap undangan dapat dilihat di:\n{link_undangan}\n\nTerima kasih atas doa dan kehadirannya.',
+  },
 ]
 
 export function getTemplateById(id: string) {

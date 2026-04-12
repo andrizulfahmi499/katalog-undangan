@@ -4,6 +4,7 @@ import CopyLinkButton from '@/components/CopyLinkButton'
 import CountdownTimer from '@/components/CountdownTimer'
 import DreamLandTemplate from '@/components/DreamLandTemplate'
 import VerdantTemplate from '@/components/VerdantTemplate'
+import ElgazeTemplate from '@/components/ElgazeTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 
@@ -67,6 +68,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   // If Dream Land template, render special layout
   if (invitation.templateId === 'dream-land') {
     return <DreamLandTemplate invitation={invitation} formattedDate={formattedDate} />
+  }
+
+  // If Elgaze template, render special layout
+  if (invitation.templateId === 'elgaze') {
+    return <ElgazeTemplate invitation={invitation} formattedDate={formattedDate} />
   }
 
   return (
