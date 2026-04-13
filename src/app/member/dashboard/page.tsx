@@ -51,14 +51,35 @@ export default function MemberDashboard() {
     logoUrl: '',
     address: '',
     whatsappNumber: '',
-    socialMedia: '',
+    socialMedia: {
+      instagram: { enabled: false, url: '' },
+      tiktok: { enabled: false, url: '' },
+      facebook: { enabled: false, url: '' },
+      twitter: { enabled: false, url: '' }
+    },
     themeColor: 'pink',
     pricingPackages: [
-      { id: 1, name: 'Basic', price: '150.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas' },
-      { id: 2, name: 'Premium', price: '300.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram' },
-      { id: 3, name: 'Exclusive', price: '500.000', features: 'Masa aktif selamanya\nBebas Custom\nCustom Domain Pilihan\nDesain Sesuai Keinginan' }
+      { id: 1, name: 'Basic', price: '150.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas', enabled: true },
+      { id: 2, name: 'Premium', price: '300.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram', enabled: true },
+      { id: 3, name: 'Exclusive', price: '500.000', features: 'Masa aktif selamanya\nBebas Custom\nCustom Domain Pilihan\nDesain Sesuai Keinginan', enabled: true }
     ]
   })
+  
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 1024 * 1024) {
+      alert("Ukuran gambar maksimal 1 MB")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      setLpConfig({ ...lpConfig, logoUrl: event.target?.result as string })
+    }
+    reader.readAsDataURL(file)
+  }
   const [isSavingLp, setIsSavingLp] = useState(false)
 
   // Get member ID from localStorage
@@ -292,27 +313,27 @@ export default function MemberDashboard() {
   const totalCreditUsed = invitations.reduce((sum, inv) => sum + inv.costPoints, 0)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50">
+    <div className="min-h-screen bg-[#e0e5ec] text-[#2d3748] font-sans pb-10">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
+      <header className="neu-flat border-b border-[#d1d9e6] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ x: -3 }}
                 onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+                className="flex items-center gap-2 text-[#6b7280] hover:text-[#2d3748] transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="font-medium">Kembali</span>
               </motion.button>
-              <h1 className="text-2xl font-bold text-gray-800">Member Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[#2d3748]">Member Dashboard</h1>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-gray-700 font-medium"
+              className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl transition-colors font-medium"
             >
               <LogOut className="w-5 h-5" />
               Logout
@@ -328,15 +349,15 @@ export default function MemberDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
                 <MessageCircle className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Undangan</p>
-                <p className="text-3xl font-bold text-gray-800">{invitations.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Undangan</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{invitations.length}</p>
               </div>
             </div>
           </motion.div>
@@ -345,15 +366,15 @@ export default function MemberDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center">
                 <Send className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Dikirim</p>
-                <p className="text-3xl font-bold text-gray-800">{totalSent}</p>
+                <p className="text-sm text-[#6b7280]">Total Dikirim</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{totalSent}</p>
               </div>
             </div>
           </motion.div>
@@ -362,30 +383,30 @@ export default function MemberDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                 <CreditCard className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Credit Terpakai</p>
-                <p className="text-3xl font-bold text-gray-800">{totalCreditUsed} coin</p>
+                <p className="text-sm text-[#6b7280]">Credit Terpakai</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{totalCreditUsed} coin</p>
               </div>
             </div>
           </motion.div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-4 mb-6">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTab('invitations')}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'invitations'
-                ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'neu-pressed text-pink-600'
+                : 'neu-btn text-[#6b7280]'
             }`}
           >
             Undangan
@@ -396,8 +417,8 @@ export default function MemberDashboard() {
             onClick={() => setActiveTab('history')}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'history'
-                ? 'bg-gradient-to-r from-purple-400 to-indigo-500 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'neu-pressed text-purple-600'
+                : 'neu-btn text-[#6b7280]'
             }`}
           >
             Riwayat Pengiriman
@@ -409,8 +430,8 @@ export default function MemberDashboard() {
               onClick={() => setActiveTab('landing_page')}
               className={`px-6 py-3 rounded-xl font-medium transition-all ${
                 activeTab === 'landing_page'
-                  ? 'bg-gradient-to-r from-teal-400 to-emerald-500 text-white shadow-lg'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  ? 'neu-pressed text-teal-600'
+                  : 'neu-btn text-[#6b7280]'
               }`}
             >
               Pengaturan Landing Page
@@ -557,15 +578,15 @@ export default function MemberDashboard() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden p-6"
+              className="neu-raised-lg rounded-3xl overflow-hidden p-6"
             >
-              <h2 className="text-xl font-bold text-gray-800 mb-6">Pengaturan Custom Landing Page</h2>
+              <h2 className="text-xl font-bold text-[#2d3748] mb-6">Pengaturan Custom Landing Page</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Custom Slug Profil (URL)</label>
+                   <div>
+                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Custom Slug Profil (URL)</label>
                     <div className="flex items-center gap-2">
-                       <span className="text-gray-500 bg-gray-100 px-3 py-2 rounded-xl text-sm border border-gray-200">
+                       <span className="text-[#6b7280] neu-flat px-4 py-3 rounded-xl text-sm whitespace-nowrap">
                          {typeof window !== 'undefined' ? window.location.host : '...'} /
                        </span>
                        <input 
@@ -573,7 +594,7 @@ export default function MemberDashboard() {
                          value={lpSlug}
                          onChange={(e) => setLpSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                          placeholder="nama-kamu"
-                         className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                         className="flex-1 px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
                        />
                     </div>
                     {lpSlug && (
@@ -584,22 +605,31 @@ export default function MemberDashboard() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo URL (opsional)</label>
-                    <input 
-                      type="text" 
-                      value={lpConfig.logoUrl}
-                      onChange={(e) => setLpConfig({...lpConfig, logoUrl: e.target.value})}
-                      placeholder="https://example.com/logo.png"
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
-                    />
+                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Logo (Upload dari Komputer/HP)</label>
+                    <div className="flex items-center gap-4">
+                      {lpConfig.logoUrl && (
+                        <div className="w-16 h-16 rounded-xl border border-[#d1d9e6] overflow-hidden bg-[#e0e5ec] neu-pressed-sm shrink-0 p-1">
+                          <img src={lpConfig.logoUrl} alt="Logo preview" className="w-full h-full object-contain" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <input 
+                          type="file" 
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#d1d9e6] file:text-[#2d3748] hover:file:bg-[#b8bec7] placeholder:text-[#9ca3af] focus:outline-none neu-pressed px-2 py-2 rounded-xl"
+                        />
+                        <p className="text-xs text-[#9ca3af] mt-1">Logo URL otomatis tersimpan jika gambar diunggah.</p>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Warna Tema</label>
+                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Pilih Warna Tema</label>
                     <select 
                       value={lpConfig.themeColor}
                       onChange={(e) => setLpConfig({...lpConfig, themeColor: e.target.value})}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
                     >
                       <option value="pink">Pink (Default)</option>
                       <option value="purple">Purple</option>
@@ -610,65 +640,120 @@ export default function MemberDashboard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Nomor WhatsApp Bisnis</label>
+                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Nomor WhatsApp Bisnis</label>
                     <input 
                       type="text" 
                       value={lpConfig.whatsappNumber}
                       onChange={(e) => setLpConfig({...lpConfig, whatsappNumber: e.target.value})}
                       placeholder="62812345678"
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Lokasi / Alamat Lengkap</label>
+                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Lokasi / Alamat Lengkap</label>
                     <textarea 
                       value={lpConfig.address}
                       onChange={(e) => setLpConfig({...lpConfig, address: e.target.value})}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none resize-none"
+                      rows={3}
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Link Sosial Media (Instagram/dll)</label>
-                    <input 
-                      type="text" 
-                      value={lpConfig.socialMedia}
-                      onChange={(e) => setLpConfig({...lpConfig, socialMedia: e.target.value})}
-                      placeholder="https://instagram.com/akun"
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
-                    />
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium text-[#6b7280]">Link Sosial Media</label>
+                    {['instagram', 'tiktok', 'facebook', 'twitter'].map((platform) => (
+                      <div key={platform} className="flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            const current = lpConfig.socialMedia?.[platform] || { enabled: false, url: '' };
+                            setLpConfig({
+                              ...lpConfig,
+                              socialMedia: {
+                                ...lpConfig.socialMedia,
+                                [platform]: { ...current, enabled: !current.enabled }
+                              }
+                            });
+                          }}
+                          className={`w-12 h-6 flex shrink-0 items-center rounded-full p-1 transition-colors ${
+                            lpConfig.socialMedia?.[platform]?.enabled ? 'bg-teal-500' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div
+                            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                              lpConfig.socialMedia?.[platform]?.enabled ? 'translate-x-6' : 'translate-x-0'
+                            }`}
+                          />
+                        </button>
+                        <div className="flex-1 flex items-center neu-pressed rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-teal-400">
+                           <span className="bg-[#d1d9e6]/30 text-[#6b7280] px-3 py-2 text-xs font-semibold uppercase w-24 text-center shrink-0 border-r border-[#d1d9e6]">{platform}</span>
+                           <input 
+                             type="text" 
+                             value={lpConfig.socialMedia?.[platform]?.url || ''}
+                             onChange={(e) => setLpConfig({
+                               ...lpConfig,
+                               socialMedia: {
+                                 ...lpConfig.socialMedia,
+                                 [platform]: { ...lpConfig.socialMedia?.[platform], url: e.target.value }
+                               }
+                             })}
+                             placeholder={`https://${platform}.com/username`}
+                             disabled={!lpConfig.socialMedia?.[platform]?.enabled}
+                             className={`flex-1 px-3 py-2 text-sm focus:outline-none border-none bg-transparent ${!lpConfig.socialMedia?.[platform]?.enabled ? 'opacity-50' : ''}`}
+                           />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="space-y-6">
-                   <h3 className="text-lg font-semibold text-gray-800">Paket Harga (Pricing)</h3>
-                   <p className="text-sm text-gray-600 mb-4">Ubah nama paket, harga, dan fitur (pisahkan dengan baris baru / Enter).</p>
+                   <h3 className="text-lg font-semibold text-[#2d3748]">Paket Harga (Pricing)</h3>
+                   <p className="text-sm text-[#6b7280] mb-4">Ubah nama paket, harga, dan fitur (pisahkan dengan baris baru / Enter).</p>
                    {lpConfig.pricingPackages?.map((pkg: any, index: number) => (
-                     <div key={pkg.id} className="bg-gray-50 border border-gray-200 p-4 rounded-2xl space-y-3">
-                        <div className="flex gap-2">
+                     <div key={pkg.id} className={`neu-flat p-5 rounded-2xl space-y-4 transition-all ${!pkg.enabled ? 'opacity-60' : ''}`}>
+                        <div className="flex items-center justify-between border-b border-[#d1d9e6] pb-2 mb-2">
+                          <span className="font-semibold text-sm text-[#2d3748]">Paket {index + 1}</span>
+                          <button
+                            onClick={() => {
+                              const newPkgs = [...lpConfig.pricingPackages];
+                              newPkgs[index].enabled = !newPkgs[index].enabled;
+                              setLpConfig({...lpConfig, pricingPackages: newPkgs});
+                            }}
+                            className={`w-10 h-5 flex shrink-0 items-center rounded-full p-1 transition-colors ${
+                              pkg.enabled ? 'bg-teal-500' : 'bg-gray-300'
+                            }`}
+                          >
+                            <div
+                              className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform ${
+                                pkg.enabled ? 'translate-x-5' : 'translate-x-0'
+                              }`}
+                            />
+                          </button>
+                        </div>
+                        <div className="flex gap-4">
                            <div className="flex-1">
-                             <label className="text-xs font-semibold text-gray-500">Nama Paket</label>
+                             <label className="block text-xs font-semibold text-[#6b7280] mb-1">Nama Paket</label>
                              <input type="text" value={pkg.name} onChange={(e) => {
                                const newPkgs = [...lpConfig.pricingPackages];
                                newPkgs[index].name = e.target.value;
                                setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                             }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded" />
+                             }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none" disabled={!pkg.enabled} />
                            </div>
                            <div className="flex-1">
-                             <label className="text-xs font-semibold text-gray-500">Harga (Rp)</label>
+                             <label className="block text-xs font-semibold text-[#6b7280] mb-1">Harga (Rp)</label>
                              <input type="text" value={pkg.price} onChange={(e) => {
                                const newPkgs = [...lpConfig.pricingPackages];
                                newPkgs[index].price = e.target.value;
                                setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                             }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded" />
+                             }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none" disabled={!pkg.enabled} />
                            </div>
                         </div>
                         <div>
-                           <label className="text-xs font-semibold text-gray-500">Fitur (pisahkan enter)</label>
+                           <label className="block text-xs font-semibold text-[#6b7280] mb-1">Fitur (pisahkan enter)</label>
                            <textarea value={pkg.features} rows={3} onChange={(e) => {
                                const newPkgs = [...lpConfig.pricingPackages];
                                newPkgs[index].features = e.target.value;
                                setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                           }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded text-xs" />
+                           }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none resize-none" disabled={!pkg.enabled} />
                         </div>
                      </div>
                    ))}
@@ -678,7 +763,7 @@ export default function MemberDashboard() {
                      whileTap={{ scale: 0.98 }}
                      onClick={handleSaveLandingPage}
                      disabled={isSavingLp}
-                     className="w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold shadow-lg disabled:opacity-70 transition-colors"
+                     className="w-full py-4 neu-btn rounded-xl font-bold text-[#2d3748] disabled:opacity-70 flex justify-center items-center gap-2 mt-4"
                    >
                      {isSavingLp ? 'Menyimpan...' : 'Simpan Semua Pengaturan'}
                    </motion.button>

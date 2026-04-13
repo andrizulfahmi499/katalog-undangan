@@ -20,6 +20,17 @@ const navItems: NavItem[] = [
   { name: 'Kontak', href: '#contact' },
 ]
 
+const getThemeColors = (color?: string) => {
+  switch (color) {
+    case 'purple': return { normal: 'from-purple-400 to-purple-500', highlight: 'from-purple-500 to-purple-600', shadow: 'shadow-purple-400/30', shadowHover: 'shadow-purple-500/40' }
+    case 'indigo': return { normal: 'from-indigo-400 to-indigo-500', highlight: 'from-indigo-500 to-indigo-600', shadow: 'shadow-indigo-400/30', shadowHover: 'shadow-indigo-500/40' }
+    case 'teal': return { normal: 'from-teal-400 to-teal-500', highlight: 'from-teal-500 to-teal-600', shadow: 'shadow-teal-400/30', shadowHover: 'shadow-teal-500/40' }
+    case 'amber': return { normal: 'from-amber-400 to-amber-500', highlight: 'from-amber-500 to-amber-600', shadow: 'shadow-amber-400/30', shadowHover: 'shadow-amber-500/40' }
+    case 'pink':
+    default: return { normal: 'from-[#C4B5FD] to-[#FBCFE8]', highlight: 'from-[#A5B4FC] to-[#C4B5FD]', shadow: 'shadow-[#A5B4FC]/30', shadowHover: 'shadow-[#C4B5FD]/40' }
+  }
+}
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -29,6 +40,7 @@ export function Navbar() {
   const landingContext = useCustomLanding ? useCustomLanding() : null
   const customConfig = landingContext?.config
   const customMember = landingContext?.member
+  const themeColors = getThemeColors(customConfig?.themeColor)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -216,7 +228,7 @@ export function Navbar() {
                     className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
                       isLight
                         ? 'bg-[#8b8fa3]'
-                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD]'
+                        : `bg-gradient-to-r ${themeColors.highlight}`
                     }`}
                     initial={{ scaleX: 0, originX: 0.5 }}
                     whileHover={{ scaleX: 1 }}
@@ -241,7 +253,7 @@ export function Navbar() {
                 className={`mx-4 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${
                   isLight
                     ? 'neu-btn hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff] text-[#2d3748]'
-                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                    : `bg-gradient-to-r ${themeColors.highlight} text-white shadow-lg ${themeColors.shadow} hover:shadow-xl hover:${themeColors.shadowHover}`
                 }`}
                 onClick={() => {
                   const element = document.querySelector('#order-form')
@@ -274,7 +286,7 @@ export function Navbar() {
                     className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
                       isLight
                         ? 'bg-[#8b8fa3]'
-                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD]'
+                        : `bg-gradient-to-r ${themeColors.highlight}`
                     }`}
                     initial={{ scaleX: 0, originX: 0.5 }}
                     whileHover={{ scaleX: 1 }}
@@ -300,7 +312,7 @@ export function Navbar() {
                   className={`absolute w-6 h-6 rounded-full flex items-center justify-center ${
                     isLight
                       ? 'left-1 neu-raised-sm'
-                      : 'left-[calc(100%-28px)] bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD]'
+                      : `left-[calc(100%-28px)] bg-gradient-to-r ${themeColors.highlight}`
                   }`}
                 >
                   {isLight ? (
@@ -454,7 +466,7 @@ export function Navbar() {
                     className={`w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 text-lg ${
                       isLight
                         ? 'neu-btn text-[#2d3748]'
-                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                        : `bg-gradient-to-r ${themeColors.highlight} text-white shadow-lg ${themeColors.shadow}`
                     }`}
                   >
                     <MessageCircle className="w-5 h-5" />

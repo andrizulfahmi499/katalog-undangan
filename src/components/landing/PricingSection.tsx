@@ -106,22 +106,37 @@ const pricingPlans: PricingPlan[] = [
   }
 ]
 
+const getThemeColors = (color?: string) => {
+  switch (color) {
+    case 'purple': return { normal: 'from-purple-400 to-purple-500', highlight: 'from-purple-500 to-purple-600', shadow: 'shadow-purple-400/30' }
+    case 'indigo': return { normal: 'from-indigo-400 to-indigo-500', highlight: 'from-indigo-500 to-indigo-600', shadow: 'shadow-indigo-400/30' }
+    case 'teal': return { normal: 'from-teal-400 to-teal-500', highlight: 'from-teal-500 to-teal-600', shadow: 'shadow-teal-400/30' }
+    case 'amber': return { normal: 'from-amber-400 to-amber-500', highlight: 'from-amber-500 to-amber-600', shadow: 'shadow-amber-400/30' }
+    case 'pink':
+    default: return { normal: 'from-[#C4B5FD] to-[#FBCFE8]', highlight: 'from-[#A5B4FC] to-[#C4B5FD]', shadow: 'shadow-[#A5B4FC]/30' }
+  }
+}
+
 export function PricingSection() {
   const { isLight } = useTheme()
   const landingContext = useCustomLanding ? useCustomLanding() : null
   const customConfig = landingContext?.config
 
+  const themeColors = getThemeColors(customConfig?.themeColor)
+
   const displayPlans = customConfig?.pricingPackages && customConfig.pricingPackages.length > 0
-    ? customConfig.pricingPackages.map((pkg: any, index: number) => ({
+    ? customConfig.pricingPackages
+        .filter((pkg: any) => pkg.enabled !== false)
+        .map((pkg: any, index: number) => ({
         name: pkg.name || `Paket ${index + 1}`,
         price: pkg.price || '0',
         period: 'undangan',
         description: pkg.description || 'Pilihan paket spesial untuk Anda',
-        features: pkg.features ? pkg.features.split('\n') : [],
+        features: pkg.features ? (typeof pkg.features === 'string' ? pkg.features.split('\n') : pkg.features) : [],
         highlighted: index === 1,
         icon: index === 1 ? <Crown className="w-6 h-6" /> : <Star className="w-6 h-6" />,
-        color: index === 1 ? 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD]' : 'bg-white',
-        gradient: index === 1 ? 'from-[#A5B4FC] to-[#C4B5FD]' : 'from-[#C4B5FD] to-[#FBCFE8]'
+        color: index === 1 ? `bg-gradient-to-br ${themeColors.highlight}` : 'bg-white',
+        gradient: index === 1 ? themeColors.highlight : themeColors.normal
       }))
     : pricingPlans
 
@@ -172,7 +187,7 @@ export function PricingSection() {
                     className={`absolute -top-4 left-1/2 transform -translate-x-1/2 px-5 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 ${
                       isLight
                         ? 'neu-raised-sm text-[#2d3748]'
-                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                        : `bg-gradient-to-r ${themeColors.highlight} text-white shadow-lg ${themeColors.shadow}`
                     }`}
                   >
                     <Star className="w-4 h-4 fill-current" />
@@ -190,7 +205,7 @@ export function PricingSection() {
                           : 'neu-pressed text-[#8b8fa3]'
                         : plan.highlighted
                           ? 'bg-white/30 backdrop-blur-sm'
-                          : `bg-gradient-to-br ${plan.gradient} shadow-lg shadow-[#A5B4FC]/20`
+                          : `bg-gradient-to-br ${plan.gradient} shadow-lg ${themeColors.shadow}`
                     }`}
                   >
                     <div className={isLight ? '' : 'text-white'}>
@@ -258,7 +273,7 @@ export function PricingSection() {
                         : 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
                       : plan.highlighted
                         ? 'bg-white text-[#A5B4FC] hover:bg-gray-50 shadow-lg'
-                        : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30'
+                        : `bg-gradient-to-r ${themeColors.highlight} text-white hover:shadow-lg hover:${themeColors.shadow}`
                   }`}
                 >
                   {plan.highlighted ? 'Pilih Paket Ini' : 'Mulai Sekarang'}
