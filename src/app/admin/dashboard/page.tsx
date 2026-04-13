@@ -349,28 +349,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+    <div className="min-h-screen bg-[#e0e5ec] text-[#2d3748] font-sans pb-10">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
+      <header className="neu-flat border-b border-[#d1d9e6] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ x: -3 }}
                 onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+                className="flex items-center gap-2 text-[#6b7280] hover:text-[#2d3748] transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="font-medium">Kembali</span>
               </motion.button>
-              <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[#2d3748]">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => window.location.href = '/admin/editor'}
-                className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:bg-sky-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-400 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl"
               >
                 <Plus className="w-4 h-4" />
                 Buat Undangan
@@ -379,7 +379,7 @@ export default function AdminDashboard() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-gray-700 font-medium"
+                className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl transition-colors font-medium"
               >
                 <LogOut className="w-5 h-5" />
                 Logout
@@ -396,15 +396,15 @@ export default function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center">
                 <Users className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Member</p>
-                <p className="text-3xl font-bold text-gray-800">{members.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Member</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{members.length}</p>
               </div>
             </div>
           </motion.div>
@@ -413,15 +413,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
                 <Mail className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Undangan</p>
-                <p className="text-3xl font-bold text-gray-800">{invitations.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Undangan</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{invitations.length}</p>
               </div>
             </div>
           </motion.div>
@@ -430,15 +430,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                 <CreditCard className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Credit Terpakai</p>
-                <p className="text-3xl font-bold text-gray-800">
+                <p className="text-sm text-[#6b7280]">Total Credit Terpakai</p>
+                <p className="text-3xl font-bold text-[#2d3748]">
                   {invitations.reduce((sum, inv) => sum + inv.costPoints, 0)} coin
                 </p>
               </div>
@@ -449,30 +449,30 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white rounded-3xl p-6 shadow-xl"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
                 <FileText className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Template</p>
-                <p className="text-3xl font-bold text-gray-800">{templates.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Template</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{templates.length}</p>
               </div>
             </div>
           </motion.div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-4 mb-6">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTab('members')}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'members'
-                ? 'bg-gradient-to-r from-purple-400 to-indigo-500 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'neu-pressed text-purple-600'
+                : 'neu-btn text-[#6b7280]'
             }`}
           >
             Members
@@ -483,8 +483,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('invitations')}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'invitations'
-                ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'neu-pressed text-pink-600'
+                : 'neu-btn text-[#6b7280]'
             }`}
           >
             Invitations
@@ -495,8 +495,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('templates')}
             className={`px-6 py-3 rounded-xl font-medium transition-all ${
               activeTab === 'templates'
-                ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'neu-pressed text-teal-600'
+                : 'neu-btn text-[#6b7280]'
             }`}
           >
             Templates
@@ -511,15 +511,15 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+              className="neu-raised-lg rounded-3xl overflow-hidden"
             >
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">Daftar Member</h2>
+              <div className="p-6 border-b border-[#d1d9e6] flex items-center justify-between">
+                <h2 className="text-xl font-bold text-[#2d3748]">Daftar Member</h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowAddMemberModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-400 to-indigo-500 text-white rounded-xl font-medium"
+                  className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl font-medium text-purple-600"
                 >
                   <Plus className="w-5 h-5" />
                   Tambah Member
@@ -527,7 +527,7 @@ export default function AdminDashboard() {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-[#e0e5ec] border-b border-[#d1d9e6]">
                     <tr>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Nama</th>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Email</th>
@@ -601,15 +601,15 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+              className="neu-raised-lg rounded-3xl overflow-hidden"
             >
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">Daftar Undangan</h2>
+              <div className="p-6 border-b border-[#d1d9e6] flex items-center justify-between">
+                <h2 className="text-xl font-bold text-[#2d3748]">Daftar Undangan</h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowAddInvitationModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium"
+                  className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl font-medium text-pink-600"
                 >
                   <Plus className="w-5 h-5" />
                   Tambah Undangan
@@ -617,7 +617,7 @@ export default function AdminDashboard() {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-[#e0e5ec] border-b border-[#d1d9e6]">
                     <tr>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Judul</th>
                       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Event</th>
@@ -706,9 +706,9 @@ export default function AdminDashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6"
+              className="bg-[#e0e5ec] neu-raised-lg rounded-3xl w-full max-w-md p-6 border border-[#d1d9e6]"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Tambah Member Baru</h3>
+              <h3 className="text-xl font-bold text-[#2d3748] mb-6">Tambah Member Baru</h3>
               <form onSubmit={handleAddMember} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
@@ -777,7 +777,7 @@ export default function AdminDashboard() {
                     whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={() => setShowAddMemberModal(false)}
-                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
+                    className="flex-1 py-3 neu-btn rounded-xl font-medium text-[#6b7280]"
                   >
                     Batal
                   </motion.button>
@@ -785,7 +785,7 @@ export default function AdminDashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 py-3 bg-gradient-to-r from-purple-400 to-indigo-500 text-white rounded-xl font-medium"
+                    className="flex-1 py-3 neu-pressed text-purple-600 rounded-xl font-bold"
                   >
                     Simpan
                   </motion.button>
@@ -809,9 +809,9 @@ export default function AdminDashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-[#e0e5ec] neu-raised-lg rounded-3xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto border border-[#d1d9e6]"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Edit Member</h3>
+              <h3 className="text-xl font-bold text-[#2d3748] mb-6">Edit Member</h3>
               <form onSubmit={handleEditMember} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
@@ -923,9 +923,9 @@ export default function AdminDashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-[#e0e5ec] neu-raised-lg rounded-3xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto border border-[#d1d9e6]"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Tambah Undangan Baru</h3>
+              <h3 className="text-xl font-bold text-[#2d3748] mb-6">Tambah Undangan Baru</h3>
               <form onSubmit={handleAddInvitation} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Judul</label>
@@ -1021,7 +1021,7 @@ export default function AdminDashboard() {
                     whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={() => setShowAddInvitationModal(false)}
-                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
+                    className="flex-1 py-3 neu-btn rounded-xl font-medium text-[#6b7280]"
                   >
                     Batal
                   </motion.button>
@@ -1029,7 +1029,7 @@ export default function AdminDashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium"
+                    className="flex-1 py-3 neu-pressed text-pink-600 rounded-xl font-bold"
                   >
                     Simpan
                   </motion.button>
@@ -1046,12 +1046,11 @@ export default function AdminDashboard() {
             key="templates"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="bg-white rounded-3xl shadow-xl overflow-hidden"
+            className="neu-raised-lg rounded-3xl overflow-hidden"
           >
-            <div className="p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-800">Kelola Template Undangan</h2>
-              <p className="text-sm text-gray-600 mt-1">Edit template undangan yang tersedia untuk member</p>
+            <div className="p-6 border-b border-[#d1d9e6]">
+              <h2 className="text-xl font-bold text-[#2d3748]">Kelola Template Undangan</h2>
+              <p className="text-sm text-[#6b7280] mt-1">Edit template undangan yang tersedia untuk member</p>
             </div>
             <div className="p-6">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -1060,7 +1059,7 @@ export default function AdminDashboard() {
                     key={template.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:shadow-lg transition-shadow"
+                    className="neu-btn rounded-2xl p-6"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${template.accent} flex items-center justify-center`}>
@@ -1091,7 +1090,7 @@ export default function AdminDashboard() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => openEditTemplateModal(template)}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium hover:shadow-md transition"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 neu-pressed text-teal-600 rounded-xl font-bold"
                     >
                       <Edit className="w-4 h-4" />
                       Edit Template
@@ -1117,9 +1116,9 @@ export default function AdminDashboard() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-[#e0e5ec] neu-raised-lg rounded-3xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto border border-[#d1d9e6]"
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Edit Template</h3>
+              <h3 className="text-xl font-bold text-[#2d3748] mb-6">Edit Template</h3>
               <form onSubmit={handleEditTemplate} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1206,7 +1205,7 @@ export default function AdminDashboard() {
                     whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={() => setShowEditTemplateModal(false)}
-                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
+                    className="flex-1 py-3 neu-btn rounded-xl font-medium text-[#6b7280]"
                   >
                     Batal
                   </motion.button>
@@ -1214,7 +1213,7 @@ export default function AdminDashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium"
+                    className="flex-1 py-3 neu-pressed text-teal-600 rounded-xl font-bold"
                   >
                     Simpan Perubahan
                   </motion.button>
