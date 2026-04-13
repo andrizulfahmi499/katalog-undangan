@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { Check, Star, Crown, Sparkles } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
+import { useCustomLanding } from '@/context/CustomLandingContext'
 
 interface PricingPlan {
   name: string
@@ -107,6 +108,22 @@ const pricingPlans: PricingPlan[] = [
 
 export function PricingSection() {
   const { isLight } = useTheme()
+  const landingContext = useCustomLanding ? useCustomLanding() : null
+  const customConfig = landingContext?.config
+
+  const displayPlans = customConfig?.pricingPackages && customConfig.pricingPackages.length > 0
+    ? customConfig.pricingPackages.map((pkg: any, index: number) => ({
+        name: pkg.name || `Paket ${index + 1}`,
+        price: pkg.price || '0',
+        period: 'undangan',
+        description: pkg.description || 'Pilihan paket spesial untuk Anda',
+        features: pkg.features ? pkg.features.split('\n') : [],
+        highlighted: index === 1,
+        icon: index === 1 ? <Crown className="w-6 h-6" /> : <Star className="w-6 h-6" />,
+        color: index === 1 ? 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD]' : 'bg-white',
+        gradient: index === 1 ? 'from-[#A5B4FC] to-[#C4B5FD]' : 'from-[#C4B5FD] to-[#FBCFE8]'
+      }))
+    : pricingPlans
 
   return (
     <section
@@ -131,8 +148,8 @@ export function PricingSection() {
         </ScrollReveal>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
-          {pricingPlans.map((plan, index) => (
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${displayPlans.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'} gap-8`}>
+          {displayPlans.map((plan: any, index: number) => (
             <ScrollReveal key={plan.name} delay={index * 0.1}>
               <motion.div
                 whileHover={{ y: -12, scale: plan.highlighted ? 1.03 : 1.02, rotate: index % 2 === 0 ? 1 : -1 }}

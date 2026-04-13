@@ -15,9 +15,9 @@ export async function GET(
         id: true,
         name: true,
         email: true,
-        whatsapp: true,
         creditPoints: true,
         status: true,
+        landingPageEnabled: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -50,7 +50,7 @@ export async function PUT(
 ) {
   try {
     const params = await props.params;
-    const { name, email, whatsapp, password, creditPoints, status } = await request.json()
+    const { name, email, whatsapp, password, creditPoints, status, landingPageEnabled } = await request.json()
 
     // Check if member exists
     const existingMember = await db.member.findUnique({
@@ -73,6 +73,7 @@ export async function PUT(
     if (password) updateData.password = await bcrypt.hash(password, 10)
     if (creditPoints !== undefined) updateData.creditPoints = creditPoints
     if (status) updateData.status = status
+    if (landingPageEnabled !== undefined) updateData.landingPageEnabled = landingPageEnabled
 
     // Update member
     const member = await db.member.update({
@@ -85,6 +86,7 @@ export async function PUT(
         whatsapp: true,
         creditPoints: true,
         status: true,
+        landingPageEnabled: true,
         updatedAt: true,
       },
     })

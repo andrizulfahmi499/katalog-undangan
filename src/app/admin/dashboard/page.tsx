@@ -12,6 +12,7 @@ type Member = {
   whatsapp: string
   creditPoints: number
   status: string
+  landingPageEnabled?: boolean
   createdAt: string
 }
 
@@ -48,7 +49,8 @@ export default function AdminDashboard() {
     whatsapp: '',
     password: '',
     creditPoints: 0,
-    status: 'active'
+    status: 'active',
+    landingPageEnabled: false
   })
 
   // Templates state
@@ -83,6 +85,7 @@ export default function AdminDashboard() {
     whatsapp: '',
     password: '',
     creditPoints: 0,
+    landingPageEnabled: false,
   })
 
   // New invitation form state
@@ -142,7 +145,7 @@ export default function AdminDashboard() {
       if (data.success) {
         fetchMembers()
         setShowAddMemberModal(false)
-        setNewMember({ name: '', email: '', whatsapp: '', password: '', creditPoints: 0 })
+        setNewMember({ name: '', email: '', whatsapp: '', password: '', creditPoints: 0, landingPageEnabled: false })
       } else {
         alert(data.error || 'Gagal menambah member')
       }
@@ -160,7 +163,8 @@ export default function AdminDashboard() {
       whatsapp: member.whatsapp,
       password: '',
       creditPoints: member.creditPoints,
-      status: member.status || 'active'
+      status: member.status || 'active',
+      landingPageEnabled: member.landingPageEnabled || false
     })
     setShowEditMemberModal(true)
   }
@@ -175,7 +179,8 @@ export default function AdminDashboard() {
         email: editMemberForm.email,
         whatsapp: editMemberForm.whatsapp,
         creditPoints: editMemberForm.creditPoints,
-        status: editMemberForm.status
+        status: editMemberForm.status,
+        landingPageEnabled: editMemberForm.landingPageEnabled
       }
       
       if (editMemberForm.password) {
@@ -755,6 +760,17 @@ export default function AdminDashboard() {
                     className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-400 focus:outline-none"
                   />
                 </div>
+                <div className="pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer p-3 border border-purple-100 rounded-xl bg-purple-50/50">
+                    <input
+                      type="checkbox"
+                      checked={newMember.landingPageEnabled}
+                      onChange={(e) => setNewMember({ ...newMember, landingPageEnabled: e.target.checked })}
+                      className="w-5 h-5 rounded text-purple-600 focus:ring-purple-500 border-gray-300"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Aktifkan Landing Page Custom u/ Member</span>
+                  </label>
+                </div>
                 <div className="flex gap-3 pt-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -857,6 +873,17 @@ export default function AdminDashboard() {
                     required
                     className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
                   />
+                </div>
+                <div className="pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer p-3 border border-indigo-100 rounded-xl bg-indigo-50/50">
+                    <input
+                      type="checkbox"
+                      checked={editMemberForm.landingPageEnabled}
+                      onChange={(e) => setEditMemberForm({ ...editMemberForm, landingPageEnabled: e.target.checked })}
+                      className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Aktifkan Landing Page Custom u/ Member</span>
+                  </label>
                 </div>
                 <div className="flex gap-3 pt-4">
                   <motion.button

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Heart, Sparkles, MessageCircle, Sun, Moon } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
+import { useCustomLanding } from '@/context/CustomLandingContext'
 
 interface NavItem {
   name: string
@@ -25,6 +26,9 @@ export function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
   const { isLight, toggleTheme } = useTheme()
+  const landingContext = useCustomLanding ? useCustomLanding() : null
+  const customConfig = landingContext?.config
+  const customMember = landingContext?.member
 
   useEffect(() => {
     const handleScroll = () => {
@@ -165,14 +169,14 @@ export function Navbar() {
                 transition={{ duration: 0.6 }}
               >
                 <img
-                  src="/logo.png"
+                  src={customConfig?.logoUrl || "/logo.png"}
                   alt="Katalog Undanganku"
                   className="w-full h-full object-contain p-1"
                 />
               </motion.div>
               <div className="hidden sm:block">
                 <motion.div className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
-                  Katalog Undanganku
+                  {customMember ? customMember.name : 'Katalog Undanganku'}
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0 }}

@@ -22,6 +22,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://katalog-undangan-beta.vercel.app'),
   title: "Katalog Undanganku - Platform Undangan Pernikahan Digital Terbaik",
   description: "Buat undangan pernikahan digital yang elegan, modern, dan mudah dibagikan. Berbagai tema undangan dengan fitur lengkap untuk momen spesial Anda.",
   keywords: ["Undangan Pernikahan Digital", "Wedding Invitation", "Undangan Online", "Undangan Pernikahan", "Digital Wedding", "Wedding Invitation Indonesia"],
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Katalog Undanganku - Undangan Pernikahan Digital",
     description: "Buat undangan pernikahan digital yang elegan dan modern dengan berbagai pilihan tema",
-    url: "https://katalog-undangan-beta.vercel.app",
+    url: "/",
     siteName: "Katalog Undanganku",
     type: "website",
     images: [

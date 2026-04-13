@@ -41,8 +41,25 @@ export default function MemberDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [sendResults, setSendResults] = useState<any[]>([])
   const [showSendModal, setShowSendModal] = useState(false)
-  const [activeTab, setActiveTab] = useState<'invitations' | 'history'>('invitations')
+  const [activeTab, setActiveTab] = useState<'invitations' | 'history' | 'landing_page'>('invitations')
   const [copiedLinks, setCopiedLinks] = useState<Record<number, boolean>>({})
+  const [memberProfile, setMemberProfile] = useState<any>(null)
+  
+  // Landing Page Settings State
+  const [lpSlug, setLpSlug] = useState('')
+  const [lpConfig, setLpConfig] = useState<any>({
+    logoUrl: '',
+    address: '',
+    whatsappNumber: '',
+    socialMedia: '',
+    themeColor: 'pink',
+    pricingPackages: [
+      { id: 1, name: 'Basic', price: '150.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas' },
+      { id: 2, name: 'Premium', price: '300.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram' },
+      { id: 3, name: 'Exclusive', price: '500.000', features: 'Masa aktif selamanya\nBebas Custom\nCustom Domain Pilihan\nDesain Sesuai Keinginan' }
+    ]
+  })
+  const [isSavingLp, setIsSavingLp] = useState(false)
 
   // Get member ID from localStorage
   const [memberId, setMemberId] = useState<string>('')
@@ -61,8 +78,54 @@ export default function MemberDashboard() {
   useEffect(() => {
     if (memberId) {
       fetchInvitations()
+      fetchProfile()
     }
   }, [memberId])
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch(`/api/member/profile?memberId=${memberId}&_t=${Date.now()}`)
+      const data = await response.json()
+      if (data.success) {
+        setMemberProfile(data.data)
+        if (data.data.landingPageConfig) {
+          setLpConfig(data.data.landingPageConfig)
+        }
+        if (data.data.customSlug) {
+          setLpSlug(data.data.customSlug)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+    }
+  }
+
+  const handleSaveLandingPage = async () => {
+    setIsSavingLp(true)
+    try {
+      const response = await fetch('/api/member/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          memberId,
+          customSlug: lpSlug,
+          landingPageConfig: lpConfig
+        })
+      })
+      const data = await response.json()
+      if (data.success) {
+        alert('Pengaturan Landing Page berhasil disimpan!')
+        fetchProfile()
+      } else {
+        alert(data.error || 'Gagal menyimpan pengaturan')
+      }
+    } catch (error) {
+      console.error('Error saving landing page:', error)
+      alert('Terjadi kesalahan')
+    } finally {
+      setIsSavingLp(false)
+    }
+  }
 
   const fetchInvitations = async () => {
     try {
@@ -339,6 +402,20 @@ export default function MemberDashboard() {
           >
             Riwayat Pengiriman
           </motion.button>
+          {memberProfile?.landingPageEnabled && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setActiveTab('landing_page')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                activeTab === 'landing_page'
+                  ? 'bg-gradient-to-r from-teal-400 to-emerald-500 text-white shadow-lg'
+                  : 'bg-white text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              Pengaturan Landing Page
+            </motion.button>
+          )}
         </div>
 
         {/* Invitations Tab */}
@@ -470,6 +547,143 @@ export default function MemberDashboard() {
                   </table>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {/* Landing Page Settings Tab */}
+          {activeTab === 'landing_page' && memberProfile?.landingPageEnabled && (
+            <motion.div
+              key="landing_page"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="bg-white rounded-3xl shadow-xl overflow-hidden p-6"
+            >
+              <h2 className="text-xl font-bold text-gray-800 mb-6">Pengaturan Custom Landing Page</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Custom Slug Profil (URL)</label>
+                    <div className="flex items-center gap-2">
+                       <span className="text-gray-500 bg-gray-100 px-3 py-2 rounded-xl text-sm border border-gray-200">
+                         {typeof window !== 'undefined' ? window.location.host : '...'} /
+                       </span>
+                       <input 
+                         type="text" 
+                         value={lpSlug}
+                         onChange={(e) => setLpSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                         placeholder="nama-kamu"
+                         className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                       />
+                    </div>
+                    {lpSlug && (
+                      <p className="text-xs text-green-600 mt-2">
+                        Landing page Anda dapat diakses di: <a href={`/${lpSlug}`} target="_blank" rel="noreferrer" className="underline font-bold">/{lpSlug}</a>
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo URL (opsional)</label>
+                    <input 
+                      type="text" 
+                      value={lpConfig.logoUrl}
+                      onChange={(e) => setLpConfig({...lpConfig, logoUrl: e.target.value})}
+                      placeholder="https://example.com/logo.png"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Pilih Warna Tema</label>
+                    <select 
+                      value={lpConfig.themeColor}
+                      onChange={(e) => setLpConfig({...lpConfig, themeColor: e.target.value})}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                    >
+                      <option value="pink">Pink (Default)</option>
+                      <option value="purple">Purple</option>
+                      <option value="indigo">Indigo</option>
+                      <option value="teal">Teal</option>
+                      <option value="amber">Gold / Amber</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Nomor WhatsApp Bisnis</label>
+                    <input 
+                      type="text" 
+                      value={lpConfig.whatsappNumber}
+                      onChange={(e) => setLpConfig({...lpConfig, whatsappNumber: e.target.value})}
+                      placeholder="62812345678"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Lokasi / Alamat Lengkap</label>
+                    <textarea 
+                      value={lpConfig.address}
+                      onChange={(e) => setLpConfig({...lpConfig, address: e.target.value})}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Link Sosial Media (Instagram/dll)</label>
+                    <input 
+                      type="text" 
+                      value={lpConfig.socialMedia}
+                      onChange={(e) => setLpConfig({...lpConfig, socialMedia: e.target.value})}
+                      placeholder="https://instagram.com/akun"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-teal-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                   <h3 className="text-lg font-semibold text-gray-800">Paket Harga (Pricing)</h3>
+                   <p className="text-sm text-gray-600 mb-4">Ubah nama paket, harga, dan fitur (pisahkan dengan baris baru / Enter).</p>
+                   {lpConfig.pricingPackages?.map((pkg: any, index: number) => (
+                     <div key={pkg.id} className="bg-gray-50 border border-gray-200 p-4 rounded-2xl space-y-3">
+                        <div className="flex gap-2">
+                           <div className="flex-1">
+                             <label className="text-xs font-semibold text-gray-500">Nama Paket</label>
+                             <input type="text" value={pkg.name} onChange={(e) => {
+                               const newPkgs = [...lpConfig.pricingPackages];
+                               newPkgs[index].name = e.target.value;
+                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
+                             }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded" />
+                           </div>
+                           <div className="flex-1">
+                             <label className="text-xs font-semibold text-gray-500">Harga (Rp)</label>
+                             <input type="text" value={pkg.price} onChange={(e) => {
+                               const newPkgs = [...lpConfig.pricingPackages];
+                               newPkgs[index].price = e.target.value;
+                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
+                             }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded" />
+                           </div>
+                        </div>
+                        <div>
+                           <label className="text-xs font-semibold text-gray-500">Fitur (pisahkan enter)</label>
+                           <textarea value={pkg.features} rows={3} onChange={(e) => {
+                               const newPkgs = [...lpConfig.pricingPackages];
+                               newPkgs[index].features = e.target.value;
+                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
+                           }} className="w-full text-sm py-1 px-2 border border-gray-300 rounded text-xs" />
+                        </div>
+                     </div>
+                   ))}
+
+                   <motion.button
+                     whileHover={{ scale: 1.02 }}
+                     whileTap={{ scale: 0.98 }}
+                     onClick={handleSaveLandingPage}
+                     disabled={isSavingLp}
+                     className="w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold shadow-lg disabled:opacity-70 transition-colors"
+                   >
+                     {isSavingLp ? 'Menyimpan...' : 'Simpan Semua Pengaturan'}
+                   </motion.button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

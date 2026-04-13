@@ -14,9 +14,9 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
-        whatsapp: true,
         creditPoints: true,
         status: true,
+        landingPageEnabled: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -38,7 +38,7 @@ export async function GET() {
 // POST create new member
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, whatsapp, password, creditPoints } = await request.json()
+    const { name, email, whatsapp, password, creditPoints, landingPageEnabled } = await request.json()
 
     if (!name || !email || !whatsapp || !password) {
       return NextResponse.json(
@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
         creditPoints: creditPoints || 0,
         status: 'active',
+        landingPageEnabled: landingPageEnabled || false,
       },
     })
 
@@ -83,6 +84,7 @@ export async function POST(request: NextRequest) {
         whatsapp: member.whatsapp,
         creditPoints: member.creditPoints,
         status: member.status,
+        landingPageEnabled: member.landingPageEnabled,
       },
     })
   } catch (error: any) {

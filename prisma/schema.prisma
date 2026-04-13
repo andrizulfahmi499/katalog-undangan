@@ -31,15 +31,18 @@ model Admin {
 
 // Members who can send invitations
 model Member {
-  id              String                @id @default(cuid())
-  name            String
-  email           String                @unique
-  whatsapp        String
-  password        String
-  creditPoints    Int                   @default(0)
-  status          String                @default("active") // 'active' | 'inactive'
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  id                 String                @id @default(cuid())
+  name               String
+  email              String                @unique
+  whatsapp           String
+  password           String
+  creditPoints       Int                   @default(0)
+  status             String                @default("active") // 'active' | 'inactive'
+  landingPageEnabled Boolean               @default(false)
+  customSlug         String?               @unique
+  landingPageConfig  Json?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
   invitations          Invitations[]
   invitationMessages   InvitationMessages[]
