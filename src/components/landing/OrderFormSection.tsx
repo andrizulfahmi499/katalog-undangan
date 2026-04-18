@@ -224,7 +224,7 @@ export function OrderFormSection() {
                       value={formData.namaPemesan}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}}
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Masukkan nama lengkap"
                     />
                   </div>
