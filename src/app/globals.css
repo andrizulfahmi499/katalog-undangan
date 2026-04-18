@@ -1,6 +1,73 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* ===== DearMyLove Fonts ===== */
+/* Arapey — body/serif font */
+@font-face {
+  font-family: 'Arapey';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/templates/landing page/dreamylove/www.dearmylove.org/_next/static/media/535dde6eb7bea7ba-s.p.woff2') format('woff2');
+}
+
+/* Josefin Sans — heading font */
+@font-face {
+  font-family: 'Josefin Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/templates/landing page/dreamylove/www.dearmylove.org/_next/static/media/a3a474206a856479.p.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/templates/landing page/dreamylove/www.dearmylove.org/_next/static/media/a3a474206a856479.p.woff2') format('woff2');
+}
+
+/* Lato — nav labels/small text */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/templates/landing page/dreamylove/www.dearmylove.org/_next/static/media/155cae559bbd1a77.p.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/templates/landing page/dreamylove/www.dearmylove.org/_next/static/media/4de1fea1a954a5b6.p.woff2') format('woff2');
+}
+
+/* ===== DearMyLove Breathing Animation ===== */
+.breathing {
+  animation: breathing 5s ease-in-out infinite;
+}
+.breathing-1 { animation: breathing 5s ease-in-out infinite; animation-delay: 0s; }
+.breathing-2 { animation: breathing 5s ease-in-out infinite; animation-delay: 0.6s; }
+.breathing-3 { animation: breathing 5s ease-in-out infinite; animation-delay: 1.2s; }
+.breathing-4 { animation: breathing 5s ease-in-out infinite; animation-delay: 1.8s; }
+
+@keyframes breathing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===== Rose SVG Draw Animation ===== */
+@keyframes draw-rose {
+  from { stroke-dashoffset: 8000; }
+  to   { stroke-dashoffset: 0; }
+}
+.rose-draw {
+  stroke-dasharray: 8000;
+  stroke-dashoffset: 8000;
+  animation: draw-rose 2.4s ease-in-out forwards;
+}
+
 @source not "../components/corelia/**/*.html";
 @source not "../components/corelia/**/*.js";
 @source not "../components/corelia/**/*.css";
