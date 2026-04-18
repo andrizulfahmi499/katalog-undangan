@@ -36,7 +36,7 @@ function ThemeCardSkeleton({ isLight }: { isLight: boolean }) {
         : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15'
     }`}>
       <div className={`aspect-[3/4] animate-pulse ${
-        isLight ? 'bg-[#d1d9e6]' : 'bg-gradient-to-br from-purple-900/50 to-purple-800/50'
+        isLight ? 'bg-[#d1d9e6]' : 'bg-gradient-to-br from-[#1b2f29]/80 to-[#223e36]/80'
       }`} />
       <div className="p-4 space-y-3">
         <div className={`h-4 rounded animate-pulse ${isLight ? 'bg-[#d1d9e6]' : 'bg-white/10'}`} />
@@ -158,32 +158,32 @@ export function CatalogSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
                 <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${
                   isLight ? 'text-[#2d3748]' : 'text-white'
                 }`}>
                   Katalog Tema Undangan
                 </h2>
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#ededed]'}`} />
               </div>
             </motion.div>
             <p className={`text-xl max-w-2xl mx-auto mb-8 leading-relaxed ${
-              isLight ? 'text-[#6b7280]' : 'text-purple-200/80'
+              isLight ? 'text-[#6b7280]' : 'text-gray-200/80'
             }`}>
               Temukan tema undangan pernikahan digital yang sesuai dengan impian Anda
             </p>
 
             {/* Stats */}
             <div className="flex items-center justify-center gap-8 flex-wrap">
-              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
-                <Grid className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/70'}`}>
+                <Grid className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
                 <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>{totalThemes}+ Tema</span>
               </div>
-              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
-                <TrendingUp className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#C4B5FD]'}`} />
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/70'}`}>
+                <TrendingUp className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#ededed]'}`} />
                 <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Trending Now</span>
               </div>
-              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/70'}`}>
+              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/70'}`}>
                 <Clock className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#FBCFE8]'}`} />
                 <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Update Harian</span>
               </div>
@@ -355,7 +355,7 @@ export function CatalogSection() {
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
               <h3 className={`text-xl font-bold mb-2 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tidak ada tema ditemukan</h3>
-              <p className={`mb-4 ${isLight ? 'text-[#6b7280]' : 'text-purple-200/70'}`}>Coba pilih kategori lain</p>
+              <p className={`mb-4 ${isLight ? 'text-[#6b7280]' : 'text-gray-200/70'}`}>Coba pilih kategori lain</p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

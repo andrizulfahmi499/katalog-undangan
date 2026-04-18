@@ -182,14 +182,14 @@ export function OrderFormSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-2">
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
                 <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
                   Form Order Undangan
                 </h2>
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} />
+                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#ededed]'}`} />
               </div>
             </motion.div>
-            <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${isLight ? 'text-[#6b7280]' : 'text-purple-200/80'}`}>
+            <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${isLight ? 'text-[#6b7280]' : 'text-gray-200/80'}`}>
               Lengkapi formulir di bawah ini untuk memesan undangan digital impian Anda
             </p>
           </div>
@@ -215,7 +215,7 @@ export function OrderFormSection() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Nama Lengkap <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -229,7 +229,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       No. WhatsApp <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -256,7 +256,7 @@ export function OrderFormSection() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Nama Lengkap Pria <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -270,7 +270,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Nama Lengkap Wanita <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -285,7 +285,7 @@ export function OrderFormSection() {
                   </div>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                     Nama Panggilan (Keduanya) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -311,7 +311,7 @@ export function OrderFormSection() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Tanggal Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -324,7 +324,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Tanggal Resepsi
                     </label>
                     <input
@@ -338,7 +338,7 @@ export function OrderFormSection() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Lokasi Akad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -352,7 +352,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Lokasi Resepsi
                     </label>
                     <input
@@ -366,7 +366,7 @@ export function OrderFormSection() {
                   </div>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                     Link Google Maps
                   </label>
                   <input
@@ -390,7 +390,7 @@ export function OrderFormSection() {
                 </div>
                 
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                     Pilih Tema
                   </label>
                   <input
@@ -401,7 +401,7 @@ export function OrderFormSection() {
                     className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                     placeholder="Masukkan nama tema yang diinginkan"
                   />
-                  <p className={`text-xs mt-2 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
+                  <p className={`text-xs mt-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/60'}`}>
                     💡 Lihat katalog tema di atas untuk memilih
                   </p>
                 </div>
@@ -415,7 +415,7 @@ export function OrderFormSection() {
                   </div>
                   <div>
                     <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Foto Mempelai</h3>
-                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>Maksimal {MAX_PHOTOS} foto</p>
+                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/60'}`}>Maksimal {MAX_PHOTOS} foto</p>
                   </div>
                 </div>
                 
@@ -434,12 +434,12 @@ export function OrderFormSection() {
                     className={`cursor-pointer flex flex-col items-center ${uploadedPhotos.length >= MAX_PHOTOS ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${isLight ? 'neu-pressed' : 'bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10'}`}>
-                      <Upload className={`w-8 h-8 ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} />
+                      <Upload className={`w-8 h-8 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
                     </div>
                     <p className={`text-sm font-medium mb-1 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
                       Klik untuk upload foto
                     </p>
-                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
+                    <p className={`text-xs ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/60'}`}>
                       {uploadedPhotos.length}/{MAX_PHOTOS} foto terupload
                     </p>
                   </label>
@@ -481,7 +481,7 @@ export function OrderFormSection() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Link Lagu (YouTube/Spotify)
                     </label>
                     <input
@@ -494,7 +494,7 @@ export function OrderFormSection() {
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                    <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                       Turut Mengundang
                     </label>
                     <input
@@ -508,7 +508,7 @@ export function OrderFormSection() {
                   </div>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-purple-200'}`}>
+                  <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-[#6b7280]' : 'text-gray-200'}`}>
                     Catatan Tambahan
                   </label>
                   <textarea
@@ -546,7 +546,7 @@ export function OrderFormSection() {
                     </>
                   )}
                 </motion.button>
-                <p className={`text-center text-xs mt-4 ${isLight ? 'text-[#9ca3af]' : 'text-purple-300/60'}`}>
+                <p className={`text-center text-xs mt-4 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/60'}`}>
                   Anda akan diarahkan ke WhatsApp untuk mengirim pesanan
                 </p>
               </div>
