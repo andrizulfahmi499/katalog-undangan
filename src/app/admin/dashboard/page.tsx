@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText } from 'lucide-react'
 import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
 
+const DEFAULT_PRICING_PACKAGES = [
+  { id: 1, name: 'Basic', price: '70.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas', enabled: true },
+  { id: 2, name: 'Premium', price: '100.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram', enabled: true },
+  { id: 3, name: 'VIP', price: '150.000', features: 'Masa aktif selamanya\nBebas Custom\nCustom Domain Pilihan\nDesain Sesuai Keinginan\nPriority Support 24/7', enabled: true }
+]
+
 type Member = {
   id: string
   name: string
@@ -14,6 +20,7 @@ type Member = {
   status: string
   landingPageEnabled?: boolean
   landingPageTheme?: string
+  landingPageConfig?: any
   createdAt: string
 }
 
@@ -91,6 +98,12 @@ export default function AdminDashboard() {
     landingPageTheme: 'default',
   })
 
+  // Pricing packages for new member
+  const [newMemberPricing, setNewMemberPricing] = useState(DEFAULT_PRICING_PACKAGES.map(p => ({...p})))
+
+  // Pricing packages for edit member
+  const [editMemberPricing, setEditMemberPricing] = useState(DEFAULT_PRICING_PACKAGES.map(p => ({...p})))
+
   // New invitation form state
   const [newInvitation, setNewInvitation] = useState({
     title: '',
@@ -137,10 +150,16 @@ export default function AdminDashboard() {
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const payload = {
+        ...newMember,
+        landingPageConfig: newMember.landingPageEnabled ? {
+          pricingPackages: newMemberPricing
+        } : undefined
+      }
       const response = await fetch('/api/admin/members', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMember),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
@@ -149,6 +168,7 @@ export default function AdminDashboard() {
         fetchMembers()
         setShowAddMemberModal(false)
         setNewMember({ name: '', email: '', whatsapp: '', password: '', creditPoints: 0, landingPageEnabled: false, landingPageTheme: 'default' })
+        setNewMemberPricing(DEFAULT_PRICING_PACKAGES.map(p => ({...p})))
       } else {
         alert(data.error || 'Gagal menambah member')
       }
@@ -170,6 +190,13 @@ export default function AdminDashboard() {
       landingPageEnabled: member.landingPageEnabled || false,
       landingPageTheme: member.landingPageTheme || 'default'
     })
+    // Load existing pricing from config, or use defaults
+    const existingPricing = (member.landingPageConfig as any)?.pricingPackages
+    if (existingPricing && existingPricing.length > 0) {
+      setEditMemberPricing(existingPricing)
+    } else {
+      setEditMemberPricing(DEFAULT_PRICING_PACKAGES.map(p => ({...p})))
+    }
     setShowEditMemberModal(true)
   }
 
@@ -185,7 +212,10 @@ export default function AdminDashboard() {
         creditPoints: editMemberForm.creditPoints,
         status: editMemberForm.status,
         landingPageEnabled: editMemberForm.landingPageEnabled,
-        landingPageTheme: editMemberForm.landingPageTheme
+        landingPageTheme: editMemberForm.landingPageTheme,
+        landingPageConfig: editMemberForm.landingPageEnabled ? {
+          pricingPackages: editMemberPricing
+        } : undefined
       }
       
       if (editMemberForm.password) {
@@ -354,28 +384,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] text-[#2d3748] font-sans pb-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#172a26] to-[#1e3630] text-[#ededed] font-sans pb-10">
       {/* Header */}
-      <header className="neu-flat border-b border-[#d1d9e6] sticky top-0 z-40">
+      <header className="sticky top-0 z-40 bg-[#172a26]/90 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ x: -3 }}
                 onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-[#6b7280] hover:text-[#2d3748] transition-colors"
+                className="flex items-center gap-2 text-white/50 hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
-                <span className="font-medium">Kembali</span>
+                <span className="font-medium text-sm">Kembali</span>
               </motion.button>
-              <h1 className="text-2xl font-bold text-[#2d3748]">Admin Dashboard</h1>
+              <h1 className="text-xl font-bold text-white tracking-wide">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => window.location.href = '/admin/editor'}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-400 to-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl"
+                className="inline-flex items-center gap-2 rounded-full bg-[#ededed] text-[#172a26] px-4 py-2 text-sm font-semibold shadow-lg transition hover:bg-white"
               >
                 <Plus className="w-4 h-4" />
                 Buat Undangan
@@ -384,9 +414,9 @@ export default function AdminDashboard() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl transition-colors font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/15 rounded-full text-white/70 hover:text-white hover:bg-white/20 transition-all text-sm font-medium"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4 h-4" />
                 Logout
               </motion.button>
             </div>
@@ -401,15 +431,15 @@ export default function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center">
-                <Users className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <Users className="w-7 h-7 text-[#ededed]" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Total Member</p>
-                <p className="text-3xl font-bold text-[#2d3748]">{members.length}</p>
+                <p className="text-sm text-white/50">Total Member</p>
+                <p className="text-3xl font-bold text-white">{members.length}</p>
               </div>
             </div>
           </motion.div>
@@ -418,15 +448,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
-                <Mail className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <Mail className="w-7 h-7 text-[#ededed]" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Total Undangan</p>
-                <p className="text-3xl font-bold text-[#2d3748]">{invitations.length}</p>
+                <p className="text-sm text-white/50">Total Undangan</p>
+                <p className="text-3xl font-bold text-white">{invitations.length}</p>
               </div>
             </div>
           </motion.div>
@@ -435,15 +465,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <CreditCard className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                <CreditCard className="w-7 h-7 text-[#ededed]" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Total Credit Terpakai</p>
-                <p className="text-3xl font-bold text-[#2d3748]">
+                <p className="text-sm text-white/50">Total Credit Terpakai</p>
+                <p className="text-3xl font-bold text-white">
                   {invitations.reduce((sum, inv) => sum + inv.costPoints, 0)} coin
                 </p>
               </div>
@@ -777,17 +807,50 @@ export default function AdminDashboard() {
                   </label>
                 </div>
                 {newMember.landingPageEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
-                    <select
-                      value={newMember.landingPageTheme}
-                      onChange={(e) => setNewMember({ ...newMember, landingPageTheme: e.target.value })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-400 focus:outline-none"
-                    >
-                      <option value="default">Default (Premium DearMyLove clone)</option>
-                      <option value="neumorphism">Neumorphism (Klasik)</option>
-                    </select>
-                  </div>
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
+                      <select
+                        value={newMember.landingPageTheme}
+                        onChange={(e) => setNewMember({ ...newMember, landingPageTheme: e.target.value })}
+                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-400 focus:outline-none"
+                      >
+                        <option value="default">Default (Premium DearMyLove clone)</option>
+                        <option value="neumorphism">Neumorphism (Klasik)</option>
+                      </select>
+                    </div>
+                    {/* Pricing Packages */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Paket Harga (Pricing)</label>
+                      <div className="space-y-3">
+                        {newMemberPricing.map((pkg, idx) => (
+                          <div key={pkg.id} className={`border border-gray-200 rounded-xl p-3 space-y-2 transition-all ${!pkg.enabled ? 'opacity-50' : ''}`}>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold text-gray-600">Paket {idx + 1}: {pkg.name}</span>
+                              <button type="button" onClick={() => {
+                                const updated = [...newMemberPricing]
+                                updated[idx].enabled = !updated[idx].enabled
+                                setNewMemberPricing(updated)
+                              }} className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${pkg.enabled ? 'bg-teal-500' : 'bg-gray-300'}`}>
+                                <div className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform ${pkg.enabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                              </button>
+                            </div>
+                            <div className="flex gap-2">
+                              <input type="text" placeholder="Nama" value={pkg.name} disabled={!pkg.enabled}
+                                onChange={(e) => { const u=[...newMemberPricing]; u[idx].name=e.target.value; setNewMemberPricing(u) }}
+                                className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none" />
+                              <input type="text" placeholder="Harga" value={pkg.price} disabled={!pkg.enabled}
+                                onChange={(e) => { const u=[...newMemberPricing]; u[idx].price=e.target.value; setNewMemberPricing(u) }}
+                                className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none" />
+                            </div>
+                            <textarea placeholder="Fitur (pisahkan enter)" value={pkg.features} rows={2} disabled={!pkg.enabled}
+                              onChange={(e) => { const u=[...newMemberPricing]; u[idx].features=e.target.value; setNewMemberPricing(u) }}
+                              className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none resize-none" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )}
                 <div className="flex gap-3 pt-4">
                   <motion.button
@@ -904,17 +967,50 @@ export default function AdminDashboard() {
                   </label>
                 </div>
                 {editMemberForm.landingPageEnabled && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
-                    <select
-                      value={editMemberForm.landingPageTheme}
-                      onChange={(e) => setEditMemberForm({ ...editMemberForm, landingPageTheme: e.target.value })}
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
-                    >
-                      <option value="default">Default (Premium DearMyLove clone)</option>
-                      <option value="neumorphism">Neumorphism (Klasik)</option>
-                    </select>
-                  </div>
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
+                      <select
+                        value={editMemberForm.landingPageTheme}
+                        onChange={(e) => setEditMemberForm({ ...editMemberForm, landingPageTheme: e.target.value })}
+                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                      >
+                        <option value="default">Default (Premium DearMyLove clone)</option>
+                        <option value="neumorphism">Neumorphism (Klasik)</option>
+                      </select>
+                    </div>
+                    {/* Pricing Packages */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Paket Harga (Pricing)</label>
+                      <div className="space-y-3">
+                        {editMemberPricing.map((pkg, idx) => (
+                          <div key={pkg.id} className={`border border-gray-200 rounded-xl p-3 space-y-2 transition-all ${!pkg.enabled ? 'opacity-50' : ''}`}>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold text-gray-600">Paket {idx + 1}: {pkg.name}</span>
+                              <button type="button" onClick={() => {
+                                const updated = [...editMemberPricing]
+                                updated[idx].enabled = !updated[idx].enabled
+                                setEditMemberPricing(updated)
+                              }} className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${pkg.enabled ? 'bg-teal-500' : 'bg-gray-300'}`}>
+                                <div className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform ${pkg.enabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                              </button>
+                            </div>
+                            <div className="flex gap-2">
+                              <input type="text" placeholder="Nama" value={pkg.name} disabled={!pkg.enabled}
+                                onChange={(e) => { const u=[...editMemberPricing]; u[idx].name=e.target.value; setEditMemberPricing(u) }}
+                                className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none" />
+                              <input type="text" placeholder="Harga" value={pkg.price} disabled={!pkg.enabled}
+                                onChange={(e) => { const u=[...editMemberPricing]; u[idx].price=e.target.value; setEditMemberPricing(u) }}
+                                className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none" />
+                            </div>
+                            <textarea placeholder="Fitur (pisahkan enter)" value={pkg.features} rows={2} disabled={!pkg.enabled}
+                              onChange={(e) => { const u=[...editMemberPricing]; u[idx].features=e.target.value; setEditMemberPricing(u) }}
+                              className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none resize-none" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )}
                 <div className="flex gap-3 pt-4">
                   <motion.button

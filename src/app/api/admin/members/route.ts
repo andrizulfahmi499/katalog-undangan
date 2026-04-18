@@ -14,10 +14,12 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
+        whatsapp: true,
         creditPoints: true,
         status: true,
         landingPageEnabled: true,
         landingPageTheme: true,
+        landingPageConfig: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -39,7 +41,7 @@ export async function GET() {
 // POST create new member
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, whatsapp, password, creditPoints, landingPageEnabled, landingPageTheme } = await request.json()
+    const { name, email, whatsapp, password, creditPoints, landingPageEnabled, landingPageTheme, landingPageConfig } = await request.json()
 
     if (!name || !email || !whatsapp || !password) {
       return NextResponse.json(
@@ -74,6 +76,7 @@ export async function POST(request: NextRequest) {
         status: 'active',
         landingPageEnabled: landingPageEnabled || false,
         landingPageTheme: landingPageTheme || 'default',
+        landingPageConfig: landingPageConfig || undefined,
       },
     })
 
