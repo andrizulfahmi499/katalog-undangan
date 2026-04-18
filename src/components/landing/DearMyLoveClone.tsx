@@ -102,41 +102,38 @@ function NavItem({
   const isExternal = href.startsWith('http')
   return (
     <a href={href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
-      <motion.div
-        animate={{
-          width: isActive ? mdWidth : '40px',
-        }}
+      <div
         className={`
-          relative flex items-center overflow-hidden rounded-full
-          py-[2px] pl-[8px] h-10 transition-colors duration-300
+          relative flex items-center overflow-hidden rounded-full group
+          py-[2px] pl-[8px] h-10 transition-all duration-300
+          ${isActive ? 'w-[var(--expanded-w)] lg:w-10' : 'w-10'}
+          hover:w-[var(--expanded-w)]
         `}
         style={{
           backgroundColor: dark ? '#172a26' : 'transparent',
-        }}
+          '--expanded-w': mdWidth
+        } as React.CSSProperties}
         title={label}
       >
         {/* Icon always visible */}
         <div className="flex-shrink-0 flex items-center justify-center -ml-[2px]">{icon}</div>
         
-        {/* Label: visible only when isActive */}
-        <AnimatePresence>
-          {isActive && (
-            <motion.span
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 'auto' }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.3 }}
-              className="pl-1.5 pr-3 text-xs whitespace-nowrap overflow-hidden"
-              style={{
-                fontFamily: "'Lato', sans-serif",
-                color: dark ? 'white' : '#172a26',
-              }}
-            >
-              {label}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </motion.div>
+        {/* Label */ }
+        <span
+          className={`
+            pl-1.5 pr-3 text-xs whitespace-nowrap overflow-hidden transition-all duration-300
+            ${isActive 
+              ? 'opacity-100 max-w-xs lg:opacity-0 lg:max-w-0 lg:group-hover:opacity-100 lg:group-hover:max-w-xs' 
+              : 'opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs'}
+          `}
+          style={{
+            fontFamily: "'Lato', sans-serif",
+            color: dark ? 'white' : '#172a26',
+          }}
+        >
+          {label}
+        </span>
+      </div>
     </a>
   )
 }

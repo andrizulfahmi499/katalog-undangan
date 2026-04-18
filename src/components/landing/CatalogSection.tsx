@@ -35,7 +35,7 @@ function ThemeCardSkeleton({ isLight }: { isLight: boolean }) {
         ? 'neu-raised'
         : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15'
     }`}>
-      <div className={`aspect-[3/4] animate-pulse ${
+      <div className={`aspect-square md:aspect-[3/4] animate-pulse ${
         isLight ? 'bg-[#d1d9e6]' : 'bg-gradient-to-br from-[#1b2f29]/80 to-[#223e36]/80'
       }`} />
       <div className="p-4 space-y-3">
@@ -275,7 +275,7 @@ export function CatalogSection() {
                       : 'bg-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15 hover:bg-white/15 hover:shadow-[0_20px_60px_rgba(165,180,252,0.2)]'
                   }`}>
                     {/* Theme Preview Image */}
-                    <div className="relative aspect-[3/4] overflow-hidden">
+                    <div className="relative aspect-square md:aspect-[3/4] overflow-hidden">
                       <img
                         src={theme.featured_image}
                         alt={theme.name}
