@@ -238,7 +238,7 @@ export function OrderFormSection() {
                       value={formData.noWhatsApp}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}}
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
                       placeholder="Contoh: 081234567890"
                     />
                   </div>
@@ -529,7 +529,7 @@ export function OrderFormSection() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${isLight ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]' : 'bg-[#ededed] text-[#172a26] shadow-lg hover:bg-white'}`}}
+                  className={`w-full px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${isLight ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]' : 'bg-[#ededed] text-[#172a26] shadow-lg hover:bg-white'}`}
                 >
                   {isSubmitting ? (
                     <>
