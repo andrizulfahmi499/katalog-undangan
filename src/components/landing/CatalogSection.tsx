@@ -146,8 +146,8 @@ export function CatalogSection() {
   }
 
   return (
-    <section id="catalog" className="relative py-24 overflow-hidden min-h-screen">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="catalog" className="relative py-10 overflow-hidden">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
         {/* Section Header */}
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -202,7 +202,7 @@ export function CatalogSection() {
                 className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                   isLight
                     ? 'neu-btn text-[#2d3748]'
-                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                    : 'bg-[#ededed] text-[#172a26] shadow-lg hover:bg-white'
                 }`}
               >
                 <Grid className="w-4 h-4" />
@@ -238,8 +238,8 @@ export function CatalogSection() {
                             ? 'neu-pressed text-[#2d3748]'
                             : 'neu-flat text-[#6b7280] hover:text-[#2d3748]'
                           : selectedCategory === category.id
-                            ? 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
-                            : 'bg-white/10 backdrop-blur-sm text-purple-200/80 hover:bg-white/15 border border-white/15 shadow-sm'
+                            ? 'bg-[#ededed] text-[#172a26] shadow-lg'
+                            : 'bg-white/10 backdrop-blur-sm text-white/70 hover:bg-white/15 border border-white/15 shadow-sm'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -300,7 +300,7 @@ export function CatalogSection() {
                         <span className={`text-xs font-medium px-3 py-1 rounded-full ${
                           isLight
                             ? 'text-[#8b8fa3] bg-[#d1d9e6]'
-                            : 'text-[#A5B4FC] bg-gradient-to-r from-[#A5B4FC]/10 to-[#C4B5FD]/10'
+                            : 'text-white/60 bg-white/10'
                         }`}>
                           {theme.category}
                         </span>
@@ -322,7 +322,7 @@ export function CatalogSection() {
                           className={`text-xs font-semibold py-2.5 px-3 text-center rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
                             isLight
                               ? 'neu-flat text-[#6b7280] hover:text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
-                              : 'bg-white/10 text-purple-200 hover:bg-gradient-to-r hover:from-[#A5B4FC] hover:to-[#C4B5FD] hover:text-white'
+                              : 'bg-white/10 text-white/70 border border-white/15 hover:bg-white/20 hover:text-white'
                           }`}
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -335,7 +335,7 @@ export function CatalogSection() {
                           className={`text-xs font-semibold py-2.5 px-3 text-center rounded-2xl transition-all duration-300 ${
                             isLight
                               ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
-                              : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white hover:shadow-lg hover:shadow-[#A5B4FC]/30'
+                              : 'bg-[#ededed] text-[#172a26] hover:bg-white'
                           }`}
                         >
                           Pesan Sekarang
@@ -363,7 +363,7 @@ export function CatalogSection() {
                 className={`px-8 py-3 rounded-2xl font-medium ${
                   isLight
                     ? 'neu-btn text-[#2d3748]'
-                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30'
+                    : 'bg-[#ededed] text-[#172a26] hover:bg-white'
                 }`}
               >
                 Lihat Semua Tema
@@ -384,7 +384,7 @@ export function CatalogSection() {
                 className={`px-12 py-4 rounded-full font-semibold inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
                   isLight
                     ? 'neu-btn text-[#2d3748]'
-                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                    : 'bg-[#ededed] text-[#172a26] hover:bg-white shadow-lg'
                 }`}
               >
                 {isLoadingMore ? (

@@ -170,8 +170,8 @@ export function OrderFormSection() {
   }
 
   return (
-    <section id="order-form" className="relative py-24 overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="order-form" className="relative py-10 overflow-hidden">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
         <ScrollReveal>
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -207,8 +207,8 @@ export function OrderFormSection() {
               {/* Informasi Pemesan */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
-                    <User className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <User className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Informasi Pemesan</h3>
                 </div>
@@ -224,7 +224,7 @@ export function OrderFormSection() {
                       value={formData.namaPemesan}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}}
                       placeholder="Masukkan nama lengkap"
                     />
                   </div>
@@ -238,7 +238,7 @@ export function OrderFormSection() {
                       value={formData.noWhatsApp}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-[#A5B4FC] focus:ring-2 focus:ring-[#A5B4FC]/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}
+                      className={`w-full px-4 py-3 rounded-2xl outline-none transition-all ${isLight ? 'neu-pressed-sm text-[#2d3748] placeholder-[#9ca3af] focus:shadow-[inset_4px_4px_8px_#b8bec7,inset_-4px_-4px_8px_#ffffff]' : 'border border-white/20 focus:border-white/50 focus:ring-2 focus:ring-white/10 bg-white/10 backdrop-blur-sm text-white placeholder-white/40'}`}}
                       placeholder="Contoh: 081234567890"
                     />
                   </div>
@@ -248,8 +248,8 @@ export function OrderFormSection() {
               {/* Data Mempelai */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#FBCFE8] to-[#F9A8D4] shadow-lg shadow-[#FBCFE8]/30'}`}>
-                    <Heart className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <Heart className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Data Mempelai</h3>
                 </div>
@@ -303,8 +303,8 @@ export function OrderFormSection() {
               {/* Detail Acara */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
-                    <Calendar className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <Calendar className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Detail Acara</h3>
                 </div>
@@ -383,8 +383,8 @@ export function OrderFormSection() {
               {/* Tema Pilihan */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] shadow-lg shadow-[#C4B5FD]/30'}`}>
-                    <Sparkles className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <Sparkles className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tema Pilihan</h3>
                 </div>
@@ -410,8 +410,8 @@ export function OrderFormSection() {
               {/* Upload Foto Mempelai */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#A5B4FC] to-[#C4B5FD] shadow-lg shadow-[#A5B4FC]/30'}`}>
-                    <Image className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <Image className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <div>
                     <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Foto Mempelai</h3>
@@ -419,7 +419,7 @@ export function OrderFormSection() {
                   </div>
                 </div>
                 
-                <div className={`border-2 border-dashed rounded-3xl p-8 text-center transition-colors ${isLight ? 'border-[#b8bec7] hover:border-[#8b8fa3]' : 'border-white/20 hover:border-[#A5B4FC]'}`}>
+                <div className={`border-2 border-dashed rounded-3xl p-8 text-center transition-colors ${isLight ? 'border-[#b8bec7] hover:border-[#8b8fa3]' : 'border-white/20 hover:border-white/40'}`}>
                   <input
                     type="file"
                     id="photoUpload"
@@ -433,8 +433,8 @@ export function OrderFormSection() {
                     htmlFor="photoUpload"
                     className={`cursor-pointer flex flex-col items-center ${uploadedPhotos.length >= MAX_PHOTOS ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${isLight ? 'neu-pressed' : 'bg-gradient-to-br from-[#A5B4FC]/10 to-[#C4B5FD]/10'}`}>
-                      <Upload className={`w-8 h-8 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${isLight ? 'neu-pressed' : 'bg-white/10 border border-white/20'}`}>
+                      <Upload className={`w-8 h-8 ${isLight ? 'text-[#8b8fa3]' : 'text-white/60'}`} />
                     </div>
                     <p className={`text-sm font-medium mb-1 ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>
                       Klik untuk upload foto
@@ -473,8 +473,8 @@ export function OrderFormSection() {
               {/* Tambahan */}
               <div className={`p-6 sm:p-8 ${isLight ? 'border-b border-[#d1d9e6]' : 'border-b border-white/10'}`}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-gradient-to-br from-[#C4B5FD] to-[#FBCFE8] shadow-lg shadow-[#C4B5FD]/30'}`}>
-                    <Music className={`w-6 h-6 ${isLight ? '' : 'text-white'}`} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isLight ? 'neu-pressed text-[#8b8fa3]' : 'bg-white/15 border border-white/20'}`}>
+                    <Music className={`w-6 h-6 ${isLight ? '' : 'text-white/80'}`} />
                   </div>
                   <h3 className={`text-xl font-bold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Tambahan</h3>
                 </div>
@@ -529,7 +529,7 @@ export function OrderFormSection() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${isLight ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]' : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'}`}
+                  className={`w-full px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${isLight ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]' : 'bg-[#ededed] text-[#172a26] shadow-lg hover:bg-white'}`}}
                 >
                   {isSubmitting ? (
                     <>
