@@ -47,8 +47,16 @@ function StarryBackground() {
   )
 }
 
+import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
+
+// ... existing code
+
 export default function Home() {
   const { isLight } = useTheme()
+
+  if (!isLight) {
+    return <DearMyLoveClone />
+  }
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-20 md:pb-0">
@@ -73,59 +81,19 @@ export default function Home() {
       `}</style>
 
       {/* === Fixed Background === */}
-      {isLight ? (
-        /* Light Neumorphism Background */
-        <div className="fixed inset-0 -z-10">
-          <div className="absolute inset-0 bg-[#e0e5ec]" />
-        </div>
-      ) : (
-        /* Default Aurora Background (no mountains, no pine forest) */
-        <div className="fixed inset-0 -z-10">
-          {/* Sky gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0d0221] via-[#2a0845] via-40% to-[#6b21a8]" />
-          
-          {/* Aurora glow */}
-          <div
-            className="absolute bottom-[15%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] rounded-full blur-[150px] pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse, rgba(168,85,247,0.4) 0%, rgba(107,33,168,0.15) 50%, transparent 70%)',
-              animation: 'glow 5s ease-in-out infinite',
-            }}
-          />
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[#e0e5ec]" />
+      </div>
 
-          {/* Stars */}
-          <StarryBackground />
-        </div>
-      )}
-
-      {/* Navbar */}
       <Navbar />
-
-      {/* Video Hero Section */}
       <VideoHeroSection />
-
-      {/* Phone Showcase Section */}
       <PhoneShowcase />
-
-      {/* Intro Section */}
       <IntroSection />
-
-      {/* Feature Section */}
       <FeatureSection />
-
-      {/* Catalog Section */}
       <CatalogSection />
-
-      {/* Pricing Section */}
       <PricingSection />
-
-      {/* Order Form Section */}
       <OrderFormSection />
-
-      {/* Footer */}
       <Footer />
-
-      {/* Floating Navigation */}
       <FloatingNav />
     </main>
   )

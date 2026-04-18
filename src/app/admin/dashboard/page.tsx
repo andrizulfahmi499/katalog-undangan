@@ -13,6 +13,7 @@ type Member = {
   creditPoints: number
   status: string
   landingPageEnabled?: boolean
+  landingPageTheme?: string
   createdAt: string
 }
 
@@ -50,7 +51,8 @@ export default function AdminDashboard() {
     password: '',
     creditPoints: 0,
     status: 'active',
-    landingPageEnabled: false
+    landingPageEnabled: false,
+    landingPageTheme: 'default'
   })
 
   // Templates state
@@ -86,6 +88,7 @@ export default function AdminDashboard() {
     password: '',
     creditPoints: 0,
     landingPageEnabled: false,
+    landingPageTheme: 'default',
   })
 
   // New invitation form state
@@ -145,7 +148,7 @@ export default function AdminDashboard() {
       if (data.success) {
         fetchMembers()
         setShowAddMemberModal(false)
-        setNewMember({ name: '', email: '', whatsapp: '', password: '', creditPoints: 0, landingPageEnabled: false })
+        setNewMember({ name: '', email: '', whatsapp: '', password: '', creditPoints: 0, landingPageEnabled: false, landingPageTheme: 'default' })
       } else {
         alert(data.error || 'Gagal menambah member')
       }
@@ -164,7 +167,8 @@ export default function AdminDashboard() {
       password: '',
       creditPoints: member.creditPoints,
       status: member.status || 'active',
-      landingPageEnabled: member.landingPageEnabled || false
+      landingPageEnabled: member.landingPageEnabled || false,
+      landingPageTheme: member.landingPageTheme || 'default'
     })
     setShowEditMemberModal(true)
   }
@@ -180,7 +184,8 @@ export default function AdminDashboard() {
         whatsapp: editMemberForm.whatsapp,
         creditPoints: editMemberForm.creditPoints,
         status: editMemberForm.status,
-        landingPageEnabled: editMemberForm.landingPageEnabled
+        landingPageEnabled: editMemberForm.landingPageEnabled,
+        landingPageTheme: editMemberForm.landingPageTheme
       }
       
       if (editMemberForm.password) {
@@ -771,6 +776,19 @@ export default function AdminDashboard() {
                     <span className="text-sm font-medium text-gray-700">Aktifkan Landing Page Custom u/ Member</span>
                   </label>
                 </div>
+                {newMember.landingPageEnabled && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
+                    <select
+                      value={newMember.landingPageTheme}
+                      onChange={(e) => setNewMember({ ...newMember, landingPageTheme: e.target.value })}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-400 focus:outline-none"
+                    >
+                      <option value="default">Default (Premium DearMyLove clone)</option>
+                      <option value="neumorphism">Neumorphism (Klasik)</option>
+                    </select>
+                  </div>
+                )}
                 <div className="flex gap-3 pt-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -885,6 +903,19 @@ export default function AdminDashboard() {
                     <span className="text-sm font-medium text-gray-700">Aktifkan Landing Page Custom u/ Member</span>
                   </label>
                 </div>
+                {editMemberForm.landingPageEnabled && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tema Landing Page</label>
+                    <select
+                      value={editMemberForm.landingPageTheme}
+                      onChange={(e) => setEditMemberForm({ ...editMemberForm, landingPageTheme: e.target.value })}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none"
+                    >
+                      <option value="default">Default (Premium DearMyLove clone)</option>
+                      <option value="neumorphism">Neumorphism (Klasik)</option>
+                    </select>
+                  </div>
+                )}
                 <div className="flex gap-3 pt-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
