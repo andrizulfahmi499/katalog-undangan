@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useContext } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValueEvent } from 'framer-motion'
 import { CustomLandingContext } from '@/context/CustomLandingContext'
 import { Check, Crown, Sparkles, Star } from 'lucide-react'
 import { CatalogSection } from './CatalogSection'
@@ -38,52 +38,6 @@ function DearMyLoveLogo({ className = '' }: { className?: string }) {
   )
 }
 
-// ─── Botanical Floral SVG (hand-drawn style) ──────────────────────────────────
-function FloralBotanical({ mirrored = false, className = '' }: { mirrored?: boolean; className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 500 800"
-      stroke="white"
-      strokeWidth="1.2"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      style={mirrored ? { transform: 'scaleX(-1)' } : undefined}
-    >
-      {/* Main stem */}
-      <path d="M250 780 Q240 700 250 620 Q260 540 245 460 Q230 380 250 300 Q270 220 250 140 Q235 90 240 40" />
-      {/* Leaves left */}
-      <path d="M248 600 Q180 570 140 520 Q200 555 248 580" />
-      <path d="M247 500 Q175 460 130 400 Q195 445 247 480" />
-      <path d="M249 380 Q190 350 160 290 Q210 335 249 365" />
-      <path d="M250 260 Q200 230 175 170 Q220 210 250 245" />
-      {/* Leaves right */}
-      <path d="M252 570 Q320 545 360 490 Q305 530 252 555" />
-      <path d="M253 460 Q325 420 370 360 Q310 405 253 440" />
-      <path d="M251 340 Q315 305 350 245 Q295 285 251 320" />
-      <path d="M252 220 Q305 185 335 125 Q285 165 252 205" />
-      {/* Flower at top */}
-      <ellipse cx="245" cy="35" rx="18" ry="22" />
-      <path d="M245 13 Q230 -5 220 -15 Q240 5 245 18" />
-      <path d="M245 13 Q260 -5 270 -15 Q250 5 245 18" />
-      <path d="M228 25 Q208 18 195 5 Q218 20 228 30" />
-      <path d="M262 25 Q282 18 295 5 Q272 20 262 30" />
-      <circle cx="245" cy="35" r="6" fill="white" fillOpacity="0.5" />
-      {/* Small buds on branches */}
-      <circle cx="140" cy="520" r="4" fill="white" fillOpacity="0.35" />
-      <circle cx="130" cy="400" r="3.5" fill="white" fillOpacity="0.3" />
-      <circle cx="160" cy="290" r="4" fill="white" fillOpacity="0.35" />
-      <circle cx="360" cy="490" r="4" fill="white" fillOpacity="0.35" />
-      <circle cx="370" cy="360" r="3.5" fill="white" fillOpacity="0.3" />
-      <circle cx="350" cy="245" r="4" fill="white" fillOpacity="0.35" />
-      {/* Tiny flowers on branches */}
-      <ellipse cx="175" cy="170" rx="7" ry="9" />
-      <ellipse cx="335" cy="125" rx="7" ry="9" />
-    </svg>
-  )
-}
 
 // ─── Default pricing ───────────────────────────────────────────────────────────
 const DEFAULT_PACKAGES = [
@@ -136,44 +90,53 @@ function NavItem({
   label,
   dark = false,
   mdWidth = '100px',
+  isActive = false,
 }: {
   href: string
   icon: React.ReactNode
   label: string
   dark?: boolean
   mdWidth?: string
+  isActive?: boolean
 }) {
   const isExternal = href.startsWith('http')
   return (
     <a href={href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
-      <div
+      <motion.div
+        animate={{
+          width: isActive ? mdWidth : '40px',
+        }}
         className={`
           relative flex items-center overflow-hidden rounded-full
-          py-[2px] pl-[5px] pr-[2px]
-          h-10 w-10
-          md:h-14 xl:h-10
-          md:w-[var(--md-w)] xl:w-10
-          transition-all duration-300
+          py-[2px] pl-[8px] h-10 transition-colors duration-300
         `}
         style={{
           backgroundColor: dark ? '#172a26' : 'transparent',
-          '--md-w': mdWidth,
-        } as React.CSSProperties}
+        }}
         title={label}
       >
         {/* Icon always visible */}
-        <div className="flex-shrink-0">{icon}</div>
-        {/* Label: hidden on mobile & xl, visible on md */}
-        <span
-          className="hidden md:block xl:hidden pl-1.5 pr-3 text-xs whitespace-nowrap"
-          style={{
-            fontFamily: "'Lato', sans-serif",
-            color: dark ? 'white' : '#172a26',
-          }}
-        >
-          {label}
-        </span>
-      </div>
+        <div className="flex-shrink-0 flex items-center justify-center -ml-[2px]">{icon}</div>
+        
+        {/* Label: visible only when isActive */}
+        <AnimatePresence>
+          {isActive && (
+            <motion.span
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.3 }}
+              className="pl-1.5 pr-3 text-xs whitespace-nowrap overflow-hidden"
+              style={{
+                fontFamily: "'Lato', sans-serif",
+                color: dark ? 'white' : '#172a26',
+              }}
+            >
+              {label}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </a>
   )
 }
@@ -252,9 +215,19 @@ export function DearMyLoveClone() {
     return () => clearTimeout(t)
   }, [])
 
-  const { scrollY } = useScroll()
+  const { scrollY, scrollYProgress } = useScroll()
   const floralLeftY = useTransform(scrollY, [0, 1200], [0, -80])
   const floralRightY = useTransform(scrollY, [0, 1200], [0, -55])
+
+  const [activeNavIndex, setActiveNavIndex] = useState(0)
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest < 0.15) setActiveNavIndex(0)      // top (contact)
+    else if (latest < 0.35) setActiveNavIndex(1) // features (ig)
+    else if (latest < 0.55) setActiveNavIndex(2) // dashboard (sign in)
+    else if (latest < 0.80) setActiveNavIndex(3) // catalog
+    else setActiveNavIndex(4)                    // bottom (pricing)
+  })
 
   return (
     <main
@@ -320,17 +293,17 @@ export function DearMyLoveClone() {
 
       {/* ── Parallax Botanical Background ─────────────────────────── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div style={{ y: floralLeftY }} className="absolute -left-16 top-0 opacity-[0.15] w-[300px] h-[700px]">
-          <FloralBotanical className="w-full h-full breathing-1" />
+        <motion.div style={{ y: floralLeftY }} className="absolute -left-16 lg:left-0 top-0 opacity-[0.2] w-[300px] h-[700px]">
+          <img src="/svg/dearmylove.org-2.svg" className="w-full h-full object-contain breathing-1" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralRightY }} className="absolute -right-16 top-0 opacity-[0.15] w-[300px] h-[700px]">
-          <FloralBotanical mirrored className="w-full h-full breathing-2" />
+        <motion.div style={{ y: floralRightY }} className="absolute -right-16 lg:right-0 top-0 opacity-[0.2] w-[300px] h-[700px]">
+          <img src="/svg/dearmylove.org-3.svg" className="w-full h-full object-contain breathing-2 transform scale-x-[-1]" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralLeftY }} className="absolute -left-12 bottom-0 opacity-[0.08] w-[220px] h-[500px]">
-          <FloralBotanical className="w-full h-full breathing-3" />
+        <motion.div style={{ y: floralLeftY }} className="absolute -left-12 lg:left-10 bottom-0 opacity-[0.15] w-[220px] h-[500px]">
+          <img src="/svg/dearmylove.org-4.svg" className="w-full h-full object-contain breathing-3" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralRightY }} className="absolute -right-12 bottom-0 opacity-[0.08] w-[220px] h-[500px]">
-          <FloralBotanical mirrored className="w-full h-full breathing-4" />
+        <motion.div style={{ y: floralRightY }} className="absolute -right-12 lg:right-10 bottom-0 opacity-[0.15] w-[220px] h-[500px]">
+          <img src="/svg/dearmylove.org-2.svg" className="w-full h-full object-contain breathing-4 transform scale-x-[-1]" alt="" />
         </motion.div>
       </div>
 
@@ -473,6 +446,7 @@ export function DearMyLoveClone() {
       >
         {/* WhatsApp */}
         <NavItem
+          isActive={activeNavIndex === 0}
           href={`https://api.whatsapp.com/send/?phone=${whatsappNumber}&text=Halo%20Admin!%0AAku%20mau%20tanya%20tanya%20mengenai%20e-invitation..%0A`}
           label="contact us"
           mdWidth="114px"
@@ -484,6 +458,7 @@ export function DearMyLoveClone() {
         />
         {/* Instagram */}
         <NavItem
+          isActive={activeNavIndex === 1}
           href={`https://instagram.com/${instagramUser}`}
           label="visit ig"
           mdWidth="92px"
@@ -495,6 +470,7 @@ export function DearMyLoveClone() {
         />
         {/* Login (dark highlighted) */}
         <NavItem
+          isActive={activeNavIndex === 2}
           href="/login"
           label="sign in"
           dark
@@ -507,6 +483,7 @@ export function DearMyLoveClone() {
         />
         {/* Catalog */}
         <NavItem
+          isActive={activeNavIndex === 3}
           href="#katalog"
           label="catalog"
           mdWidth="98px"
@@ -518,6 +495,7 @@ export function DearMyLoveClone() {
         />
         {/* Pricing */}
         <NavItem
+          isActive={activeNavIndex === 4}
           href="#pricing"
           label="see pricing"
           mdWidth="116px"

@@ -42,10 +42,12 @@ type Invitation = {
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'members' | 'invitations' | 'templates'>('members')
+  const [activeTab, setActiveTab] = useState<'members' | 'invitations' | 'templates' | 'settings'>('members')
   const [members, setMembers] = useState<Member[]>([])
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [globalThemeSetting, setGlobalThemeSetting] = useState<'default' | 'light'>('default')
+  const [isSavingGlobalTheme, setIsSavingGlobalTheme] = useState(false)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
   const [currentAdminId, setCurrentAdminId] = useState<string>('')
@@ -119,7 +121,37 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchMembers()
     fetchInvitations()
+    fetchGlobalTheme()
   }, [])
+
+  const fetchGlobalTheme = async () => {
+    try {
+      const res = await fetch('/api/admin/settings')
+      const data = await res.json()
+      if (data.success && data.data) {
+        setGlobalThemeSetting(data.data.landingPageTheme)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const saveGlobalTheme = async (theme: 'default' | 'light') => {
+    setIsSavingGlobalTheme(true)
+    setGlobalThemeSetting(theme)
+    try {
+      await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ landingPageTheme: theme })
+      })
+      alert('Tema global landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
+    } catch (e) {
+      alert('Gagal menyimpan tema global')
+    } finally {
+      setIsSavingGlobalTheme(false)
+    }
+  }
 
   const fetchMembers = async () => {
     try {
@@ -384,28 +416,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#172a26] to-[#1e3630] text-[#ededed] font-sans pb-10">
+    <div className="min-h-screen bg-[#e0e5ec] text-[#2d3748] font-sans pb-10">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#172a26]/90 backdrop-blur-md border-b border-white/10">
+      <header className="neu-flat border-b border-[#d1d9e6] sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ x: -3 }}
                 onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-white/50 hover:text-white transition-colors"
+                className="flex items-center gap-2 text-[#6b7280] hover:text-[#2d3748] transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="font-medium text-sm">Kembali</span>
               </motion.button>
-              <h1 className="text-xl font-bold text-white tracking-wide">Admin Dashboard</h1>
+              <h1 className="text-xl font-bold text-[#2d3748] tracking-wide">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => window.location.href = '/admin/editor'}
-                className="inline-flex items-center gap-2 rounded-full bg-[#ededed] text-[#172a26] px-4 py-2 text-sm font-semibold shadow-lg transition hover:bg-white"
+                className="inline-flex items-center gap-2 rounded-full neu-btn text-[#2d3748] px-4 py-2 text-sm font-semibold transition"
               >
                 <Plus className="w-4 h-4" />
                 Buat Undangan
@@ -414,7 +446,7 @@ export default function AdminDashboard() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/15 rounded-full text-white/70 hover:text-white hover:bg-white/20 transition-all text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl text-[#2d3748] transition-all text-sm font-medium"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -431,15 +463,15 @@ export default function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <Users className="w-7 h-7 text-[#ededed]" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
+                <Users className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-white/50">Total Member</p>
-                <p className="text-3xl font-bold text-white">{members.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Member</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{members.length}</p>
               </div>
             </div>
           </motion.div>
@@ -448,15 +480,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <Mail className="w-7 h-7 text-[#ededed]" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center">
+                <Mail className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-white/50">Total Undangan</p>
-                <p className="text-3xl font-bold text-white">{invitations.length}</p>
+                <p className="text-sm text-[#6b7280]">Total Undangan</p>
+                <p className="text-3xl font-bold text-[#2d3748]">{invitations.length}</p>
               </div>
             </div>
           </motion.div>
@@ -465,15 +497,15 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-3xl p-6"
+            className="neu-raised-lg rounded-3xl p-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                <CreditCard className="w-7 h-7 text-[#ededed]" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                <CreditCard className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-white/50">Total Credit Terpakai</p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-sm text-[#6b7280]">Total Credit Terpakai</p>
+                <p className="text-3xl font-bold text-[#2d3748]">
                   {invitations.reduce((sum, inv) => sum + inv.costPoints, 0)} coin
                 </p>
               </div>
@@ -535,6 +567,18 @@ export default function AdminDashboard() {
             }`}
           >
             Templates
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setActiveTab('settings')}
+            className={`px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === 'settings'
+                ? 'neu-pressed text-amber-600'
+                : 'neu-btn text-[#6b7280]'
+            }`}
+          >
+            Settings
           </motion.button>
         </div>
 
@@ -722,6 +766,62 @@ export default function AdminDashboard() {
                     )}
                   </tbody>
                 </table>
+              </div>
+            </motion.div>
+          )}
+          {/* Settings Tab */}
+          {activeTab === 'settings' && (
+            <motion.div
+              key="settings"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="neu-raised-lg rounded-3xl overflow-hidden p-6"
+            >
+              <h2 className="text-xl font-bold text-[#2d3748] mb-6">Global Settings</h2>
+              
+              <div className="bg-[#e0e5ec] p-6 rounded-2xl border border-[#d1d9e6] shadow-inner mb-6">
+                <h3 className="text-lg font-semibold text-[#2d3748] mb-2">Tema Landing Page (Global)</h3>
+                <p className="text-sm text-[#6b7280] mb-6">
+                  Pilih tema yang akan diterapkan untuk halaman utama website (landing page public) bagi semua pengunjung.
+                </p>
+                
+                <div className="flex gap-4 mb-6">
+                  <button
+                    onClick={() => setGlobalThemeSetting('default')}
+                    className={`flex-1 py-4 rounded-xl border-2 transition-all font-medium ${
+                      globalThemeSetting === 'default'
+                        ? 'border-indigo-500 neu-pressed text-indigo-600'
+                        : 'border-transparent neu-btn text-[#6b7280]'
+                    }`}
+                  >
+                    <div className="font-bold mb-1">Default Theme</div>
+                    <div className="text-xs opacity-70">(DearMyLove Dark/Green)</div>
+                  </button>
+                  <button
+                    onClick={() => setGlobalThemeSetting('light')}
+                    className={`flex-1 py-4 rounded-xl border-2 transition-all font-medium ${
+                      globalThemeSetting === 'light'
+                        ? 'border-teal-500 neu-pressed text-teal-600'
+                        : 'border-transparent neu-btn text-[#6b7280]'
+                    }`}
+                  >
+                    <div className="font-bold mb-1">Light Theme</div>
+                    <div className="text-xs opacity-70">(Neumorphism / Glass)</div>
+                  </button>
+                </div>
+                
+                <div className="flex justify-end">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => saveGlobalTheme(globalThemeSetting)}
+                    disabled={isSavingGlobalTheme}
+                    className="px-6 py-3 neu-btn rounded-xl font-bold text-indigo-600 disabled:opacity-50"
+                  >
+                    {isSavingGlobalTheme ? 'Menyimpan...' : 'Simpan Pengaturan'}
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           )}

@@ -17,18 +17,28 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('default')
   const [mounted, setMounted] = useState(false)
 
-  // Load theme from localStorage on mount
+  // Load global theme on mount
   useEffect(() => {
-    const saved = localStorage.getItem('katalog-theme') as ThemeMode | null
-    if (saved && (saved === 'default' || saved === 'light')) {
-      setThemeState(saved)
+    // We fetch global theme config from db/api
+    const fetchGlobalTheme = async () => {
+      try {
+        const res = await fetch('/api/public/settings')
+        const data = await res.json()
+        if (data.success && data.data?.landingPageTheme) {
+          setThemeState(data.data.landingPageTheme as ThemeMode)
+        }
+      } catch (err) {
+        console.error('Failed to fetch global theme', err)
+      } finally {
+        setMounted(true)
+      }
     }
-    setMounted(true)
+
+    fetchGlobalTheme()
   }, [])
 
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme)
-    localStorage.setItem('katalog-theme', newTheme)
   }
 
   const toggleTheme = () => {
