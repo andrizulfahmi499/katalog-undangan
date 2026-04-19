@@ -197,6 +197,12 @@ function PricingCard({ pkg, index }: { pkg: any; index: number }) {
 // ─── Main Component ────────────────────────────────────────────────────────────
 export function DearMyLoveClone() {
   const [isLoading, setIsLoading] = useState(true)
+  const [preloaderSettings, setPreloaderSettings] = useState({
+    enabled: true,
+    duration: 3200,
+    logoText: 'AKA Invitation',
+    bgColor: '#172a26',
+  })
   const ctx = useContext(CustomLandingContext)
   const config = ctx?.config || {}
 
@@ -209,8 +215,30 @@ export function DearMyLoveClone() {
   const pricingPackages = (config?.pricingPackages as any[])?.filter((p: any) => p.enabled !== false) || DEFAULT_PACKAGES
 
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 3200)
-    return () => clearTimeout(t)
+    // Fetch preloader settings from API
+    fetch('/api/admin/settings')
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.data) {
+          const s = data.data
+          setPreloaderSettings({
+            enabled: s.preloaderEnabled ?? true,
+            duration: s.preloaderDuration ?? 3200,
+            logoText: s.preloaderLogoText || 'AKA Invitation',
+            bgColor: s.preloaderBgColor || '#172a26',
+          })
+          if (s.preloaderEnabled === false) {
+            setIsLoading(false)
+            return
+          }
+          const t = setTimeout(() => setIsLoading(false), s.preloaderDuration ?? 3200)
+          return () => clearTimeout(t)
+        }
+      })
+      .catch(() => {
+        const t = setTimeout(() => setIsLoading(false), 3200)
+        return () => clearTimeout(t)
+      })
   }, [])
 
   const { scrollY, scrollYProgress } = useScroll()
@@ -240,9 +268,9 @@ export function DearMyLoveClone() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, ease: 'easeInOut' }}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-            style={{ background: 'linear-gradient(160deg, #172a26 0%, #1a2f2a 60%, #1c352e 100%)' }}
+            style={{ background: preloaderSettings.bgColor }}
           >
-            {/* Logo centered above the rose */}
+            {/* Logo */}
             <motion.div
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -256,7 +284,7 @@ export function DearMyLoveClone() {
               )}
             </motion.div>
 
-            {/* Rose draw animation - centered, same size as dearmylove.org */}
+            {/* Rose draw animation */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

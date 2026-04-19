@@ -3,6 +3,14 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+const DEFAULT_SETTINGS = {
+  landingPageTheme: 'default',
+  preloaderEnabled: true,
+  preloaderDuration: 3200,
+  preloaderLogoText: 'AKA Invitation',
+  preloaderBgColor: '#172a26',
+}
+
 export async function GET() {
   try {
     const setting = await prisma.globalSetting.findUnique({
@@ -10,8 +18,7 @@ export async function GET() {
     })
 
     if (!setting) {
-      // Return default if not exists
-      return NextResponse.json({ success: true, data: { landingPageTheme: 'default' } })
+      return NextResponse.json({ success: true, data: DEFAULT_SETTINGS })
     }
 
     return NextResponse.json({ success: true, data: setting })
@@ -27,23 +34,35 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { landingPageTheme } = body
+    const {
+      landingPageTheme,
+      preloaderEnabled,
+      preloaderDuration,
+      preloaderLogoText,
+      preloaderBgColor,
+    } = body
 
-    if (!landingPageTheme) {
+    const updateData: any = {}
+    if (landingPageTheme !== undefined) updateData.landingPageTheme = landingPageTheme
+    if (preloaderEnabled !== undefined) updateData.preloaderEnabled = preloaderEnabled
+    if (preloaderDuration !== undefined) updateData.preloaderDuration = Number(preloaderDuration)
+    if (preloaderLogoText !== undefined) updateData.preloaderLogoText = preloaderLogoText
+    if (preloaderBgColor !== undefined) updateData.preloaderBgColor = preloaderBgColor
+
+    if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
-        { success: false, error: 'landingPageTheme is required' },
+        { success: false, error: 'No valid fields to update' },
         { status: 400 }
       )
     }
 
     const setting = await prisma.globalSetting.upsert({
       where: { id: 'global' },
-      update: {
-        landingPageTheme,
-      },
+      update: updateData,
       create: {
         id: 'global',
-        landingPageTheme,
+        ...DEFAULT_SETTINGS,
+        ...updateData,
       },
     })
 

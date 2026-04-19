@@ -146,9 +146,13 @@ model CreditTransaction {
 
 // Global settings for the portal (like landing page theme)
 model GlobalSetting {
-  id               String   @id @default("global")
-  landingPageTheme String   @default("default") // 'default' | 'light'
-  updatedAt        DateTime @updatedAt
+  id                  String   @id @default("global")
+  landingPageTheme    String   @default("default") // 'default' | 'light'
+  preloaderEnabled    Boolean  @default(true)
+  preloaderDuration   Int      @default(3200) // ms
+  preloaderLogoText   String   @default("AKA Invitation")
+  preloaderBgColor    String   @default("#172a26")
+  updatedAt           DateTime @updatedAt
 
   @@map("GlobalSetting")
 }
