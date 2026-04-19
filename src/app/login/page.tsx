@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Shield, User, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 type LoginType = null | 'admin' | 'member'
 
@@ -59,12 +60,20 @@ const FloralBotanical = ({ className = '', mirrored = false }: { className?: str
   </svg>
 )
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams()
   const [loginType, setLoginType] = useState<LoginType>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const role = searchParams.get('role')
+    if (role === 'admin' || role === 'member') {
+      setLoginType(role as LoginType)
+    }
+  }, [searchParams])
 
   const handleBack = () => {
     setLoginType(null)
@@ -335,5 +344,13 @@ export default function LoginPage() {
         </AnimatePresence>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#172a26] flex items-center justify-center text-white">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   )
 }

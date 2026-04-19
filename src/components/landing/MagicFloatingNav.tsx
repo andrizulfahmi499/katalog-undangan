@@ -134,7 +134,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                 isLight ? 'bg-white border-gray-100' : 'bg-[#1a2f26] border-white/10'
               }`}>
                 <Link
-                  href="/login"
+                  href="/login?role=member"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >
@@ -144,7 +144,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member Login</span>
                 </Link>
                 <Link
-                  href="/login"
+                  href="/login?role=admin"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >

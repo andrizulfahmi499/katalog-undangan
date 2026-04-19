@@ -309,7 +309,7 @@ export function DearMyLoveClone() {
       <div className="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-20 pb-36 gap-20 w-full max-w-5xl mx-auto">
 
         {/* Hero */}
-        <section className="flex flex-col items-center text-center gap-6 pt-12 max-w-xl">
+        <section id="home" className="flex flex-col items-center text-center gap-6 pt-12 max-w-xl">
           <Reveal>
             <h1 style={{ fontFamily: "'Josefin Sans', sans-serif" }} className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[0.15em] leading-tight text-white uppercase">
               YOUR ONE STOP<br />WEDDING KIT
