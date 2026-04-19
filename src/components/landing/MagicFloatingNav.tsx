@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, MessageCircle, Instagram } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, MessageCircle, Instagram, Shield } from 'lucide-react'
+import Link from 'next/link'
 
 interface NavItem {
   id: string
@@ -20,7 +21,8 @@ interface MagicFloatingNavProps {
 }
 
 export function MagicFloatingNav({ activeSection: initialSection = 'home', whatsappNumber, instagramUser, isLight = false }: MagicFloatingNavProps) {
-  const [activeIndex, setActiveIndex] = useState(0)
+  // Use -1 as initial state so nothing is highlighted on first load per user request
+  const [activeIndex, setActiveIndex] = useState(-1)
   const [showContactPopup, setShowContactPopup] = useState(false)
   const [showLoginPopup, setShowLoginPopup] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
@@ -33,13 +35,9 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
     { id: 'pricing', label: 'Pricing', icon: <Tag className="w-6 h-6" />, href: '#pricing' },
   ]
 
-  useEffect(() => {
-    // Sync active index with activeSection prop
-    const index = navItems.findIndex(item => item.id === initialSection)
-    if (index !== -1) setActiveIndex(index)
-  }, [initialSection])
-
-  // Removed scroll hiding logic per user request: "buat navbarnya selalu floating tidak terhide"
+  // We explicitly disable initial highlight as requested.
+  // We only sync if initialSection changes after the first interaction or if we want to follow scroll later.
+  // For now, let's keep it inactive until first click.
 
   const handleNavClick = (index: number, e: React.MouseEvent) => {
     const item = navItems[index]
@@ -135,24 +133,26 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
               <div className={`flex flex-col gap-1 p-2 rounded-2xl shadow-2xl border ${
                 isLight ? 'bg-white border-gray-100' : 'bg-[#1a2f26] border-white/10'
               }`}>
-                <a
+                <Link
                   href="/login"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/10 transition-colors group"
+                  onClick={() => setShowLoginPopup(false)}
                 >
                   <div className="p-2 bg-blue-600 rounded-lg text-white group-hover:scale-110 transition-transform">
                     <User className="w-5 h-5" />
                   </div>
                   <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member Login</span>
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/login"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-500/10 transition-colors group"
+                  onClick={() => setShowLoginPopup(false)}
                 >
                   <div className="p-2 bg-gray-700 rounded-lg text-white group-hover:scale-110 transition-transform">
                     <Shield className="w-5 h-5" />
                   </div>
                   <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin Login</span>
-                </a>
+                </Link>
               </div>
               {/* Tooltip Arrow */}
               <div className={`w-4 h-4 rotate-45 -mt-2.5 border-r border-b ${
@@ -163,6 +163,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
         </AnimatePresence>
 
 
+
         {/* Navigation Bar Body */}
         <div className={`magic-nav-container relative flex items-center h-[75px] rounded-[25px] px-2 shadow-2xl ${
           isLight ? 'bg-white shadow-black/10' : 'bg-[#ededed]'
@@ -170,7 +171,10 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
           {/* Moving Indicator */}
           <motion.div
             className="magic-indicator"
-            animate={{ x: activeIndex * 64 }} // 64 is the approx width of each item slot
+            animate={{ 
+              x: activeIndex * 64,
+              opacity: activeIndex === -1 ? 0 : 1 
+            }} // 64 is the approx width of each item slot
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             style={{
               position: 'absolute',

@@ -411,6 +411,11 @@ export function DearMyLoveClone() {
           </Reveal>
         </section>
 
+        {/* Catalog & Order — no heavy padding wrapper */}
+        <div id="katalog" className="w-full">
+          <CatalogSection />
+        </div>
+
         {/* Pricing */}
         <section id="pricing" className="w-full">
           <Reveal className="text-center mb-10">
@@ -426,10 +431,6 @@ export function DearMyLoveClone() {
           </div>
         </section>
 
-        {/* Catalog & Order — no heavy padding wrapper */}
-        <div id="katalog" className="w-full">
-          <CatalogSection />
-        </div>
         <div id="pesan" className="w-full">
           <OrderFormSection />
         </div>
