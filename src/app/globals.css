@@ -59,14 +59,13 @@
 
 /* ===== Rose SVG Draw Animation ===== */
 @keyframes draw-rose {
-  0%   { stroke-dashoffset: 8000; opacity: 0.3; }
-  5%   { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 1; }
+  from { stroke-dashoffset: 8000; }
+  to   { stroke-dashoffset: 0; }
 }
 .rose-draw {
   stroke-dasharray: 8000;
   stroke-dashoffset: 8000;
-  animation: draw-rose 2.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+  animation: draw-rose 2.4s ease-in-out forwards;
 }
 
 @source not "../components/corelia/**/*.html";
@@ -192,9 +191,6 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-  html {
-    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;

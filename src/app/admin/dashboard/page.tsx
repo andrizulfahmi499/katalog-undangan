@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText } from 'lucide-react'
 import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
 
-const ROSE_PATH = "M1431 5750c0,-651 0,-1302 0,-1954 -205,-447 -746,-551 -950,-512 -613,115 -279,-290 49,302 269,394 572,437 901,210 0,-300 0,-600 0,-900 226,-16 504,-84 555,-264 166,-514 319,-435 246,-367 -67,62 -192,66 -277,71 -175,2 -284,8 -435,75 -368,163 -72,305 -97,-131 -8,-140 -56,-244 -99,-348 -218,-530 324,-205 -238,-118 -392,60 -855,28 -1003,-404 -126,-386 130,-448 437,-302 233,111 471,263 708,358 114,46 239,82 362,50 297,-90 466,-207 464,-541 -1,-281 -201,-121 -337,-48 -282,150 -659,293 -940,63 -158,-133 -172,-263 -153,-454 9,-86 23,-170 -66,-215 -113,-38 -186,56 -232,146 -53,104 -75,280 -21,388 113,191 455,209 649,279 150,53 235,205 337,237 149,41 180,-159 34,-211 -259,-86 -557,-125 -647,-426 -82,-293 489,-36 599,45 211,163 366,434 657,442 173,-18 365,-211 414,-373 46,-155 -48,-191 -154,-301 -150,-153 -35,-471 -484,-313 -223,78 -397,349 -147,420 112,32 227,-5 256,-128 15,-63 -2,-120 -32,-175 -170,-271 -457,-314 -753,-291 -171,14 -320,172 -252,348 128,194 506,438 738,333 99,-52 152,-141 84,-243 -77,-116 -304,-161 -381,-33 -95,176 255,491 370,596 90,82 160,145 239,244 203,260 45,279 29,252 -22,-37 41,-89 65,-107 113,-77 272,-120 335,-251 34,-75 119,-353 242,-259 83,63 28,204 -21,271 -114,154 -312,266 -451,406 -125,128 -177,160 -346,216 -486,155 -767,-103 -1066,-439 -111,-125 -258,-304 -423,-354"
-
 const DEFAULT_PRICING_PACKAGES = [
   { id: 1, name: 'Basic', price: '70.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas', enabled: true },
   { id: 2, name: 'Premium', price: '100.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram', enabled: true },
@@ -50,11 +48,6 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [globalThemeSetting, setGlobalThemeSetting] = useState<'default' | 'light'>('default')
   const [isSavingGlobalTheme, setIsSavingGlobalTheme] = useState(false)
-  const [preloaderEnabled, setPreloaderEnabled] = useState(true)
-  const [preloaderDuration, setPreloaderDuration] = useState(3200)
-  const [preloaderLogoText, setPreloaderLogoText] = useState('AKA Invitation')
-  const [preloaderBgColor, setPreloaderBgColor] = useState('#172a26')
-  const [isSavingPreloader, setIsSavingPreloader] = useState(false)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
   const [currentAdminId, setCurrentAdminId] = useState<string>('')
@@ -136,11 +129,7 @@ export default function AdminDashboard() {
       const res = await fetch('/api/admin/settings')
       const data = await res.json()
       if (data.success && data.data) {
-        setGlobalThemeSetting(data.data.landingPageTheme || 'default')
-        setPreloaderEnabled(data.data.preloaderEnabled ?? true)
-        setPreloaderDuration(data.data.preloaderDuration ?? 3200)
-        setPreloaderLogoText(data.data.preloaderLogoText || 'AKA Invitation')
-        setPreloaderBgColor(data.data.preloaderBgColor || '#172a26')
+        setGlobalThemeSetting(data.data.landingPageTheme)
       }
     } catch (e) {
       console.error(e)
@@ -156,32 +145,11 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ landingPageTheme: theme })
       })
-      alert('Tema global landing page berhasil disimpan!')
+      alert('Tema global landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
     } catch (e) {
       alert('Gagal menyimpan tema global')
     } finally {
       setIsSavingGlobalTheme(false)
-    }
-  }
-
-  const savePreloaderSettings = async () => {
-    setIsSavingPreloader(true)
-    try {
-      await fetch('/api/admin/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          preloaderEnabled,
-          preloaderDuration,
-          preloaderLogoText,
-          preloaderBgColor,
-        })
-      })
-      alert('Pengaturan preloader berhasil disimpan!')
-    } catch (e) {
-      alert('Gagal menyimpan pengaturan preloader')
-    } finally {
-      setIsSavingPreloader(false)
     }
   }
 
@@ -852,123 +820,6 @@ export default function AdminDashboard() {
                     className="px-6 py-3 neu-btn rounded-xl font-bold text-indigo-600 disabled:opacity-50"
                   >
                     {isSavingGlobalTheme ? 'Menyimpan...' : 'Simpan Pengaturan'}
-                  </motion.button>
-                </div>
-              </div>
-
-              {/* Preloader Settings */}
-              <div className="bg-[#e0e5ec] p-6 rounded-2xl border border-[#d1d9e6] shadow-inner">
-                <h3 className="text-lg font-semibold text-[#2d3748] mb-2">Pengaturan Preloader</h3>
-                <p className="text-sm text-[#6b7280] mb-6">
-                  Atur animasi loading screen yang muncul saat pengunjung pertama kali membuka landing page.
-                </p>
-
-                {/* Enable/Disable Toggle */}
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/50 border border-[#d1d9e6] mb-4">
-                  <div>
-                    <p className="font-semibold text-[#2d3748] text-sm">Aktifkan Preloader</p>
-                    <p className="text-xs text-[#6b7280] mt-0.5">Tampilkan animasi rose saat halaman dibuka</p>
-                  </div>
-                  <button
-                    onClick={() => setPreloaderEnabled(!preloaderEnabled)}
-                    className={`relative w-12 h-6 rounded-full transition-all ${preloaderEnabled ? 'bg-indigo-500' : 'bg-gray-300'}`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${preloaderEnabled ? 'left-7' : 'left-1'}`} />
-                  </button>
-                </div>
-
-                {preloaderEnabled && (
-                  <div className="space-y-4">
-                    {/* Duration */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2d3748] mb-2">
-                        Durasi Preloader: <span className="text-indigo-600 font-bold">{(preloaderDuration / 1000).toFixed(1)}s</span>
-                      </label>
-                      <input
-                        type="range"
-                        min={1000}
-                        max={6000}
-                        step={200}
-                        value={preloaderDuration}
-                        onChange={(e) => setPreloaderDuration(Number(e.target.value))}
-                        className="w-full accent-indigo-500"
-                      />
-                      <div className="flex justify-between text-xs text-[#6b7280] mt-1">
-                        <span>1s</span>
-                        <span>6s</span>
-                      </div>
-                    </div>
-
-                    {/* Logo Text */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2d3748] mb-2">Teks Logo Preloader</label>
-                      <input
-                        type="text"
-                        value={preloaderLogoText}
-                        onChange={(e) => setPreloaderLogoText(e.target.value)}
-                        placeholder="AKA Invitation"
-                        className="w-full px-4 py-2.5 rounded-xl border border-[#d1d9e6] bg-white/70 text-[#2d3748] outline-none focus:border-indigo-400 text-sm"
-                      />
-                      <p className="text-xs text-[#6b7280] mt-1">Teks yang tampil di atas animasi rose</p>
-                    </div>
-
-                    {/* Background Color */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#2d3748] mb-2">Warna Background Preloader</label>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="color"
-                          value={preloaderBgColor}
-                          onChange={(e) => setPreloaderBgColor(e.target.value)}
-                          className="w-12 h-10 rounded-lg cursor-pointer border border-[#d1d9e6]"
-                        />
-                        <input
-                          type="text"
-                          value={preloaderBgColor}
-                          onChange={(e) => setPreloaderBgColor(e.target.value)}
-                          placeholder="#172a26"
-                          className="flex-1 px-4 py-2.5 rounded-xl border border-[#d1d9e6] bg-white/70 text-[#2d3748] outline-none focus:border-indigo-400 text-sm font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Preview */}
-                    <div className="rounded-xl overflow-hidden border border-[#d1d9e6]">
-                      <p className="text-xs font-semibold text-[#6b7280] px-3 py-2 bg-white/50 border-b border-[#d1d9e6]">Preview Preloader</p>
-                      <div
-                        className="flex flex-col items-center justify-center py-8 gap-4"
-                        style={{ backgroundColor: preloaderBgColor }}
-                      >
-                        <p className="text-white/80 text-xs tracking-widest uppercase font-semibold" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
-                          {preloaderLogoText}
-                        </p>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 2600 5800"
-                          width="32"
-                          height="72"
-                          stroke="#ededed"
-                          strokeWidth="50"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d={ROSE_PATH} strokeDasharray="8000" strokeDashoffset="0" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-end mt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={savePreloaderSettings}
-                    disabled={isSavingPreloader}
-                    className="px-6 py-3 neu-btn rounded-xl font-bold text-indigo-600 disabled:opacity-50"
-                  >
-                    {isSavingPreloader ? 'Menyimpan...' : 'Simpan Preloader'}
                   </motion.button>
                 </div>
               </div>

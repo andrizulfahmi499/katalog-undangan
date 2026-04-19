@@ -2,9 +2,8 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Shield, User, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { LordIcon } from '@/components/landing/LordIcon'
 
 type LoginType = null | 'admin' | 'member'
 
@@ -197,12 +196,7 @@ function LoginForm() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20">
-                    <LordIcon
-                      src="https://cdn.lordicon.com/hroklero.json"
-                      trigger="hover"
-                      state="hover-looking-around"
-                      size={36}
-                    />
+                    <Shield className="w-7 h-7 text-[#ededed]" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">Admin</h2>
@@ -213,7 +207,7 @@ function LoginForm() {
                   Kelola member, undangan, dan transaksi credit point
                 </p>
                 <div className="flex items-center text-[#ededed]/80 font-semibold text-sm group-hover:translate-x-2 transition-all">
-                  Masuk Admin <ArrowRight className="w-4 h-4 ml-2" />
+                  Login sebagai Admin <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               </motion.button>
 
@@ -226,12 +220,7 @@ function LoginForm() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20">
-                    <LordIcon
-                      src="https://cdn.lordicon.com/hroklero.json"
-                      trigger="morph"
-                      state="morph-group"
-                      size={36}
-                    />
+                    <User className="w-7 h-7 text-[#ededed]" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">Member</h2>
@@ -242,7 +231,7 @@ function LoginForm() {
                   Kirim undangan digital dengan personalisasi pesan
                 </p>
                 <div className="flex items-center text-[#ededed]/80 font-semibold text-sm group-hover:translate-x-2 transition-all">
-                  Masuk Member <ArrowRight className="w-4 h-4 ml-2" />
+                  Login sebagai Member <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               </motion.button>
             </motion.div>
@@ -273,19 +262,9 @@ function LoginForm() {
                 <div className="text-center mb-8">
                   <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-white/15 border border-white/25">
                     {loginType === 'admin' ? (
-                      <LordIcon
-                        src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="hover"
-                        state="hover-looking-around"
-                        size={40}
-                      />
+                      <Shield className="w-7 h-7 text-[#ededed]" />
                     ) : (
-                      <LordIcon
-                        src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="morph"
-                        state="morph-group"
-                        size={40}
-                      />
+                      <User className="w-7 h-7 text-[#ededed]" />
                     )}
                   </div>
                   <h2 className="text-2xl font-bold text-white mb-1 tracking-wide">
