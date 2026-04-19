@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, MessageCircle, Instagram, Shield } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, MessageCircle, Instagram } from 'lucide-react'
 import Link from 'next/link'
+import { LordIcon } from './LordIcon'
 
 interface NavItem {
   id: string
@@ -20,12 +21,11 @@ interface MagicFloatingNavProps {
   isLight?: boolean
 }
 
-export function MagicFloatingNav({ activeSection: initialSection = 'home', whatsappNumber, instagramUser, isLight = false }: MagicFloatingNavProps) {
+export function MagicFloatingNav({ whatsappNumber, instagramUser, isLight = false }: MagicFloatingNavProps) {
   // Use -1 as initial state so nothing is highlighted on first load per user request
   const [activeIndex, setActiveIndex] = useState(-1)
   const [showContactPopup, setShowContactPopup] = useState(false)
   const [showLoginPopup, setShowLoginPopup] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
 
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', icon: <Home className="w-6 h-6" />, href: '#home' },
@@ -34,10 +34,6 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
     { id: 'catalog', label: 'Catalog', icon: <Grid3X3 className="w-6 h-6" />, href: '#catalog' },
     { id: 'pricing', label: 'Pricing', icon: <Tag className="w-6 h-6" />, href: '#pricing' },
   ]
-
-  // We explicitly disable initial highlight as requested.
-  // We only sync if initialSection changes after the first interaction or if we want to follow scroll later.
-  // For now, let's keep it inactive until first click.
 
   const handleNavClick = (index: number, e: React.MouseEvent) => {
     const item = navItems[index]
@@ -138,20 +134,30 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >
-                  <div className="p-2 bg-blue-600 rounded-lg text-white group-hover:scale-110 transition-transform">
-                    <User className="w-5 h-5" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-600/10 text-white group-hover:scale-110 transition-transform">
+                    <LordIcon
+                      src="https://cdn.lordicon.com/hroklero.json"
+                      trigger="morph"
+                      state="morph-group"
+                      size={28}
+                    />
                   </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member Login</span>
+                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member</span>
                 </Link>
                 <Link
                   href="/login?role=admin"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >
-                  <div className="p-2 bg-gray-700 rounded-lg text-white group-hover:scale-110 transition-transform">
-                    <Shield className="w-5 h-5" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-700/10 text-white group-hover:scale-110 transition-transform">
+                    <LordIcon
+                      src="https://cdn.lordicon.com/hroklero.json"
+                      trigger="hover"
+                      state="hover-looking-around"
+                      size={28}
+                    />
                   </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin Login</span>
+                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin</span>
                 </Link>
               </div>
               {/* Tooltip Arrow */}

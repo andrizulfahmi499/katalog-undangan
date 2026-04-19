@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import { Navbar } from '@/components/landing/Navbar'
 import { VideoHeroSection } from '@/components/landing/VideoHeroSection'
@@ -12,44 +11,9 @@ import { OrderFormSection } from '@/components/landing/OrderFormSection'
 import { Footer } from '@/components/landing/Footer'
 import { MagicFloatingNav } from '@/components/landing/MagicFloatingNav'
 import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
-
-function StarryBackground() {
-  const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
-
-  useEffect(() => {
-    const generated = Array.from({ length: 120 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 2.5 + 0.5,
-      delay: Math.random() * 3,
-      duration: Math.random() * 2 + 1.5,
-    }))
-    setStars(generated)
-  }, [])
-
-  return (
-    <>
-      {stars.map((star) => (
-        <div
-          key={star.id}
-          className="absolute rounded-full bg-white pointer-events-none"
-          style={{
-            left: `${star.x}%`,
-            top: `${star.y}%`,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
-          }}
-        />
-      ))}
-    </>
-  )
-}
-
+import { LandingSidebar } from '@/components/landing/LandingSidebar'
+import { FaqSection } from '@/components/landing/FaqSection'
 import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
-
-// ... existing code
 
 export default function Home() {
   const { isLight } = useTheme()
@@ -85,6 +49,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#e0e5ec]" />
       </div>
 
+      <LandingSidebar />
       <Navbar />
       <VideoHeroSection />
       <PhoneShowcase />
@@ -93,6 +58,7 @@ export default function Home() {
       <CatalogSection />
       <PricingSection />
       <OrderFormSection />
+      <FaqSection />
       <Footer />
       <MagicFloatingNav 
         whatsappNumber="6285299659458" 
