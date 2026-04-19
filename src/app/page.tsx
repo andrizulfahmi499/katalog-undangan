@@ -10,7 +10,7 @@ import { CatalogSection } from '@/components/landing/CatalogSection'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { OrderFormSection } from '@/components/landing/OrderFormSection'
 import { Footer } from '@/components/landing/Footer'
-import { FloatingNav } from '@/components/landing/FloatingNav'
+import { MagicFloatingNav } from '@/components/landing/MagicFloatingNav'
 import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
 
 function StarryBackground() {
@@ -94,7 +94,11 @@ export default function Home() {
       <PricingSection />
       <OrderFormSection />
       <Footer />
-      <FloatingNav />
+      <MagicFloatingNav 
+        whatsappNumber="6285299659458" 
+        instagramUser="akainvitation"
+        isLight={true}
+      />
     </main>
   )
 }

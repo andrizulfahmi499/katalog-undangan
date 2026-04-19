@@ -6,6 +6,7 @@ import { CustomLandingContext } from '@/context/CustomLandingContext'
 import { Check, Crown, Sparkles, Star } from 'lucide-react'
 import { CatalogSection } from './CatalogSection'
 import { OrderFormSection } from './OrderFormSection'
+import { MagicFloatingNav } from './MagicFloatingNav'
 
 // ─── Rose SVG path (exact from dearmylove.org) ─────────────────────────────
 const ROSE_PATH = "M1431 5750c0,-651 0,-1302 0,-1954 -205,-447 -746,-551 -950,-512 -613,115 -279,-290 49,302 269,394 572,437 901,210 0,-300 0,-600 0,-900 226,-16 504,-84 555,-264 166,-514 319,-435 246,-367 -67,62 -192,66 -277,71 -175,2 -284,8 -435,75 -368,163 -72,305 -97,-131 -8,-140 -56,-244 -99,-348 -218,-530 324,-205 -238,-118 -392,60 -855,28 -1003,-404 -126,-386 130,-448 437,-302 233,111 471,263 708,358 114,46 239,82 362,50 297,-90 466,-207 464,-541 -1,-281 -201,-121 -337,-48 -282,150 -659,293 -940,63 -158,-133 -172,-263 -153,-454 9,-86 23,-170 -66,-215 -113,-38 -186,56 -232,146 -53,104 -75,280 -21,388 113,191 455,209 649,279 150,53 235,205 337,237 149,41 180,-159 34,-211 -259,-86 -557,-125 -647,-426 -82,-293 489,-36 599,45 211,163 366,434 657,442 173,-18 365,-211 414,-373 46,-155 -48,-191 -154,-301 -150,-153 -35,-471 -484,-313 -223,78 -397,349 -147,420 112,32 227,-5 256,-128 15,-63 -2,-120 -32,-175 -170,-271 -457,-314 -753,-291 -171,14 -320,172 -252,348 128,194 506,438 738,333 99,-52 152,-141 84,-243 -77,-116 -304,-161 -381,-33 -95,176 255,491 370,596 90,82 160,145 239,244 203,260 45,279 29,252 -22,-37 41,-89 65,-107 113,-77 272,-120 335,-251 34,-75 119,-353 242,-259 83,63 28,204 -21,271 -114,154 -312,266 -451,406 -125,128 -177,160 -346,216 -486,155 -767,-103 -1066,-439 -111,-125 -258,-304 -423,-354"
@@ -216,14 +217,14 @@ export function DearMyLoveClone() {
   const floralLeftY = useTransform(scrollY, [0, 1200], [0, -80])
   const floralRightY = useTransform(scrollY, [0, 1200], [0, -55])
 
-  const [activeNavIndex, setActiveNavIndex] = useState(0)
+  const [activeSection, setActiveSection] = useState('home')
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.15) setActiveNavIndex(0)      // top (contact)
-    else if (latest < 0.35) setActiveNavIndex(1) // features (ig)
-    else if (latest < 0.55) setActiveNavIndex(2) // dashboard (sign in)
-    else if (latest < 0.80) setActiveNavIndex(3) // catalog
-    else setActiveNavIndex(4)                    // bottom (pricing)
+    if (latest < 0.15) setActiveSection('home')
+    else if (latest < 0.35) setActiveSection('contact')
+    else if (latest < 0.55) setActiveSection('login')
+    else if (latest < 0.80) setActiveSection('catalog')
+    else setActiveSection('pricing')
   })
 
   return (
@@ -434,75 +435,14 @@ export function DearMyLoveClone() {
         </div>
       </div>
 
-      {/* ── Floating Bottom Navbar ─────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 3.4, ease: 'easeOut' }}
-        className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2 rounded-full bg-[#ededed] px-2 py-2 shadow-2xl shadow-black/40"
-      >
-        {/* WhatsApp */}
-        <NavItem
-          isActive={activeNavIndex === 0}
-          href={`https://api.whatsapp.com/send/?phone=${whatsappNumber}&text=Halo%20Admin!%0AAku%20mau%20tanya%20tanya%20mengenai%20e-invitation..%0A`}
-          label="contact us"
-          mdWidth="114px"
-          icon={
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 0 21 21" className="w-[24px] fill-[#172a26] flex-shrink-0">
-              <path d="M16.8 5.7C14.4 2 9.5.9 5.7 3.2 2 5.5.8 10.5 3.2 14.2l.2.3-.8 3 3-.8.3.2c1.3.7 2.7 1.1 4.1 1.1 1.5 0 3-.4 4.3-1.2 3.7-2.4 4.8-7.3 2.5-11.1zm-2.1 7.7c-.4.6-.9 1-1.6 1.1-.4 0-.9.2-2.9-.6-1.7-.8-3.1-2.1-4.1-3.6-.6-.7-.9-1.6-1-2.5 0-.8.3-1.5.8-2 .2-.2.4-.3.6-.3H7c.2 0 .4 0 .5.4.2.5.7 1.7.7 1.8.1.1.1.3 0 .4.1.2 0 .4-.1.5-.1.1-.2.3-.3.4-.2.1-.3.3-.2.5.4.6.9 1.2 1.4 1.7.6.5 1.2.9 1.9 1.2.2.1.4.1.5-.1s.6-.7.8-.9c.2-.2.3-.2.5-.1l1.6.8c.2.1.4.2.5.3.1.3.1.7-.1 1z"/>
-            </svg>
-          }
-        />
-        {/* Instagram */}
-        <NavItem
-          isActive={activeNavIndex === 1}
-          href={`https://instagram.com/${instagramUser}`}
-          label="visit ig"
-          mdWidth="92px"
-          icon={
-            <svg viewBox="-3 -3 29 29" xmlns="http://www.w3.org/2000/svg" className="w-[24px] fill-[#172a26] flex-shrink-0">
-              <path fillRule="nonzero" d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 0 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
-            </svg>
-          }
-        />
-        {/* Login (dark highlighted) */}
-        <NavItem
-          isActive={activeNavIndex === 2}
-          href="/login"
-          label="sign in"
-          dark
-          mdWidth="88px"
-          icon={
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-[22px] fill-[#E7E9E4] flex-shrink-0">
-              <path fillRule="evenodd" d="M11 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3h-6zm1.293 6.293a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-1.414-1.414L13.586 13H5a1 1 0 1 1 0-2h8.586l-1.293-1.293a1 1 0 0 1 0-1.414z" clipRule="evenodd"/>
-            </svg>
-          }
-        />
-        {/* Catalog */}
-        <NavItem
-          isActive={activeNavIndex === 3}
-          href="#katalog"
-          label="catalog"
-          mdWidth="98px"
-          icon={
-            <svg className="w-[24px] fill-[#172a26] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-              <path d="M61.8,29.4l8.9,8.9l0,0c2,1.9,2,5.1,0,7l0,0L47.5,68.4V36.6l7.2-7.2C56.6,27.4,59.9,27.4,61.8,29.4z M80,62.5V75c0,2.8-2.2,5-5,5H43.8l22.5-22.5H75C77.8,57.5,80,59.8,80,62.5z M20,68.8V25c0-2.8,2.2-5,5-5h12.5c2.8,0,5,2.2,5,5v43.8 c0,6.2-5,11.2-11.2,11.2S20,75,20,68.8z M31.2,73.8c2.8,0,5-2.2,5-5s-2.2-5-5-5s-5,2.2-5,5S28.5,73.8,31.2,73.8z"/>
-            </svg>
-          }
-        />
-        {/* Pricing */}
-        <NavItem
-          isActive={activeNavIndex === 4}
-          href="#pricing"
-          label="see pricing"
-          mdWidth="116px"
-          icon={
-            <svg viewBox="-3 -1 21 21" xmlns="http://www.w3.org/2000/svg" className="w-[24px] fill-[#172a26] flex-shrink-0">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m13.842 11.52-4.389 4.388a1.112 1.112 0 0 1-1.567 0l-6.28-6.28a3.027 3.027 0 0 1-.771-1.892l.043-3.681A1.141 1.141 0 0 1 2 2.935L5.67 2.9a3.04 3.04 0 0 1 1.892.773l6.28 6.28a1.112 1.112 0 0 1 0 1.567zM3.826 5.133a.792.792 0 1 0-.792.792.792.792 0 0 0 .792-.792z"/>
-            </svg>
-          }
-        />
-      </motion.div>
+      {/* ── Magic Floating Bottom Navbar ───────────────────────────── */}
+      <MagicFloatingNav 
+        activeSection={activeSection}
+        whatsappNumber={whatsappNumber}
+        instagramUser={instagramUser}
+        isLight={false}
+      />
     </main>
+
   )
 }
