@@ -290,14 +290,14 @@ export function CatalogSection() {
                     </div>
 
                     {/* Card Content */}
-                    <div className={`p-4 ${
+                    <div className={`p-3 ${
                       isLight
                         ? 'bg-[#e0e5ec] border-t border-[#d1d9e6]'
                         : 'bg-white/5 backdrop-blur-sm border-t border-white/10'
                     }`}>
                       {/* Category Badge */}
-                      <div className="mb-2">
-                        <span className={`text-xs font-medium px-3 py-1 rounded-full ${
+                      <div className="mb-1.5">
+                        <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
                           isLight
                             ? 'text-[#8b8fa3] bg-[#d1d9e6]'
                             : 'text-white/60 bg-white/10'
@@ -307,14 +307,14 @@ export function CatalogSection() {
                       </div>
 
                       {/* Title */}
-                      <h3 className={`text-base font-bold mb-3 line-clamp-2 min-h-[3rem] ${
+                      <h3 className={`text-base font-bold mb-2 line-clamp-2 ${
                         isLight ? 'text-[#2d3748]' : 'text-white'
                       }`}>
                         {theme.name}
                       </h3>
 
                       {/* Action Buttons */}
-                      <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 gap-1.5">
                         <a
                           href={theme.previewUrl}
                           target="_blank"

@@ -165,30 +165,32 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
 
 
         {/* Navigation Bar Body */}
-        <div className={`magic-nav-container relative flex items-center h-[75px] rounded-[25px] px-2 shadow-2xl ${
+        <div className={`magic-nav-container relative flex items-center h-[70px] rounded-[25px] px-2 shadow-2xl ${
           isLight ? 'bg-white shadow-black/10' : 'bg-[#ededed]'
         }`}>
-          {/* Moving Indicator */}
+          {/* Moving Indicator — centered per slot (w-16 = 64px, indicator w-56px) */}
           <motion.div
             className="magic-indicator"
             animate={{ 
-              x: activeIndex * 64,
+              x: activeIndex >= 0 ? activeIndex * 64 + 4 : 4,
               opacity: activeIndex === -1 ? 0 : 1 
-            }} // 64 is the approx width of each item slot
+            }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             style={{
               position: 'absolute',
-              top: '-32px',
-              left: '12px', // Initial offset to align with first item
-              width: '60px',
-              height: '60px',
+              top: '-28px',
+              left: '0px',
+              width: '56px',
+              height: '56px',
               borderRadius: '50%',
               backgroundColor: isLight ? '#9B1FE8' : '#172a26',
-              border: `6px solid ${isLight ? '#FFFFFF' : '#ededed'}`,
-              zIndex: 1
+              border: `5px solid ${isLight ? '#FFFFFF' : '#ededed'}`,
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {/* Curved Connectors using box-shadow trick from CSS reference */}
             <div className="magic-curve-left" />
             <div className="magic-curve-right" />
           </motion.div>
@@ -202,11 +204,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                 className="relative w-16 h-full flex flex-col items-center justify-center cursor-pointer group"
                 onClick={(e) => handleNavClick(index, e)}
               >
-                {/* Label Section */}
-                <div className={`absolute bottom-2 transition-all duration-300 ${
-                  isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                {/* Label */}
+                <div className={`absolute bottom-1.5 transition-all duration-300 ${
+                  isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
                 }`}>
-                  <span className="text-[10px] font-bold tracking-widest uppercase transition-colors" style={{ 
+                  <span className="text-[9px] font-bold tracking-widest uppercase" style={{ 
                     color: isLight ? '#9B1FE8' : '#172a26',
                     fontFamily: "'Josefin Sans', sans-serif"
                   }}>
@@ -214,11 +216,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   </span>
                 </div>
 
-                {/* Icon Section */}
-                <div className={`relative z-10 transition-all duration-300 flex items-center justify-center ${
-                  isActive ? '-translate-y-9' : 'translate-y-0'
+                {/* Icon — lifted when active, centered in circle */}
+                <div className={`relative z-10 transition-all duration-300 flex items-center justify-center w-8 h-8 ${
+                  isActive ? '-translate-y-[34px]' : 'translate-y-0'
                 }`}>
-                  <div className={`transition-colors duration-300 ${
+                  <div className={`transition-colors duration-300 flex items-center justify-center ${
                     isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'
                   }`}>
                     {item.icon}
@@ -239,19 +241,19 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
         .magic-indicator::after {
             content: "";
             position: absolute;
-            bottom: 4px; /* Adjusted to match border thickness and positioning */
-            width: 15px;
-            height: 15px;
+            bottom: 2px;
+            width: 14px;
+            height: 14px;
             background: transparent;
             border-radius: 50%;
             z-index: -1;
         }
         .magic-indicator::before {
-            left: -19px;
+            left: -18px;
             box-shadow: 7px 7px 0 0 ${isLight ? '#FFFFFF' : '#ededed'};
         }
         .magic-indicator::after {
-            right: -19px;
+            right: -18px;
             box-shadow: -7px 7px 0 0 ${isLight ? '#FFFFFF' : '#ededed'};
         }
       `}</style>
