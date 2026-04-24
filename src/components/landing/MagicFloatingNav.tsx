@@ -142,7 +142,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                     {/* @ts-ignore */}
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="morph"
+                        trigger="loop"
                         state="morph-group"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '40px', height: '40px' }}>
@@ -159,7 +159,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                     {/* @ts-ignore */}
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="hover"
+                        trigger="loop"
                         state="hover-looking-around"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '40px', height: '40px' }}>

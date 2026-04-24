@@ -199,7 +199,7 @@ function LoginForm() {
                     {/* @ts-ignore */}
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="hover"
+                        trigger="loop"
                         state="hover-looking-around"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '50px', height: '50px' }}>
@@ -230,7 +230,7 @@ function LoginForm() {
                     {/* @ts-ignore */}
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="morph"
+                        trigger="loop"
                         state="morph-group"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '50px', height: '50px' }}>
@@ -279,7 +279,7 @@ function LoginForm() {
                       /* @ts-ignore */
                       <lord-icon
                           src="https://cdn.lordicon.com/hroklero.json"
-                          trigger="hover"
+                          trigger="loop"
                           state="hover-looking-around"
                           colors="primary:#66d7ee,secondary:#f4dc9c"
                           style={{ width: '60px', height: '60px' }}>
@@ -288,7 +288,7 @@ function LoginForm() {
                       /* @ts-ignore */
                       <lord-icon
                           src="https://cdn.lordicon.com/hroklero.json"
-                          trigger="morph"
+                          trigger="loop"
                           state="morph-group"
                           colors="primary:#66d7ee,secondary:#f4dc9c"
                           style={{ width: '60px', height: '60px' }}>
