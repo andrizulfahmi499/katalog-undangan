@@ -340,11 +340,6 @@ export function Sidebar() {
           border-top: solid 1px rgba(255,255,255,0.1);
         }
 
-        @media (max-width: 1024px) {
-            #nav-bar {
-                display: none;
-            }
-        }
       `}</style>
     </>
   )
