@@ -49,8 +49,7 @@ function StarryBackground() {
 
 import { FAQSection } from '@/components/landing/FAQSection'
 import { Sidebar } from '@/components/landing/Sidebar'
-
-// ... existing code
+import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
 
 export default function Home() {
   const { isLight } = useTheme()
