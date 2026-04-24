@@ -104,7 +104,9 @@ export default function Home() {
       <div id="order">
         <OrderFormSection />
       </div>
-      <FAQSection />
+      <div id="faq">
+        <FAQSection />
+      </div>
       <Footer />
       <MagicFloatingNav 
         whatsappNumber="6285299659458" 
