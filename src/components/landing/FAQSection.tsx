@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 const faqs = [
   {
@@ -29,15 +30,20 @@ const faqs = [
 
 export function FAQSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const { isLight } = useTheme()
 
   return (
-    <section id="faq" className="py-24 px-6 md:px-12 relative">
-      <div className="max-w-4xl mx-auto">
+    <section id="faq" className="py-24 px-6 md:px-12 relative overflow-hidden">
+      <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#4b5563] mb-4" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
-            FAQ <span className="text-[#9B1FE8]">UNDANGAN</span>
+          <h2 className={`text-4xl md:text-5xl font-black mb-4 tracking-[0.2em] uppercase ${
+            isLight ? 'text-[#4b5563]' : 'text-white'
+          }`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+            FAQ
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className={`max-w-2xl mx-auto tracking-wide ${
+            isLight ? 'text-gray-600' : 'text-white/60'
+          }`} style={{ fontFamily: "'Arapey', serif" }}>
             Pertanyaan yang sering ditanyakan mengenai layanan undangan digital kami.
           </p>
         </div>
@@ -46,20 +52,26 @@ export function FAQSection() {
           {faqs.map((faq, index) => (
             <div 
               key={index}
-              className="bg-[#e0e5ec] rounded-2xl p-1 shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] overflow-hidden"
+              className={`rounded-2xl p-0.5 overflow-hidden transition-all duration-300 ${
+                isLight 
+                  ? 'bg-[#e0e5ec] shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)]' 
+                  : 'bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15'
+              }`}
             >
               <button
                 onClick={() => setActiveIndex(activeIndex === index ? null : index)}
                 className="w-full text-left px-6 py-5 flex items-center justify-between group transition-all"
               >
-                <span className="font-bold text-[#4b5563] group-hover:text-[#9B1FE8] transition-colors">
+                <span className={`font-bold transition-colors ${
+                  isLight ? 'text-[#4b5563] group-hover:text-[#9B1FE8]' : 'text-white group-hover:text-[#a8d5c4]'
+                }`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
                   {faq.question}
                 </span>
                 <motion.div
                   animate={{ rotate: activeIndex === index ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                  <ChevronDown className={`w-5 h-5 ${isLight ? 'text-gray-500' : 'text-white/50'}`} />
                 </motion.div>
               </button>
               
@@ -71,7 +83,9 @@ export function FAQSection() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
-                    <div className="px-6 pb-5 text-gray-600 border-t border-white/20 pt-4 leading-relaxed">
+                    <div className={`px-6 pb-5 border-t pt-4 leading-relaxed tracking-wide ${
+                      isLight ? 'text-gray-600 border-white/20' : 'text-white/70 border-white/5'
+                    }`} style={{ fontFamily: "'Arapey', serif" }}>
                       {faq.answer}
                     </div>
                   </motion.div>
