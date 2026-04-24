@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Shield, ChevronUp, Palette, Images, Thumbtack, Heart, ChartLine, Fire, Wand2, Gem } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Shield, ChevronUp } from 'lucide-react'
 import Link from 'next/link'
 
 export function Sidebar() {
@@ -98,7 +98,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style jsx global>{`
         :root {
           --background: #e0e5ec;
           --navbar-width: 256px;
@@ -408,12 +408,6 @@ export function Sidebar() {
 
         #nav-bar:not(.collapsed) #nav-footer-toggle:checked + #nav-footer label[for="nav-footer-toggle"] {
           transform: rotate(180deg);
-        }
-
-        @media (max-width: 1024px) {
-            #nav-bar {
-                display: none;
-            }
         }
       `}</style>
     </>
