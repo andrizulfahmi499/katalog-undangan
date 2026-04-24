@@ -47,7 +47,8 @@ function StarryBackground() {
   )
 }
 
-import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
+import { FAQSection } from '@/components/landing/FAQSection'
+import { Sidebar } from '@/components/landing/Sidebar'
 
 // ... existing code
 
@@ -60,6 +61,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-20 md:pb-0">
+      <Sidebar />
       {/* === CSS Keyframes === */}
       <style jsx global>{`
         @keyframes twinkle {
@@ -86,13 +88,24 @@ export default function Home() {
       </div>
 
       <Navbar />
-      <VideoHeroSection />
+      <div id="home">
+        <VideoHeroSection />
+      </div>
       <PhoneShowcase />
       <IntroSection />
-      <FeatureSection />
-      <CatalogSection />
-      <PricingSection />
-      <OrderFormSection />
+      <div id="fitur">
+        <FeatureSection />
+      </div>
+      <div id="catalog">
+        <CatalogSection />
+      </div>
+      <div id="pricing">
+        <PricingSection />
+      </div>
+      <div id="order">
+        <OrderFormSection />
+      </div>
+      <FAQSection />
       <Footer />
       <MagicFloatingNav 
         whatsappNumber="6285299659458" 

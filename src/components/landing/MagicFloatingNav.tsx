@@ -138,20 +138,34 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >
-                  <div className="p-2 bg-blue-600 rounded-lg text-white group-hover:scale-110 transition-transform">
-                    <User className="w-5 h-5" />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-lg group-hover:scale-110 transition-transform">
+                    {/* @ts-ignore */}
+                    <lord-icon
+                        src="https://cdn.lordicon.com/hroklero.json"
+                        trigger="morph"
+                        state="morph-group"
+                        colors="primary:#66d7ee,secondary:#f4dc9c"
+                        style={{ width: '40px', height: '40px' }}>
+                    </lord-icon>
                   </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member Login</span>
+                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member</span>
                 </Link>
                 <Link
                   href="/login?role=admin"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-500/10 transition-colors group"
                   onClick={() => setShowLoginPopup(false)}
                 >
-                  <div className="p-2 bg-gray-700 rounded-lg text-white group-hover:scale-110 transition-transform">
-                    <Shield className="w-5 h-5" />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-lg group-hover:scale-110 transition-transform">
+                    {/* @ts-ignore */}
+                    <lord-icon
+                        src="https://cdn.lordicon.com/hroklero.json"
+                        trigger="hover"
+                        state="hover-looking-around"
+                        colors="primary:#66d7ee,secondary:#f4dc9c"
+                        style={{ width: '40px', height: '40px' }}>
+                    </lord-icon>
                   </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin Login</span>
+                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin</span>
                 </Link>
               </div>
               {/* Tooltip Arrow */}

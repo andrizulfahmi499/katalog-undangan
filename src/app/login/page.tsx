@@ -196,7 +196,14 @@ function LoginForm() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20">
-                    <Shield className="w-7 h-7 text-[#ededed]" />
+                    {/* @ts-ignore */}
+                    <lord-icon
+                        src="https://cdn.lordicon.com/hroklero.json"
+                        trigger="hover"
+                        state="hover-looking-around"
+                        colors="primary:#66d7ee,secondary:#f4dc9c"
+                        style={{ width: '50px', height: '50px' }}>
+                    </lord-icon>
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">Admin</h2>
@@ -220,7 +227,14 @@ function LoginForm() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20">
-                    <User className="w-7 h-7 text-[#ededed]" />
+                    {/* @ts-ignore */}
+                    <lord-icon
+                        src="https://cdn.lordicon.com/hroklero.json"
+                        trigger="morph"
+                        state="morph-group"
+                        colors="primary:#66d7ee,secondary:#f4dc9c"
+                        style={{ width: '50px', height: '50px' }}>
+                    </lord-icon>
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-white">Member</h2>
@@ -262,9 +276,23 @@ function LoginForm() {
                 <div className="text-center mb-8">
                   <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-white/15 border border-white/25">
                     {loginType === 'admin' ? (
-                      <Shield className="w-7 h-7 text-[#ededed]" />
+                      /* @ts-ignore */
+                      <lord-icon
+                          src="https://cdn.lordicon.com/hroklero.json"
+                          trigger="hover"
+                          state="hover-looking-around"
+                          colors="primary:#66d7ee,secondary:#f4dc9c"
+                          style={{ width: '60px', height: '60px' }}>
+                      </lord-icon>
                     ) : (
-                      <User className="w-7 h-7 text-[#ededed]" />
+                      /* @ts-ignore */
+                      <lord-icon
+                          src="https://cdn.lordicon.com/hroklero.json"
+                          trigger="morph"
+                          state="morph-group"
+                          colors="primary:#66d7ee,secondary:#f4dc9c"
+                          style={{ width: '60px', height: '60px' }}>
+                      </lord-icon>
                     )}
                   </div>
                   <h2 className="text-2xl font-bold text-white mb-1 tracking-wide">

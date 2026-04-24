@@ -132,7 +132,7 @@ export function FeatureSection() {
 
   return (
     <section
-      id="features"
+      id="fitur"
       className="relative py-24 overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

@@ -62,6 +62,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning className="scroll-smooth">
+      <head>
+        <script src="https://cdn.lordicon.com/lordicon.js" async></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-background text-foreground`}
       >
