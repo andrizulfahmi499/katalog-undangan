@@ -192,8 +192,8 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             style={{
               position: 'absolute',
-              top: '-32px',
-              left: '12px', // Initial offset to align with first item
+              top: '-30px', /* Centered exactly halfway up the 75px container */
+              left: '10px', /* padding is 8px, half icon is 32px -> center is 40px. Indicator is 60px wide, so left = 40 - 30 = 10px */
               width: '60px',
               height: '60px',
               borderRadius: '50%',
@@ -229,11 +229,16 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                 </div>
 
                 {/* Icon Section */}
-                <div className={`relative z-10 transition-all duration-300 flex items-center justify-center ${
-                  isActive ? '-translate-y-9' : 'translate-y-0'
-                }`}>
+                <div 
+                  className="absolute left-1/2 top-1/2 z-10 transition-all duration-300 flex items-center justify-center"
+                  style={{
+                    transform: isActive 
+                      ? 'translate(-50%, calc(-50% - 37.5px))' // Moves exactly up to align with magic indicator center
+                      : 'translate(-50%, -50%)',
+                  }}
+                >
                   <div className={`transition-colors duration-300 ${
-                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'
+                    isActive ? 'text-white scale-110' : 'text-gray-400 group-hover:text-gray-600 scale-100'
                   }`}>
                     {item.icon}
                   </div>
