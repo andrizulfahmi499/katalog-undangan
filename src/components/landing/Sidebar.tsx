@@ -1,23 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Shield, ChevronUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Shield, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 
 export function Sidebar() {
+  // Default is CLOSED (false) so it doesn't block the screen
   const [isOpen, setIsOpen] = useState(false)
-  const [isFooterOpen, setIsFooterOpen] = useState(false)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const menuItems = [
-    { id: 'login-admin', label: 'Login Admin', icon: <Shield size={18} />, href: '/login?role=admin' },
-    { id: 'login-member', label: 'Login Member', icon: <User size={18} />, href: '/login?role=member' },
-    { id: 'home', label: 'Home', icon: <Home size={18} />, href: '#home' },
-    { id: 'order', label: 'Order', icon: <ShoppingCart size={18} />, href: '#order' },
-    { id: 'fitur', label: 'Fitur', icon: <Zap size={18} />, href: '#fitur' },
-    { id: 'katalog', label: 'Katalog', icon: <Grid3X3 size={18} />, href: '#catalog' },
-    { id: 'harga', label: 'Harga', icon: <Tag size={18} />, href: '#pricing' },
-    { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18} />, href: '#faq' },
+    { id: 'login-admin', label: 'Login Admin', icon: <Shield size={20} />, href: '/login?role=admin' },
+    { id: 'login-member', label: 'Login Member', icon: <User size={20} />, href: '/login?role=member' },
+    { id: 'home', label: 'Home', icon: <Home size={20} />, href: '#home' },
+    { id: 'order', label: 'Order', icon: <ShoppingCart size={20} />, href: '#order' },
+    { id: 'fitur', label: 'Fitur', icon: <Zap size={20} />, href: '#fitur' },
+    { id: 'katalog', label: 'Katalog', icon: <Grid3X3 size={20} />, href: '#catalog' },
+    { id: 'harga', label: 'Harga', icon: <Tag size={20} />, href: '#pricing' },
+    { id: 'faq', label: 'FAQ', icon: <HelpCircle size={20} />, href: '#faq' },
   ]
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -32,315 +32,86 @@ export function Sidebar() {
 
   return (
     <>
-      <div id="nav-bar" className={isOpen ? 'collapsed' : ''}>
-        <input 
-          type="checkbox" 
-          id="nav-toggle" 
-          checked={isOpen} 
-          onChange={() => setIsOpen(!isOpen)} 
-        />
-        
-        <div id="nav-header">
-          <Link href="/" id="nav-title">
-             AK<span>A</span>INVITATION
-          </Link>
-          <label htmlFor="nav-toggle">
-            <span id="nav-toggle-burger"></span>
-          </label>
+      {/* Overlay: Meredupkan layar saat sidebar terbuka di Mobile */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998]"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        layout
+        className={`fixed top-4 left-4 z-[9999] flex flex-col overflow-hidden shadow-2xl transition-colors duration-300 ${
+          isOpen ? 'bg-[#172a26] border border-white/10 shadow-black/80' : 'bg-[#172a26]/90 backdrop-blur-md border border-white/20 hover:bg-[#1a2f2a]'
+        }`}
+        style={{
+          width: isOpen ? '280px' : 'auto',
+          height: isOpen ? 'calc(100vh - 32px)' : 'auto',
+          borderRadius: isOpen ? '24px' : '99px' // Bentuk Pil saat tertutup, Kotak rounded saat terbuka
+        }}
+      >
+        {/* HEADER */}
+        <div className={`flex items-center justify-between px-4 h-14 ${isOpen ? 'border-b border-white/5 mt-2' : ''}`}>
+          {isOpen ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-between w-full pr-1">
+              <Link href="/" className="font-bold text-white tracking-widest uppercase text-sm pl-2" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+                AKA<span className="text-[#a8d5c4]">INVITATION</span>
+              </Link>
+              <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white p-2 bg-white/5 rounded-full">
+                <X size={20} />
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 cursor-pointer py-1" onClick={() => setIsOpen(true)}>
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-white/10 border border-white/20 flex items-center justify-center p-0.5">
+                <img src="/logo.png" alt="Admin" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
+              </div>
+              <button className="text-white pr-2 flex items-center gap-2">
+                <Menu size={22} className="text-[#a8d5c4]" />
+              </button>
+            </motion.div>
+          )}
         </div>
 
-        <div id="nav-content">
-          {menuItems.map((item, index) => (
-            <a 
-              key={item.id} 
-              href={item.href} 
-              className="nav-button"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              onClick={(e) => handleScroll(e, item.href)}
+        {/* MENU ITEMS */}
+        <div className={`flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-1 ${isOpen ? 'block' : 'hidden'}`}>
+          {menuItems.map(item => (
+            <a
+              key={item.id}
+              href={item.href}
+              onClick={(e) => {
+                setIsOpen(false)
+                handleScroll(e, item.href)
+              }}
+              className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-white/70 hover:text-white hover:bg-white/10 transition-colors group"
             >
-              <i className="nav-icon">{item.icon}</i>
-              <span>{item.label}</span>
+              <span className="text-white/50 group-hover:text-[#a8d5c4] transition-colors">{item.icon}</span>
+              <span className="font-bold text-[13px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{item.label}</span>
             </a>
           ))}
-          <div 
-            id="nav-content-highlight" 
-            style={{ 
-              top: hoveredIndex !== null ? `${hoveredIndex * 54 + 16}px` : '-100px',
-              opacity: hoveredIndex !== null ? 1 : 0
-            }}
-          />
         </div>
 
-        <input 
-          type="checkbox" 
-          id="nav-footer-toggle" 
-          checked={isFooterOpen}
-          onChange={() => setIsFooterOpen(!isFooterOpen)}
-        />
-        <div id="nav-footer" style={{ height: isFooterOpen ? '150px' : '54px' }}>
-          <div id="nav-footer-heading">
-            <div id="nav-footer-avatar">
-              <img src="/logo.png" alt="Logo" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
+        {/* FOOTER */}
+        {isOpen && (
+          <div className="p-5 border-t border-white/5 mt-auto bg-black/20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10 border border-white/20 p-0.5">
+                <img src="/logo.png" alt="Admin" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-white text-[13px] font-bold tracking-wider" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>AKA Team</span>
+                <span className="text-white/50 text-[11px] uppercase tracking-widest mt-0.5" style={{ fontFamily: "'Lato', sans-serif" }}>Administrator</span>
+              </div>
             </div>
-            <div id="nav-footer-titlebox">
-              <span id="nav-footer-title">AKA Team</span>
-              <span id="nav-footer-subtitle">Admin</span>
-            </div>
-            <label htmlFor="nav-footer-toggle">
-              <ChevronUp size={20} className={isFooterOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
-            </label>
           </div>
-          <div id="nav-footer-content">
-            Platform terbaik untuk undangan digital Anda.
-          </div>
-        </div>
-      </div>
-
-      <style jsx global>{`
-        :root {
-          --background: #e0e5ec;
-          --navbar-width: 256px;
-          --navbar-width-min: 80px;
-          --navbar-dark-primary: #1a202c;
-          --navbar-dark-secondary: #2d3748;
-          --navbar-light-primary: #f5f6fa;
-          --navbar-light-secondary: #8392a5;
-          --accent-purple: #9B1FE8;
-        }
-
-        #nav-bar {
-          position: fixed;
-          left: 1vw;
-          top: 1vw;
-          height: calc(100% - 2vw);
-          background: var(--navbar-dark-primary);
-          border-radius: 20px;
-          display: flex;
-          flex-direction: column;
-          color: var(--navbar-light-primary);
-          font-family: 'Josefin Sans', sans-serif;
-          overflow: hidden;
-          z-index: 9999;
-          transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
-          width: var(--navbar-width);
-          box-shadow: 15px 0 35px rgba(0, 0, 0, 0.4);
-        }
-
-        #nav-bar.collapsed {
-          width: var(--navbar-width-min);
-        }
-
-        #nav-bar input[type="checkbox"] {
-          display: none;
-        }
-
-        #nav-header {
-          position: relative;
-          width: 100%;
-          min-height: 80px;
-          display: flex;
-          align-items: center;
-          padding: 0 16px;
-        }
-
-        #nav-title {
-          font-size: 1.2rem;
-          font-weight: 800;
-          color: white;
-          text-decoration: none;
-          white-space: nowrap;
-          transition: opacity .3s;
-        }
-
-        #nav-title span {
-            color: var(--accent-purple);
-        }
-
-        #nav-bar.collapsed #nav-title {
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        label[for="nav-toggle"] {
-          position: absolute;
-          right: 16px;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        #nav-bar.collapsed label[for="nav-toggle"] {
-            right: 50%;
-            transform: translateX(50%);
-        }
-
-        #nav-toggle-burger {
-          position: relative;
-          width: 16px;
-          height: 2px;
-          background: white;
-          transition: .3s;
-        }
-
-        #nav-toggle-burger:before, #nav-toggle-burger:after {
-          content: '';
-          position: absolute;
-          width: 12px;
-          height: 2px;
-          background: white;
-          transition: .3s;
-        }
-
-        #nav-toggle-burger:before {
-          top: -6px;
-          transform: translate(2px, 8px) rotate(30deg);
-        }
-
-        #nav-toggle-burger:after {
-          top: 6px;
-          transform: translate(2px, -8px) rotate(-30deg);
-        }
-
-        #nav-bar.collapsed #nav-toggle-burger {
-            background: white;
-        }
-        #nav-bar.collapsed #nav-toggle-burger:before, 
-        #nav-bar.collapsed #nav-toggle-burger:after {
-            width: 16px;
-            transform: none;
-            left: 0;
-        }
-
-        #nav-content {
-          margin: -16px 0;
-          padding: 16px 0;
-          position: relative;
-          flex: 1;
-          direction: rtl;
-          overflow-y: auto;
-          overflow-x: hidden;
-        }
-
-        .nav-button {
-          position: relative;
-          margin-left: 16px;
-          height: 54px;
-          display: flex;
-          align-items: center;
-          color: var(--navbar-light-secondary);
-          direction: ltr;
-          cursor: pointer;
-          z-index: 1;
-          transition: color .2s;
-          text-decoration: none;
-          padding: 0 20px;
-        }
-
-        .nav-button:hover {
-          color: white;
-        }
-
-        .nav-button span {
-          transition: opacity .3s;
-          margin-left: 16px;
-          font-weight: 500;
-          font-size: 0.9rem;
-        }
-
-        #nav-bar.collapsed .nav-button span {
-          opacity: 0;
-        }
-
-        .nav-icon {
-          min-width: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--accent-purple);
-        }
-
-        #nav-content-highlight {
-          position: absolute;
-          left: 16px;
-          width: calc(100% - 16px);
-          height: 54px;
-          background: var(--background);
-          border-radius: 20px 0 0 20px;
-          transition: top .2s, opacity .2s;
-          z-index: 0;
-        }
-
-        #nav-footer {
-          position: relative;
-          width: calc(100% - 16px);
-          margin: 8px;
-          background: var(--navbar-dark-secondary);
-          border-radius: 16px;
-          display: flex;
-          flex-direction: column;
-          z-index: 2;
-          transition: height .3s;
-          overflow: hidden;
-        }
-
-        #nav-footer-heading {
-          position: relative;
-          width: 100%;
-          height: 54px;
-          display: flex;
-          align-items: center;
-          padding: 0 12px;
-        }
-
-        #nav-footer-avatar {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          overflow: hidden;
-          background: white;
-        }
-
-        #nav-footer-avatar img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        #nav-footer-titlebox {
-          margin-left: 12px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          transition: opacity .2s;
-        }
-
-        #nav-footer-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        #nav-footer-subtitle {
-          color: var(--navbar-light-secondary);
-          font-size: .6rem;
-        }
-
-        #nav-bar.collapsed #nav-footer-titlebox {
-          opacity: 0;
-        }
-
-        #nav-footer-content {
-          padding: 16px;
-          color: var(--navbar-light-secondary);
-          font-size: .75rem;
-          line-height: 1.4;
-          border-top: solid 1px rgba(255,255,255,0.1);
-        }
-
-      `}</style>
+        )}
+      </motion.div>
     </>
   )
 }
