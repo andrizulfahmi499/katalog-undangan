@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Shield, User, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 type LoginType = null | 'admin' | 'member'
 
@@ -154,12 +155,11 @@ function LoginForm() {
         </motion.div>
       </div>
 
-      {/* ── Top Logo ─────────────────────────────────────────────── */}
-      <a href="/" className="absolute top-5 left-1/2 -translate-x-1/2 pointer-events-auto z-20">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" viewBox="0 0 5000 650" className="w-[130px] fill-white opacity-90 hover:opacity-100 transition-opacity">
-          <path d="M157.66 639.12c-7.75,-0.59 -17.29,-1.19 -28.47,-1.63 -11.33,-0.6 -23.84,-0.75 -37.7,-0.75l-54.55 0.75c-9.99,0.59 -23.7,0.74 -41.43,0.74 -1.05,0 -1.64,-1.64 -1.64,-4.91 0,-3.28 0.59,-4.91 1.64,-4.91 21.46,0 37.4,-1.34 47.54,-4.17 10.13,-2.68 17.29,-8.04 21.01,-16.08 3.73,-8.04 5.82,-20.24 5.82,-36.76l0 -382.52c0,-16.52 -1.79,-28.58 -5.37,-36.32 -3.58,-7.74 -10.43,-13.09 -20.72,-16.07 -10.28,-2.98 -26.08,-4.62 -47.54,-4.62 -1.19,0 -1.64,-1.63 -1.64,-4.91 0,-3.27 0.6,-4.91 1.64,-4.91l40.54 0.74c23.1,1.2 41.28,1.64 54.55,1.64 19.22,0 38.9,-0.89 58.72,-2.53 24.3,-1.19 40.84,-1.64 49.63,-1.64 57.98,0 109.25,11.02 153.81,33.05 44.72,22.03 79.29,52.09 103.88,90.04 24.59,37.96 36.81,80.67 36.81,128.01 0,53.43 -12.82,100.61 -38.45,141.69 -25.64,41.08 -59.91,72.63 -102.99,94.95 -43.07,22.33 -90.16,33.49 -141.44,33.49 -15.94,0 -33.98,-0.89 -53.8,-2.53l0.15 0.16z"/>
-        </svg>
-      </a>
+      {/* ── Back to Landing Button ─────────────────────────────── */}
+      <Link href="/" className="absolute top-8 left-8 z-30 flex items-center gap-2 text-white/70 hover:text-white transition-colors group pointer-events-auto">
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Beranda</span>
+      </Link>
 
       {/* ── Main Content ─────────────────────────────────────────── */}
       <div className="w-full max-w-4xl relative z-10 mt-16">
@@ -200,6 +200,7 @@ function LoginForm() {
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
                         trigger="loop"
+                        delay="2000"
                         state="hover-looking-around"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '50px', height: '50px' }}>
@@ -231,6 +232,7 @@ function LoginForm() {
                     <lord-icon
                         src="https://cdn.lordicon.com/hroklero.json"
                         trigger="loop"
+                        delay="2000"
                         state="morph-group"
                         colors="primary:#66d7ee,secondary:#f4dc9c"
                         style={{ width: '50px', height: '50px' }}>
@@ -280,6 +282,7 @@ function LoginForm() {
                       <lord-icon
                           src="https://cdn.lordicon.com/hroklero.json"
                           trigger="loop"
+                          delay="2000"
                           state="hover-looking-around"
                           colors="primary:#66d7ee,secondary:#f4dc9c"
                           style={{ width: '60px', height: '60px' }}>
@@ -289,6 +292,7 @@ function LoginForm() {
                       <lord-icon
                           src="https://cdn.lordicon.com/hroklero.json"
                           trigger="loop"
+                          delay="2000"
                           state="morph-group"
                           colors="primary:#66d7ee,secondary:#f4dc9c"
                           style={{ width: '60px', height: '60px' }}>
