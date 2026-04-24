@@ -283,7 +283,7 @@ export function DearMyLoveClone() {
       </AnimatePresence>
 
       {/* ── Fixed Top Logo ─────────────────────────────────────────── */}
-      <div className="fixed left-0 top-0 z-40 flex h-14 w-full items-center justify-center pointer-events-none">
+      <div className="fixed left-6 top-6 z-40 flex h-14 items-center justify-start pointer-events-none">
         {logoUrl ? (
           <img src={logoUrl} alt={siteName} className="h-8 w-auto" />
         ) : (

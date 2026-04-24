@@ -47,7 +47,7 @@ export function Sidebar() {
 
       <motion.div
         layout
-        className={`fixed top-4 left-4 z-[9999] flex flex-col overflow-hidden shadow-2xl transition-colors duration-300 ${
+        className={`fixed top-4 right-4 z-[9999] flex flex-col overflow-hidden shadow-2xl transition-colors duration-300 ${
           isOpen ? 'bg-[#172a26] border border-white/10 shadow-black/80' : 'bg-[#172a26]/90 backdrop-blur-md border border-white/20 hover:bg-[#1a2f2a]'
         }`}
         style={{
