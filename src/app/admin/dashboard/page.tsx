@@ -150,12 +150,39 @@ export default function AdminDashboard() {
           landingPageFavicon: globalFaviconSetting 
         })
       })
-      alert('Tema global landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
+      alert('Pengaturan landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
     } catch (e) {
-      alert('Gagal menyimpan tema global')
+      alert('Gagal menyimpan pengaturan')
     } finally {
       setIsSavingGlobalTheme(false)
     }
+  }
+
+  const handleFaviconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!['image/svg+xml', 'image/png', 'image/x-icon', 'image/vnd.microsoft.icon'].includes(file.type)) {
+      alert('Hanya mendukung file SVG, PNG, atau ICO')
+      return
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Ukuran file maksimal 2MB')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setGlobalFaviconSetting(event.target.result as string)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const resetFavicon = () => {
+    setGlobalFaviconSetting('/favicon-rose.svg')
   }
 
   const fetchMembers = async () => {
@@ -817,21 +844,37 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-[#2d3748] mb-2">Favicon URL</h3>
+                  <h3 className="text-lg font-semibold text-[#2d3748] mb-2">Favicon URL / Upload</h3>
                   <p className="text-sm text-[#6b7280] mb-3">
-                    URL ikon untuk tab browser (favicon). Contoh: /favicon-rose.svg atau link gambar .ico/.png
+                    Gunakan URL gambar atau upload langsung dari komputer Anda. Mendukung SVG, PNG, dan ICO.
                   </p>
-                  <input
-                    type="text"
-                    value={globalFaviconSetting}
-                    onChange={(e) => setGlobalFaviconSetting(e.target.value)}
-                    placeholder="/favicon-rose.svg"
-                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none bg-white/50"
-                  />
+                  
+                  <div className="flex flex-col sm:flex-row gap-3 mb-3">
+                    <input
+                      type="text"
+                      value={globalFaviconSetting}
+                      onChange={(e) => setGlobalFaviconSetting(e.target.value)}
+                      placeholder="/favicon-rose.svg"
+                      className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none bg-white/50"
+                    />
+                    <label className="cursor-pointer px-6 py-2 neu-btn rounded-xl text-indigo-600 font-semibold text-center whitespace-nowrap">
+                      <span>Upload File</span>
+                      <input type="file" className="hidden" accept=".svg,.png,.ico" onChange={handleFaviconUpload} />
+                    </label>
+                  </div>
+
                   {globalFaviconSetting && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <span className="text-xs text-gray-500">Preview:</span>
-                      <img src={globalFaviconSetting} alt="Favicon Preview" className="w-6 h-6 object-contain rounded border border-gray-200 p-0.5 bg-white" />
+                    <div className="mt-2 flex items-center justify-between p-3 bg-white/30 rounded-xl border border-white/50">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-gray-500">Preview:</span>
+                        <img src={globalFaviconSetting} alt="Favicon Preview" className="w-8 h-8 object-contain rounded border border-gray-200 p-0.5 bg-white" />
+                      </div>
+                      <button 
+                        onClick={resetFavicon}
+                        className="text-xs text-red-500 hover:underline font-medium"
+                      >
+                        Reset ke Default
+                      </button>
                     </div>
                   )}
                 </div>
