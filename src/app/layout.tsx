@@ -21,39 +21,50 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://katalog-undangan-beta.vercel.app'),
-  title: "Katalog Undanganku - Platform Undangan Pernikahan Digital Terbaik",
-  description: "Buat undangan pernikahan digital yang elegan, modern, dan mudah dibagikan. Berbagai tema undangan dengan fitur lengkap untuk momen spesial Anda.",
-  keywords: ["Undangan Pernikahan Digital", "Wedding Invitation", "Undangan Online", "Undangan Pernikahan", "Digital Wedding", "Wedding Invitation Indonesia"],
-  authors: [{ name: "Katalog Undanganku Team" }],
-  icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.svg",
-    apple: "/logo.png",
-  },
-  openGraph: {
-    title: "Katalog Undanganku - Undangan Pernikahan Digital",
-    description: "Buat undangan pernikahan digital yang elegan dan modern dengan berbagai pilihan tema",
-    url: "/",
-    siteName: "Katalog Undanganku",
-    type: "website",
-    images: [
-      {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Katalog Undanganku - Undangan Pernikahan Digital",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Katalog Undanganku - Undangan Pernikahan Digital",
-    description: "Platform undangan pernikahan digital terbaik di Indonesia",
-    images: ["/logo.png"],
-  },
-};
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
+export async function generateMetadata(): Promise<Metadata> {
+  const setting = await prisma.globalSetting.findUnique({
+    where: { id: 'global' },
+  })
+  
+  const favicon = setting?.landingPageFavicon || "/favicon-rose.svg"
+
+  return {
+    metadataBase: new URL('https://katalog-id.vercel.app'),
+    title: "Katalog Undanganku - Platform Undangan Pernikahan Digital Terbaik",
+    description: "Buat undangan pernikahan digital yang elegan, modern, dan mudah dibagikan. Berbagai tema undangan dengan fitur lengkap untuk momen spesial Anda.",
+    keywords: ["Undangan Pernikahan Digital", "Wedding Invitation", "Undangan Online", "Undangan Pernikahan", "Digital Wedding", "Wedding Invitation Indonesia"],
+    authors: [{ name: "Katalog Undanganku Team" }],
+    icons: {
+      icon: favicon,
+      shortcut: favicon,
+      apple: favicon,
+    },
+    openGraph: {
+      title: "Katalog Undanganku - Undangan Pernikahan Digital",
+      description: "Buat undangan pernikahan digital yang elegan dan modern dengan berbagai pilihan tema",
+      url: "/",
+      siteName: "Katalog Undanganku",
+      type: "website",
+      images: [
+        {
+          url: "/logo.png",
+          width: 1200,
+          height: 630,
+          alt: "Katalog Undanganku - Undangan Pernikahan Digital",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Katalog Undanganku - Undangan Pernikahan Digital",
+      description: "Platform undangan pernikahan digital terbaik di Indonesia",
+      images: ["/logo.png"],
+    },
+  }
+}
 
 export default function RootLayout({
   children,

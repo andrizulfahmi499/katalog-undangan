@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [globalThemeSetting, setGlobalThemeSetting] = useState<'default' | 'light'>('default')
+  const [globalFaviconSetting, setGlobalFaviconSetting] = useState<string>('/favicon-rose.svg')
   const [isSavingGlobalTheme, setIsSavingGlobalTheme] = useState(false)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
@@ -130,6 +131,7 @@ export default function AdminDashboard() {
       const data = await res.json()
       if (data.success && data.data) {
         setGlobalThemeSetting(data.data.landingPageTheme)
+        setGlobalFaviconSetting(data.data.landingPageFavicon || '/favicon-rose.svg')
       }
     } catch (e) {
       console.error(e)
@@ -143,7 +145,10 @@ export default function AdminDashboard() {
       await fetch('/api/admin/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ landingPageTheme: theme })
+        body: JSON.stringify({ 
+          landingPageTheme: theme,
+          landingPageFavicon: globalFaviconSetting 
+        })
       })
       alert('Tema global landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
     } catch (e) {
@@ -809,6 +814,26 @@ export default function AdminDashboard() {
                     <div className="font-bold mb-1">Light Theme</div>
                     <div className="text-xs opacity-70">(Neumorphism / Glass)</div>
                   </button>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-[#2d3748] mb-2">Favicon URL</h3>
+                  <p className="text-sm text-[#6b7280] mb-3">
+                    URL ikon untuk tab browser (favicon). Contoh: /favicon-rose.svg atau link gambar .ico/.png
+                  </p>
+                  <input
+                    type="text"
+                    value={globalFaviconSetting}
+                    onChange={(e) => setGlobalFaviconSetting(e.target.value)}
+                    placeholder="/favicon-rose.svg"
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:outline-none bg-white/50"
+                  />
+                  {globalFaviconSetting && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Preview:</span>
+                      <img src={globalFaviconSetting} alt="Favicon Preview" className="w-6 h-6 object-contain rounded border border-gray-200 p-0.5 bg-white" />
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex justify-end">

@@ -27,7 +27,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { landingPageTheme } = body
+    const { landingPageTheme, landingPageFavicon } = body
 
     if (!landingPageTheme) {
       return NextResponse.json(
@@ -40,10 +40,12 @@ export async function POST(request: Request) {
       where: { id: 'global' },
       update: {
         landingPageTheme,
+        landingPageFavicon,
       },
       create: {
         id: 'global',
         landingPageTheme,
+        landingPageFavicon,
       },
     })
 

@@ -148,6 +148,7 @@ model CreditTransaction {
 model GlobalSetting {
   id               String   @id @default("global")
   landingPageTheme String   @default("default") // 'default' | 'light'
+  landingPageFavicon String?
   updatedAt        DateTime @updatedAt
 
   @@map("GlobalSetting")
