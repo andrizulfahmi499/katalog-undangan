@@ -28,11 +28,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
   const [isVisible, setIsVisible] = useState(true)
 
   const navItems: NavItem[] = [
-    { id: 'home', label: 'Home', icon: <Home className="w-6 h-6" />, href: '#home' },
-    { id: 'contact', label: 'Contact', icon: <MessageCircle className="w-6 h-6" />, href: '#contact', isContact: true },
-    { id: 'login', label: 'Login', icon: <User className="w-6 h-6" />, href: '/login' },
-    { id: 'catalog', label: 'Catalog', icon: <Grid3X3 className="w-6 h-6" />, href: '#catalog' },
-    { id: 'pricing', label: 'Pricing', icon: <Tag className="w-6 h-6" />, href: '#pricing' },
+    { id: 'home', label: 'Home', icon: <Home className="w-6 h-6" strokeWidth={2.5} />, href: '#home' },
+    { id: 'contact', label: 'Contact', icon: <MessageCircle className="w-6 h-6" strokeWidth={2.5} />, href: '#contact', isContact: true },
+    { id: 'login', label: 'Login', icon: <User className="w-6 h-6" strokeWidth={2.5} />, href: '/login' },
+    { id: 'catalog', label: 'Catalog', icon: <Grid3X3 className="w-6 h-6" strokeWidth={2.5} />, href: '#catalog' },
+    { id: 'pricing', label: 'Pricing', icon: <Tag className="w-6 h-6" strokeWidth={2.5} />, href: '#pricing' },
   ]
 
   // We explicitly disable initial highlight as requested.
@@ -181,9 +181,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
 
 
         {/* Navigation Bar Body */}
-        <div className={`magic-nav-container relative flex items-center h-[75px] rounded-[25px] px-2 shadow-2xl ${
-          isLight ? 'bg-white shadow-black/10' : 'bg-[#ededed]'
-        }`}>
+        <div className="magic-nav-container relative flex items-center h-[75px] rounded-[20px] px-2 shadow-2xl bg-white border border-gray-100">
           {/* Moving Indicator */}
           <motion.div
             className="magic-indicator"
@@ -200,7 +198,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
               height: '60px',
               borderRadius: '50%',
               backgroundColor: isLight ? '#9B1FE8' : '#172a26',
-              border: `6px solid ${isLight ? '#FFFFFF' : '#ededed'}`,
+              border: '6px solid #FFFFFF',
               zIndex: 1
             }}
           >
@@ -240,7 +238,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   }}
                 >
                   <div className={`transition-colors duration-300 ${
-                    isActive ? 'text-white scale-110' : 'text-gray-400 group-hover:text-gray-600 scale-100'
+                    isActive ? 'text-white scale-110' : 'text-black group-hover:text-gray-700 scale-100'
                   }`}>
                     {item.icon}
                   </div>
@@ -269,11 +267,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
         }
         .magic-indicator::before {
             left: -19px;
-            box-shadow: 7px 7px 0 0 ${isLight ? '#FFFFFF' : '#ededed'};
+            box-shadow: 7px 7px 0 0 #FFFFFF;
         }
         .magic-indicator::after {
             right: -19px;
-            box-shadow: -7px 7px 0 0 ${isLight ? '#FFFFFF' : '#ededed'};
+            box-shadow: -7px 7px 0 0 #FFFFFF;
         }
       `}</style>
     </div>
