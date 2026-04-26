@@ -181,31 +181,20 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
 
 
         {/* Navigation Bar Body */}
-        <div className="magic-nav-container relative flex items-center h-[75px] rounded-[20px] px-2 shadow-2xl bg-white border border-gray-100">
+        <div className="mx-auto relative flex items-center h-14 rounded-full p-1 shadow-2xl bg-[#f8f9fa] border border-gray-200">
           {/* Moving Indicator */}
           <motion.div
-            className="magic-indicator"
+            className="absolute left-1 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full pointer-events-none"
             animate={{ 
-              x: activeIndex * 64,
+              x: activeIndex * 48, // 48px is the width of each item (w-12)
               opacity: activeIndex === -1 ? 0 : 1 
-            }} // 64 is the approx width of each item slot
+            }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             style={{
-              position: 'absolute',
-              top: '-30px', /* Centered exactly halfway up the 75px container */
-              left: '10px', /* padding is 8px, half icon is 32px -> center is 40px. Indicator is 60px wide, so left = 40 - 30 = 10px */
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
               backgroundColor: isLight ? '#9B1FE8' : '#172a26',
-              border: '6px solid #FFFFFF',
-              zIndex: 1
+              zIndex: 0
             }}
-          >
-            {/* Curved Connectors using box-shadow trick from CSS reference */}
-            <div className="magic-curve-left" />
-            <div className="magic-curve-right" />
-          </motion.div>
+          />
 
           {/* Nav Items */}
           {navItems.map((item, index) => {
@@ -213,67 +202,21 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
             return (
               <div
                 key={item.id}
-                className="relative w-16 h-full flex flex-col items-center justify-center cursor-pointer group"
+                className="relative w-12 h-12 flex items-center justify-center cursor-pointer group z-10"
                 onClick={(e) => handleNavClick(index, e)}
+                title={item.label}
               >
-                {/* Label Section */}
-                <div className={`absolute bottom-2 transition-all duration-300 ${
-                  isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}>
-                  <span className="text-[10px] font-bold tracking-widest uppercase transition-colors" style={{ 
-                    color: isLight ? '#9B1FE8' : '#172a26',
-                    fontFamily: "'Josefin Sans', sans-serif"
-                  }}>
-                    {item.label}
-                  </span>
-                </div>
-
                 {/* Icon Section */}
-                <div 
-                  className="absolute left-1/2 top-1/2 z-10 transition-all duration-300 flex items-center justify-center"
-                  style={{
-                    transform: isActive 
-                      ? 'translate(-50%, calc(-50% - 37.5px))' // Moves exactly up to align with magic indicator center
-                      : 'translate(-50%, -50%)',
-                  }}
-                >
-                  <div className={`transition-colors duration-300 ${
-                    isActive ? 'text-white scale-110' : 'text-black group-hover:text-gray-700 scale-100'
-                  }`}>
-                    {item.icon}
-                  </div>
+                <div className={`transition-all duration-300 flex items-center justify-center ${
+                  isActive ? 'text-white scale-110' : 'text-[#172a26] group-hover:scale-110'
+                }`}>
+                  {item.icon}
                 </div>
               </div>
             )
           })}
         </div>
       </motion.div>
-
-      <style jsx>{`
-        .magic-nav-container {
-            width: fit-content;
-            margin: 0 auto;
-        }
-        .magic-indicator::before,
-        .magic-indicator::after {
-            content: "";
-            position: absolute;
-            bottom: 4px; /* Adjusted to match border thickness and positioning */
-            width: 15px;
-            height: 15px;
-            background: transparent;
-            border-radius: 50%;
-            z-index: -1;
-        }
-        .magic-indicator::before {
-            left: -19px;
-            box-shadow: 7px 7px 0 0 #FFFFFF;
-        }
-        .magic-indicator::after {
-            right: -19px;
-            box-shadow: -7px 7px 0 0 #FFFFFF;
-        }
-      `}</style>
     </div>
   )
 }
