@@ -157,14 +157,12 @@ export function CatalogSection() {
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
               className="inline-block mb-6"
             >
-              <div className="flex items-center justify-center gap-2">
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#8b8fa3]' : 'text-[#aabbb2]'}`} />
-                <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${
+              <div className="flex items-center justify-center">
+                <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[0.15em] uppercase ${
                   isLight ? 'text-[#2d3748]' : 'text-white'
-                }`}>
-                  Katalog Tema Undangan
+                }`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+                  Template Collection
                 </h2>
-                <Sparkles className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#ededed]'}`} />
               </div>
             </motion.div>
             <p className={`text-xl max-w-2xl mx-auto mb-8 leading-relaxed ${
