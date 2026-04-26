@@ -10,8 +10,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
 
   const menuItems = [
-    { id: 'login-admin', label: 'Login Admin', icon: <Shield size={20} />, href: '/login?role=admin' },
-    { id: 'login-member', label: 'Login Member', icon: <User size={20} />, href: '/login?role=member' },
+    { id: 'login', label: 'Login', icon: <User size={20} />, href: '/login' },
     { id: 'home', label: 'Home', icon: <Home size={20} />, href: '#home' },
     { id: 'order', label: 'Order', icon: <ShoppingCart size={20} />, href: '#order' },
     { id: 'fitur', label: 'Fitur', icon: <Zap size={20} />, href: '#fitur' },
@@ -69,10 +68,10 @@ export function Sidebar() {
             </motion.div>
           ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 cursor-pointer py-1" onClick={() => setIsOpen(true)}>
-              <div className="w-9 h-9 rounded-full overflow-hidden bg-white/10 border border-white/20 flex items-center justify-center p-0.5">
+              <div className="w-9 h-9 flex-shrink-0 rounded-full overflow-hidden bg-white/10 border border-white/20 flex items-center justify-center p-0.5">
                 <img src="/logo.png" alt="Admin" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
               </div>
-              <button className="text-white pr-2 flex items-center gap-2">
+              <button className="text-white pr-2 flex items-center gap-2 flex-shrink-0">
                 <Menu size={22} className="text-[#a8d5c4]" />
               </button>
             </motion.div>
@@ -89,7 +88,7 @@ export function Sidebar() {
                 setIsOpen(false)
                 handleScroll(e, item.href)
               }}
-              className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-white/70 hover:text-white hover:bg-white/10 transition-colors group"
+              className="flex items-center gap-4 px-4 py-2.5 rounded-2xl text-white/70 hover:text-white hover:bg-white/10 transition-colors group"
             >
               <span className="text-white/50 group-hover:text-[#a8d5c4] transition-colors">{item.icon}</span>
               <span className="font-bold text-[13px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{item.label}</span>
