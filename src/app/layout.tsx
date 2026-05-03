@@ -28,27 +28,8 @@ const playfair = Playfair_Display({
   preload: false, // dekoratif, tidak perlu preload
 });
 
-import { db } from '@/lib/db'
-
-// Cache favicon in memory — only re-fetched when server restarts
-let cachedFavicon: string | null = null
-
-async function getFavicon(): Promise<string> {
-  if (cachedFavicon !== null) return cachedFavicon
-  try {
-    const setting = await db.globalSetting.findUnique({
-      where: { id: 'global' },
-      select: { landingPageFavicon: true },
-    })
-    cachedFavicon = setting?.landingPageFavicon || '/favicon-rose.svg'
-  } catch {
-    cachedFavicon = '/favicon-rose.svg'
-  }
-  return cachedFavicon
-}
-
-export async function generateMetadata(): Promise<Metadata> {
-  const favicon = await getFavicon()
+export function generateMetadata(): Metadata {
+  const favicon = '/favicon-rose.svg'
 
   return {
     metadataBase: new URL('https://katalog-id.vercel.app'),
