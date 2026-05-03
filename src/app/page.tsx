@@ -1,18 +1,24 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { useTheme } from '@/context/ThemeContext'
 import { Navbar } from '@/components/landing/Navbar'
 import { VideoHeroSection } from '@/components/landing/VideoHeroSection'
-import { IntroSection } from '@/components/landing/IntroSection'
-import { FeatureSection } from '@/components/landing/FeatureSection'
-import { CatalogSection } from '@/components/landing/CatalogSection'
-import { PricingSection } from '@/components/landing/PricingSection'
-import { OrderFormSection } from '@/components/landing/OrderFormSection'
-import { Footer } from '@/components/landing/Footer'
-import { MagicFloatingNav } from '@/components/landing/MagicFloatingNav'
-import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
-import { ScrollProgressIndicator } from '@/components/landing/animations/ScrollProgressIndicator'
+
+// Section di bawah fold — lazy load agar tidak block initial render
+const IntroSection = dynamic(() => import('@/components/landing/IntroSection').then(m => ({ default: m.IntroSection })), { ssr: false })
+const FeatureSection = dynamic(() => import('@/components/landing/FeatureSection').then(m => ({ default: m.FeatureSection })), { ssr: false })
+const CatalogSection = dynamic(() => import('@/components/landing/CatalogSection').then(m => ({ default: m.CatalogSection })), { ssr: false })
+const PricingSection = dynamic(() => import('@/components/landing/PricingSection').then(m => ({ default: m.PricingSection })), { ssr: false })
+const OrderFormSection = dynamic(() => import('@/components/landing/OrderFormSection').then(m => ({ default: m.OrderFormSection })), { ssr: false })
+const FAQSection = dynamic(() => import('@/components/landing/FAQSection').then(m => ({ default: m.FAQSection })), { ssr: false })
+const Footer = dynamic(() => import('@/components/landing/Footer').then(m => ({ default: m.Footer })), { ssr: false })
+const PhoneShowcase = dynamic(() => import('@/components/landing/PhoneShowcase').then(m => ({ default: m.PhoneShowcase })), { ssr: false })
+const MagicFloatingNav = dynamic(() => import('@/components/landing/MagicFloatingNav').then(m => ({ default: m.MagicFloatingNav })), { ssr: false })
+const Sidebar = dynamic(() => import('@/components/landing/Sidebar').then(m => ({ default: m.Sidebar })), { ssr: false })
+const DearMyLoveClone = dynamic(() => import('@/components/landing/DearMyLoveClone').then(m => ({ default: m.DearMyLoveClone })), { ssr: false })
+const ScrollProgressIndicator = dynamic(() => import('@/components/landing/animations/ScrollProgressIndicator').then(m => ({ default: m.ScrollProgressIndicator })), { ssr: false })
 
 function StarryBackground() {
   const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
@@ -48,9 +54,6 @@ function StarryBackground() {
   )
 }
 
-import { FAQSection } from '@/components/landing/FAQSection'
-import { Sidebar } from '@/components/landing/Sidebar'
-import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
 
 export default function Home() {
   const { isLight } = useTheme()

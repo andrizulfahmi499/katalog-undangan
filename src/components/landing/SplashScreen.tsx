@@ -73,8 +73,8 @@ export function SplashScreen() {
               initial={{ pathLength: 0, opacity: 0.3 }}
               animate={{ pathLength: 1, opacity: 0.6 }}
               transition={{
-                pathLength: { duration: 1.8, ease: [0.25, 0.1, 0.25, 1] },
-                opacity: { duration: 0.5, ease: 'easeOut' }
+                pathLength: { duration: 1.2, ease: [0.25, 0.1, 0.25, 1] },
+                opacity: { duration: 0.4, ease: 'easeOut' }
               }}
             />
             {/* Ghost trail for glow effect */}
@@ -85,7 +85,7 @@ export function SplashScreen() {
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
               transition={{
-                pathLength: { duration: 1.8, ease: [0.25, 0.1, 0.25, 1] },
+                pathLength: { duration: 1.2, ease: [0.25, 0.1, 0.25, 1] },
               }}
             />
           </svg>
@@ -134,7 +134,7 @@ export function SplashScreen() {
           <motion.span
             initial={{ opacity: 0, letterSpacing: '0.8em' }}
             animate={{ opacity: 1, letterSpacing: '0.35em' }}
-            transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '1.1em', fontWeight: 700 }}
             className="text-white uppercase"
           >
@@ -145,7 +145,7 @@ export function SplashScreen() {
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.75, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             style={{ fontFamily: "'Arapey', Georgia, serif", fontSize: '0.7em', fontStyle: 'italic', letterSpacing: '0.08em', lineHeight: 1 }}
             className="text-white/75 -mt-0.5"
           >
@@ -156,7 +156,7 @@ export function SplashScreen() {
           <motion.span
             initial={{ opacity: 0, letterSpacing: '0.8em' }}
             animate={{ opacity: 1, letterSpacing: '0.35em' }}
-            transition={{ duration: 1, delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{ fontFamily: "'Josefin Sans', sans-serif", fontSize: '1.1em', fontWeight: 700 }}
             className="text-white uppercase"
           >
@@ -168,7 +168,7 @@ export function SplashScreen() {
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
           className="mt-4 h-[0.5px] w-20 origin-center"
           style={{
             background: 'linear-gradient(90deg, transparent, rgba(237,237,237,0.4), transparent)'
@@ -179,7 +179,7 @@ export function SplashScreen() {
         <motion.p
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.6, ease: 'easeOut' }}
+          transition={{ delay: 1.0, duration: 0.5, ease: 'easeOut' }}
           className="text-[#ededed]/30 text-[9px] tracking-[0.35em] uppercase mt-3"
           style={{ fontFamily: "'Lato', sans-serif" }}
         >

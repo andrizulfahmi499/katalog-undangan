@@ -4,21 +4,28 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/context/ThemeContext";
 
+// font-display: swap agar teks langsung tampil dengan fallback font
+// sementara Google Font masih loading
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
+  preload: false, // mono hanya dipakai di code block, tidak perlu preload
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "700"],  // kurangi dari 4 weight ke 2 yang paling sering dipakai
   display: 'swap',
+  preload: false, // dekoratif, tidak perlu preload
 });
 
 import { db } from '@/lib/db'
@@ -86,6 +93,11 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning className="scroll-smooth">
       <head>
+        {/* Preconnect ke domain eksternal untuk mempercepat koneksi awal */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.lordicon.com" />
+        <link rel="dns-prefetch" href="https://ajax.googleapis.com" />
         {/* Defer heavy external scripts until after page load to avoid blocking render */}
         <script
           dangerouslySetInnerHTML={{

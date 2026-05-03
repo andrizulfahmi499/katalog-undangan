@@ -229,7 +229,8 @@ export function DearMyLoveClone() {
   const pricingPackages = (config?.pricingPackages as any[])?.filter((p: any) => p.enabled !== false) || DEFAULT_PACKAGES
 
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 3200)
+    // Splash screen hanya 1.8 detik — cukup untuk animasi rose selesai
+    const t = setTimeout(() => setIsLoading(false), 1800)
     return () => clearTimeout(t)
   }, [])
 
