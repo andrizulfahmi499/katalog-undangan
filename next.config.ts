@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', '@radix-ui/react-dialog'],
   },
+  // Keep Prisma di luar bundle untuk避免 standalone build issues
+  serverExternalPackages: ['@prisma/client', 'prisma'],
 };
 
 export default nextConfig;
