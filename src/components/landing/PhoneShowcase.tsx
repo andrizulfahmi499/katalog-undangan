@@ -145,6 +145,8 @@ export function PhoneShowcase() {
                     <img
                       src="/phone-mockup.png"
                       alt="Phone mockup"
+                      loading="eager"
+                      fetchPriority="high"
                       className="relative inset-0 w-full h-full object-contain"
                     />
                   </div>

@@ -43,12 +43,12 @@ async function fetchGlobalTheme(): Promise<ThemeMode> {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('default')
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(true) // langsung true, tidak tunggu fetch
 
   useEffect(() => {
+    // Fetch theme di background, update setelah render pertama
     fetchGlobalTheme().then(t => {
-      setThemeState(t)
-      setMounted(true)
+      if (t !== theme) setThemeState(t)
     })
   }, [])
 
@@ -64,19 +64,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const isLight = theme === 'light'
 
-  // Show content immediately with default theme to avoid blank screen delay.
-  // A tiny layout shift may occur if theme differs from default, but the page
-  // is visible right away instead of being hidden for the full fetch duration.
-  if (!mounted) {
-    return (
-      <ThemeContext.Provider value={{ theme: 'default', setTheme, toggleTheme, isLight: false }}>
-        <div className="theme-transition theme-default">
-          {children}
-        </div>
-      </ThemeContext.Provider>
-    )
-  }
-
+  // Langsung render dengan theme default, tidak ada delay
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, isLight }}>
       <div className={`theme-transition ${isLight ? 'theme-light' : 'theme-default'}`}>
