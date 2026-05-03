@@ -216,8 +216,8 @@ function PricingCard({ pkg, index }: { pkg: any; index: number }) {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 export function DearMyLoveClone() {
-  // Hapus splash screen — langsung render konten untuk performa maksimal
-  const [isLoading, setIsLoading] = useState(false)
+  // Aktifkan splash screen saat loading
+  const [isLoading, setIsLoading] = useState(true)
   const ctx = useContext(CustomLandingContext)
   const config = ctx?.config || {}
 
@@ -229,7 +229,13 @@ export function DearMyLoveClone() {
   const logoUrl = (config?.logoUrl as string) || null
   const pricingPackages = (config?.pricingPackages as any[])?.filter((p: any) => p.enabled !== false) || DEFAULT_PACKAGES
 
-  // Hapus useEffect splash screen — tidak perlu delay lagi
+  // Auto-hide splash screen setelah animasi selesai
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 2500) // 2.5 detik — sesuai durasi animasi
+    return () => clearTimeout(timer)
+  }, [])
 
   const { scrollY, scrollYProgress } = useScroll()
   const floralLeftY = useTransform(scrollY, [0, 1200], [0, -80])

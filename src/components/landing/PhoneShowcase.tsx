@@ -66,7 +66,7 @@ export function PhoneShowcase() {
                   >
                     <motion.div
                       animate={{ y: [0, -8 + i * 2, 0] }}
-                      transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
+                      transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut', repeatType: 'loop' }}
                       className={`flex items-center gap-3 px-5 py-3 rounded-2xl cursor-default transition-all ${
                         isLight
                           ? 'neu-raised-sm hover:shadow-[8px_8px_16px_#b8bec7,-8px_-8px_16px_#ffffff]'
@@ -99,7 +99,7 @@ export function PhoneShowcase() {
                   >
                     <motion.div
                       animate={{ y: [0, -6 + i * 3, 0] }}
-                      transition={{ duration: 3.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut' }}
+                      transition={{ duration: 3.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut', repeatType: 'loop' }}
                       className={`flex items-center gap-3 px-5 py-3 rounded-2xl cursor-default transition-all ${
                         isLight
                           ? 'neu-raised-sm hover:shadow-[8px_8px_16px_#b8bec7,-8px_-8px_16px_#ffffff]'

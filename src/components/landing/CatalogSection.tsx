@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
 import { StaggerContainer } from './animations/StaggerContainer'
-import { Sparkles, Grid, TrendingUp, Clock, ArrowRight, ChevronDown, Eye } from 'lucide-react'
+import { Sparkles, Grid, TrendingUp, ArrowRight, ChevronDown, Eye } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 
 // Types
@@ -104,7 +104,7 @@ export function CatalogSection() {
           }
 
           setHasMore(result.pagination.hasMore)
-          setTotalThemes(prev => reset ? result.data.length : prev + result.data.length)
+          setTotalThemes(result.total || result.data.length)
         }
       } catch (error) {
         console.error('Error fetching themes:', error)
@@ -130,7 +130,6 @@ export function CatalogSection() {
         if (result.success) {
           setThemes(prev => [...prev, ...result.data])
           setHasMore(result.pagination.hasMore)
-          setTotalThemes(prev => prev + result.data.length)
         }
       })
       .catch(error => {
@@ -181,10 +180,6 @@ export function CatalogSection() {
               <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/70'}`}>
                 <TrendingUp className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#ededed]'}`} />
                 <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Trending Now</span>
-              </div>
-              <div className={`flex items-center gap-2 ${isLight ? 'text-[#9ca3af]' : 'text-gray-300/70'}`}>
-                <Clock className={`w-5 h-5 ${isLight ? 'text-[#8b8fa3]' : 'text-[#FBCFE8]'}`} />
-                <span className={`font-semibold ${isLight ? 'text-[#2d3748]' : 'text-white'}`}>Update Harian</span>
               </div>
             </div>
           </div>
