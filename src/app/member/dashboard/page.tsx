@@ -313,51 +313,52 @@ export default function MemberDashboard() {
   const totalCreditUsed = invitations.reduce((sum, inv) => sum + inv.costPoints, 0)
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] text-[#2d3748] font-sans pb-10">
+    <div className="min-h-screen text-[#f4e4c1] pb-10" style={{ fontFamily: "'Lato', sans-serif", background: 'linear-gradient(160deg, #172a26 0%, #1a2f2a 60%, #1c352e 100%)' }}>
       {/* Header */}
-      <header className="neu-flat border-b border-[#d1d9e6] sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4">
               <motion.button
                 whileHover={{ x: -3 }}
                 onClick={() => window.location.href = '/'}
-                className="flex items-center gap-2 text-[#6b7280] hover:text-[#2d3748] transition-colors"
+                className="flex items-center gap-1 sm:gap-2 text-[#f4e4c1]/70 hover:text-[#f4e4c1] transition-colors min-h-[44px] min-w-[44px] justify-center sm:justify-start"
               >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="font-medium">Kembali</span>
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-medium text-xs sm:text-sm hidden sm:inline" style={{ fontFamily: "'Lato', sans-serif" }}>Kembali</span>
               </motion.button>
-              <h1 className="text-2xl font-bold text-[#2d3748]">Member Dashboard</h1>
+              <h1 className="text-base sm:text-2xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Member Dashboard</h1>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 neu-btn rounded-xl transition-colors font-medium"
+              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 rounded-xl transition-colors font-medium min-h-[44px] text-xs sm:text-sm"
+              style={{ fontFamily: "'Lato', sans-serif" }}
             >
-              <LogOut className="w-5 h-5" />
-              Logout
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Logout</span>
             </motion.button>
           </div>
         </div>
       </header>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
-                <MessageCircle className="w-7 h-7 text-white" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shrink-0">
+                <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Total Undangan</p>
-                <p className="text-3xl font-bold text-[#2d3748]">{invitations.length}</p>
+                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Total Undangan</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{invitations.length}</p>
               </div>
             </div>
           </motion.div>
@@ -366,15 +367,15 @@ export default function MemberDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center">
-                <Send className="w-7 h-7 text-white" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center shrink-0">
+                <Send className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Total Dikirim</p>
-                <p className="text-3xl font-bold text-[#2d3748]">{totalSent}</p>
+                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Total Dikirim</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{totalSent}</p>
               </div>
             </div>
           </motion.div>
@@ -383,31 +384,32 @@ export default function MemberDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="neu-raised-lg rounded-3xl p-6"
+            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <CreditCard className="w-7 h-7 text-white" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0">
+                <CreditCard className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <p className="text-sm text-[#6b7280]">Credit Terpakai</p>
-                <p className="text-3xl font-bold text-[#2d3748]">{totalCreditUsed} coin</p>
+                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Credit Terpakai</p>
+                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{totalCreditUsed} coin</p>
               </div>
             </div>
           </motion.div>
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTab('invitations')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
               activeTab === 'invitations'
-                ? 'neu-pressed text-pink-600'
-                : 'neu-btn text-[#6b7280]'
+                ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
+                : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
             }`}
+            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
           >
             Undangan
           </motion.button>
@@ -415,11 +417,12 @@ export default function MemberDashboard() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTab('history')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
               activeTab === 'history'
-                ? 'neu-pressed text-purple-600'
-                : 'neu-btn text-[#6b7280]'
+                ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
+                : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
             }`}
+            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
           >
             Riwayat Pengiriman
           </motion.button>
@@ -428,11 +431,12 @@ export default function MemberDashboard() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveTab('landing_page')}
-              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+              className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
                 activeTab === 'landing_page'
-                  ? 'neu-pressed text-teal-600'
-                  : 'neu-btn text-[#6b7280]'
+                  ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
+                  : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
               }`}
+              style={{ fontFamily: "'Josefin Sans', sans-serif" }}
             >
               Pengaturan Landing Page
             </motion.button>

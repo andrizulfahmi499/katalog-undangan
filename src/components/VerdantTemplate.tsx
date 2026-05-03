@@ -42,7 +42,7 @@ export default function VerdantTemplate({ invitation, formattedDate }: VerdantTe
   const [showGallery, setShowGallery] = useState(false)
   const bgRef = useRef<HTMLDivElement | null>(null)
   const headingRef = useRef<HTMLDivElement | null>(null)
-  const uid = useRef(`v-${Math.random().toString(36).slice(2,9)}`)
+  const uid = useRef(`v-${typeof window === 'undefined' ? 'ssr' : Math.random().toString(36).slice(2,9)}`)
 
   useEffect(() => {
     let rafId: number | null = null

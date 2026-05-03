@@ -1,7 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
+import { StaggerContainer } from './animations/StaggerContainer'
+import { BreathingElement } from './animations/BreathingElement'
 import Lottie from 'lottie-react'
 import { Calendar, MapPin, Image, MessageSquare, Gift } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
@@ -127,37 +130,73 @@ const features: Feature[] = [
   }
 ]
 
+// Child variant for stagger animations
+const featureCardVariant = {
+  initial: { opacity: 0, y: 30 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } // easeOut cubic bezier
+  }
+}
+
 export function FeatureSection() {
   const { isLight } = useTheme()
+  const headerRef = useRef<HTMLDivElement>(null)
+  
+  // Scale-on-scroll effect for section header
+  const { scrollYProgress } = useScroll({
+    target: headerRef,
+    offset: ['start end', 'end start']
+  })
+  
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.9])
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.5])
 
   return (
     <section
       id="fitur"
       className="relative py-24 overflow-hidden"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <ScrollReveal>
-          <div className="text-center mb-20">
-            <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 ${
-              isLight ? 'text-[#2d3748]' : 'text-white'
-            }`}>
-              Fitur Lengkap untuk Momen Spesial
-            </h2>
-            <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${
-              isLight ? 'text-[#6b7280]' : 'text-purple-200/80'
-            }`}>
-              Semua yang Anda butuhkan untuk undangan pernikahan digital yang sempurna
-            </p>
-          </div>
-        </ScrollReveal>
+      <ScrollReveal threshold={0.1} variant="fadeInUp" delay={0}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Section Header */}
+          <ScrollReveal>
+            <motion.div 
+              ref={headerRef}
+              style={{ scale, opacity }}
+              className="text-center mb-20"
+            >
+              <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 ${
+                isLight ? 'text-[#2d3748]' : 'text-white'
+              }`}>
+                Fitur Lengkap untuk Momen Spesial
+              </h2>
+              <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${
+                isLight ? 'text-[#6b7280]' : 'text-purple-200/80'
+              }`}>
+                Semua yang Anda butuhkan untuk undangan pernikahan digital yang sempurna
+              </p>
+            </motion.div>
+          </ScrollReveal>
 
-        {/* Feature Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <ScrollReveal key={feature.title} delay={index * 0.1}>
+          {/* Feature Grid with Stagger Animation */}
+          <StaggerContainer staggerDelay={100} threshold={0.1} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
               <motion.div
-                whileHover={{ y: -12, rotate: index % 2 === 0 ? 2 : -2 }}
+                key={feature.title}
+                variants={featureCardVariant}
+                whileHover={{ 
+                  y: -12, 
+                  scale: 1.03,
+                  rotate: index % 2 === 0 ? 2 : -2,
+                  transition: { 
+                    type: 'spring',
+                    stiffness: 350,
+                    damping: 25,
+                    duration: 0.3
+                  }
+                }}
                 whileTap={{ scale: 0.98 }}
                 className={`group relative p-8 rounded-3xl transition-all duration-500 ${
                   isLight
@@ -167,26 +206,28 @@ export function FeatureSection() {
               >
                 {/* Icon Container */}
                 <div className="flex justify-center mb-6">
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                    className="relative"
-                  >
-                    <div className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-shadow duration-300 ${
-                      isLight
-                        ? 'neu-pressed text-[#8b8fa3]'
-                        : `bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.color.replace('bg-', 'shadow-')}/30 hover:shadow-xl`
-                    }`}>
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ type: 'spring', stiffness: 300 }}
-                      >
-                        <div className={isLight ? '' : 'text-white'}>
-                          {feature.icon}
-                        </div>
-                      </motion.div>
-                    </div>
-                  </motion.div>
+                  <BreathingElement duration={4} minOpacity={0.8} maxOpacity={1} minScale={0.98} maxScale={1.02}>
+                    <motion.div
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                      className="relative"
+                    >
+                      <div className={`w-24 h-24 rounded-3xl flex items-center justify-center transition-shadow duration-300 ${
+                        isLight
+                          ? 'neu-pressed text-[#8b8fa3]'
+                          : `bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.color.replace('bg-', 'shadow-')}/30 hover:shadow-xl`
+                      }`}>
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ type: 'spring', stiffness: 300 }}
+                        >
+                          <div className={isLight ? '' : 'text-white'}>
+                            {feature.icon}
+                          </div>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  </BreathingElement>
                 </div>
 
                 <h3 className={`text-2xl font-bold mb-4 text-center ${
@@ -213,27 +254,27 @@ export function FeatureSection() {
                   <span className={`text-lg ${isLight ? '' : 'text-white'}`}>✨</span>
                 </motion.div>
               </motion.div>
-            </ScrollReveal>
-          ))}
-        </div>
+            ))}
+          </StaggerContainer>
 
-        {/* CTA Section */}
-        <ScrollReveal delay={0.5}>
-          <div className="mt-20 text-center">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              className={`px-12 py-5 rounded-3xl font-semibold text-xl transition-all duration-300 ${
-                isLight
-                  ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
-                  : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
-              }`}
-            >
-              Jelajahi Semua Fitur
-            </motion.button>
-          </div>
-        </ScrollReveal>
-      </div>
+          {/* CTA Section */}
+          <ScrollReveal delay={0.5}>
+            <div className="mt-20 text-center">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-12 py-5 rounded-3xl font-semibold text-xl transition-all duration-300 ${
+                  isLight
+                    ? 'neu-btn text-[#2d3748] hover:shadow-[inset_2px_2px_4px_#b8bec7,inset_-2px_-2px_4px_#ffffff]'
+                    : 'bg-gradient-to-r from-[#A5B4FC] to-[#C4B5FD] text-white shadow-lg shadow-[#A5B4FC]/30 hover:shadow-xl hover:shadow-[#C4B5FD]/40'
+                }`}
+              >
+                Jelajahi Semua Fitur
+              </motion.button>
+            </div>
+          </ScrollReveal>
+        </div>
+      </ScrollReveal>
     </section>
   )
 }

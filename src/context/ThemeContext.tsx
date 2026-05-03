@@ -13,31 +13,47 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
+// In-memory cache so we only fetch once per browser session
+let cachedTheme: ThemeMode | null = null
+let fetchPromise: Promise<ThemeMode> | null = null
+
+async function fetchGlobalTheme(): Promise<ThemeMode> {
+  if (cachedTheme !== null) return cachedTheme
+  if (fetchPromise) return fetchPromise
+
+  fetchPromise = fetch('/api/public/settings', {
+    // Cache for 5 minutes at the HTTP level
+    next: { revalidate: 300 },
+  } as RequestInit)
+    .then(res => res.json())
+    .then(data => {
+      const theme = (data.success && data.data?.landingPageTheme
+        ? data.data.landingPageTheme
+        : 'default') as ThemeMode
+      cachedTheme = theme
+      return theme
+    })
+    .catch(() => {
+      fetchPromise = null // allow retry on error
+      return 'default' as ThemeMode
+    })
+
+  return fetchPromise
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('default')
   const [mounted, setMounted] = useState(false)
 
-  // Load global theme on mount
   useEffect(() => {
-    // We fetch global theme config from db/api
-    const fetchGlobalTheme = async () => {
-      try {
-        const res = await fetch('/api/public/settings')
-        const data = await res.json()
-        if (data.success && data.data?.landingPageTheme) {
-          setThemeState(data.data.landingPageTheme as ThemeMode)
-        }
-      } catch (err) {
-        console.error('Failed to fetch global theme', err)
-      } finally {
-        setMounted(true)
-      }
-    }
-
-    fetchGlobalTheme()
+    fetchGlobalTheme().then(t => {
+      setThemeState(t)
+      setMounted(true)
+    })
   }, [])
 
   const setTheme = (newTheme: ThemeMode) => {
+    cachedTheme = newTheme // update cache when changed manually
     setThemeState(newTheme)
   }
 
@@ -48,9 +64,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const isLight = theme === 'light'
 
-  // Prevent flash of wrong theme
+  // Show content immediately with default theme to avoid blank screen delay.
+  // A tiny layout shift may occur if theme differs from default, but the page
+  // is visible right away instead of being hidden for the full fetch duration.
   if (!mounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>
+    return (
+      <ThemeContext.Provider value={{ theme: 'default', setTheme, toggleTheme, isLight: false }}>
+        <div className="theme-transition theme-default">
+          {children}
+        </div>
+      </ThemeContext.Provider>
+    )
   }
 
   return (

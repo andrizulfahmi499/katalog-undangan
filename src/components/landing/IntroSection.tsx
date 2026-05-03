@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
+import { ParallaxContainer } from './animations/ParallaxContainer'
 import { Heart, Sparkles, Users } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 
@@ -11,7 +12,7 @@ export function IntroSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <ScrollReveal>
+        <ScrollReveal threshold={0.1}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -20,9 +21,15 @@ export function IntroSection() {
               className="inline-block mb-6"
             >
               <div className="flex items-center justify-center gap-4 mb-6">
-                <Heart className={`w-8 h-8 animate-pulse ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} fill="currentColor" />
-                <Heart className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} fill="currentColor" />
-                <Heart className={`w-4 h-4 ${isLight ? 'text-[#b8bec7]' : 'text-[#FBCFE8]'}`} fill="currentColor" />
+                <ParallaxContainer speed={0.3} direction="up">
+                  <Heart className={`w-8 h-8 animate-pulse ${isLight ? 'text-[#8b8fa3]' : 'text-[#A5B4FC]'}`} fill="currentColor" />
+                </ParallaxContainer>
+                <ParallaxContainer speed={0.5} direction="up">
+                  <Heart className={`w-6 h-6 ${isLight ? 'text-[#a0a4b8]' : 'text-[#C4B5FD]'}`} fill="currentColor" />
+                </ParallaxContainer>
+                <ParallaxContainer speed={0.8} direction="up">
+                  <Heart className={`w-4 h-4 ${isLight ? 'text-[#b8bec7]' : 'text-[#FBCFE8]'}`} fill="currentColor" />
+                </ParallaxContainer>
               </div>
             </motion.div>
 

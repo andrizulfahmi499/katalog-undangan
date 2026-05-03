@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
+import { ScrollReveal } from './ScrollReveal'
+import { StaggerContainer } from './animations/StaggerContainer'
 
 const faqs = [
   {
@@ -35,29 +37,39 @@ export function FAQSection() {
   return (
     <section id="faq" className="py-24 px-6 md:px-12 relative overflow-hidden">
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-black mb-4 tracking-[0.2em] uppercase ${
-            isLight ? 'text-[#4b5563]' : 'text-white'
-          }`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
-            FAQ
-          </h2>
-          <p className={`max-w-2xl mx-auto tracking-wide ${
-            isLight ? 'text-gray-600' : 'text-white/60'
-          }`} style={{ fontFamily: "'Arapey', serif" }}>
-            Pertanyaan yang sering ditanyakan mengenai layanan undangan digital kami.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-16">
+            <h2 className={`text-4xl md:text-5xl font-black mb-4 tracking-[0.2em] uppercase ${
+              isLight ? 'text-[#4b5563]' : 'text-white'
+            }`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+              FAQ
+            </h2>
+            <p className={`max-w-2xl mx-auto tracking-wide ${
+              isLight ? 'text-gray-600' : 'text-white/60'
+            }`} style={{ fontFamily: "'Arapey', serif" }}>
+              Pertanyaan yang sering ditanyakan mengenai layanan undangan digital kami.
+            </p>
+          </div>
+        </ScrollReveal>
 
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div 
-              key={index}
-              className={`rounded-2xl p-0.5 overflow-hidden transition-all duration-300 ${
-                isLight 
-                  ? 'bg-[#e0e5ec] shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)]' 
-                  : 'bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15'
-              }`}
-            >
+        <StaggerContainer staggerDelay={80} className="space-y-4">
+          {faqs.map((faq, index) => {
+            // Child variant for stagger animation
+            const childVariant = {
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 }
+            }
+
+            return (
+              <motion.div
+                key={index}
+                variants={childVariant}
+                className={`rounded-2xl p-0.5 overflow-hidden transition-all duration-300 ${
+                  isLight 
+                    ? 'bg-[#e0e5ec] shadow-[9px_9px_16px_rgb(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)]' 
+                    : 'bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15'
+                }`}
+              >
               <button
                 onClick={() => setActiveIndex(activeIndex === index ? null : index)}
                 className="w-full text-left px-6 py-5 flex items-center justify-between group transition-all"
@@ -91,9 +103,10 @@ export function FAQSection() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          ))}
-        </div>
+            </motion.div>
+            )
+          })}
+        </StaggerContainer>
       </div>
     </section>
   )

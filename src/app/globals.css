@@ -281,3 +281,12 @@
 .theme-light {
   background-color: var(--neu-bg) !important;
 }
+
+/* ===== Accessibility: Respect prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .animate-accordion-down,
+  .animate-accordion-up {
+    animation: none;
+    transition: none;
+  }
+}

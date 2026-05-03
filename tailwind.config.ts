@@ -70,6 +70,8 @@ const config: Config = {
                         'float-2': 'float2 10s ease-in-out infinite',
                         'float-3': 'float3 12s ease-in-out infinite',
                         'float-4': 'float4 9s ease-in-out infinite',
+                        'accordion-down': 'accordion-down 0.3s ease-out',
+                        'accordion-up': 'accordion-up 0.3s ease-out',
                 },
                 keyframes: {
                         gradientShift: {
@@ -135,6 +137,14 @@ const config: Config = {
                                 '66%': {
                                         transform: 'translate(40px, 10px) scale(1.05)',
                                 },
+                        },
+                        'accordion-down': {
+                                from: { height: '0' },
+                                to: { height: 'var(--radix-accordion-content-height)' },
+                        },
+                        'accordion-up': {
+                                from: { height: 'var(--radix-accordion-content-height)' },
+                                to: { height: '0' },
                         },
                 },
         }

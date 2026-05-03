@@ -12,6 +12,7 @@ import { OrderFormSection } from '@/components/landing/OrderFormSection'
 import { Footer } from '@/components/landing/Footer'
 import { MagicFloatingNav } from '@/components/landing/MagicFloatingNav'
 import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
+import { ScrollProgressIndicator } from '@/components/landing/animations/ScrollProgressIndicator'
 
 function StarryBackground() {
   const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
@@ -60,6 +61,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative overflow-hidden pb-20 md:pb-0">
+      <ScrollProgressIndicator position="top" thickness={3} />
       <Sidebar />
       {/* === CSS Keyframes === */}
       <style jsx global>{`

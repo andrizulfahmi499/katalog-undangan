@@ -79,7 +79,7 @@ export function Sidebar() {
         </div>
 
         {/* MENU ITEMS */}
-        <div className={`flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-1 ${isOpen ? 'block' : 'hidden'}`}>
+        <div className={`flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-0.5 ${isOpen ? 'block' : 'hidden'}`}>
           {menuItems.map(item => (
             <a
               key={item.id}
@@ -88,10 +88,10 @@ export function Sidebar() {
                 setIsOpen(false)
                 handleScroll(e, item.href)
               }}
-              className="flex items-center gap-4 px-4 py-2.5 rounded-2xl text-white/70 hover:text-white hover:bg-white/10 transition-colors group"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 active:bg-white/15 transition-colors group"
             >
-              <span className="text-white/50 group-hover:text-[#a8d5c4] transition-colors">{item.icon}</span>
-              <span className="font-bold text-[13px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{item.label}</span>
+              <span className="text-white/50 group-hover:text-[#a8d5c4] group-active:text-[#a8d5c4] transition-colors">{item.icon}</span>
+              <span className="font-bold text-[12px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{item.label}</span>
             </a>
           ))}
         </div>

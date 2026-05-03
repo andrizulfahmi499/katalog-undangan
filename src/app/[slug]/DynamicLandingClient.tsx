@@ -14,6 +14,7 @@ import { FloatingNav } from '@/components/landing/FloatingNav'
 import { PhoneShowcase } from '@/components/landing/PhoneShowcase'
 import { CustomLandingContext } from '@/context/CustomLandingContext'
 import { DearMyLoveClone } from '@/components/landing/DearMyLoveClone'
+import { CleanAppLanding } from '@/components/landing/cleanapp/CleanAppLanding'
 
 function StarryBackground() {
   const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
@@ -51,6 +52,16 @@ function StarryBackground() {
 
 export default function DynamicLandingClient({ config, member }: { config: any; member: any }) {
   const { isLight } = useTheme()
+
+  // Check for CleanApp theme
+  if (member.landingPageTheme === 'cleanapp') {
+    // Pass initialConfig directly for faster loading (SSR data)
+    return <CleanAppLanding
+      slug={member.customSlug}
+      memberId={member.id}
+      initialConfig={config}
+    />
+  }
 
   // If member has explicitly chosen "neumorphism" OR if no theme is chosen but the global theme is "light" (legacy fallback)
   const isNeumorphism = member.landingPageTheme === 'neumorphism' || (!member.landingPageTheme && isLight)

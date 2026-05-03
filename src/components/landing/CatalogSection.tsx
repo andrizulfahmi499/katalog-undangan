@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
+import { StaggerContainer } from './animations/StaggerContainer'
 import { Sparkles, Grid, TrendingUp, Clock, ArrowRight, ChevronDown, Eye } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 
@@ -250,20 +251,26 @@ export function CatalogSection() {
         </ScrollReveal>
 
         {/* Catalog Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {isLoading ? (
-            // Loading Skeleton
-            Array.from({ length: 8 }).map((_, index) => (
-              <ThemeCardSkeleton key={index} isLight={isLight} />
-            ))
-          ) : (
-            // Theme Cards
-            themes.map((theme, index) => (
-              <ScrollReveal key={theme.id} delay={index * 0.05}>
+        <StaggerContainer staggerDelay={100} threshold={0.1} once={true}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {isLoading ? (
+              // Loading Skeleton
+              Array.from({ length: 8 }).map((_, index) => (
+                <ThemeCardSkeleton key={index} isLight={isLight} />
+              ))
+            ) : (
+              // Theme Cards
+              themes.map((theme) => (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  key={theme.id}
+                  variants={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: { opacity: 1, y: 0 }
+                  }}
+                  whileHover={{ 
+                    scale: 1.03,
+                    transition: { duration: 0.2, ease: 'easeOut' }
+                  }}
                   className="group"
                 >
                   {/* Card */}
@@ -331,10 +338,10 @@ export function CatalogSection() {
                     </div>
                   </div>
                 </motion.div>
-              </ScrollReveal>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        </StaggerContainer>
 
         {/* Empty State */}
         {!isLoading && themes.length === 0 && (

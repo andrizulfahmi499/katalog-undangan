@@ -1,6 +1,13 @@
 'use client'
 
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
+
+// Deterministic pseudo-random based on seed — no Math.random() in render
+function seededRandom(seed: number) {
+  const x = Math.sin(seed + 1) * 10000
+  return x - Math.floor(x)
+}
 
 // ─── Rose SVG path (elegant rose outline for drawing animation) ──────────────
 const ROSE_PATH = "M1431 5750c0,-651 0,-1302 0,-1954 -205,-447 -746,-551 -950,-512 -613,115 -279,-290 49,302 269,394 572,437 901,210 0,-300 0,-600 0,-900 226,-16 504,-84 555,-264 166,-514 319,-435 246,-367 -67,62 -192,66 -277,71 -175,2 -284,8 -435,75 -368,163 -72,305 -97,-131 -8,-140 -56,-244 -99,-348 -218,-530 324,-205 -238,-118 -392,60 -855,28 -1003,-404 -126,-386 130,-448 437,-302 233,111 471,263 708,358 114,46 239,82 362,50 297,-90 466,-207 464,-541 -1,-281 -201,-121 -337,-48 -282,150 -659,293 -940,63 -158,-133 -172,-263 -153,-454 9,-86 23,-170 -66,-215 -113,-38 -186,56 -232,146 -53,104 -75,280 -21,388 113,191 455,209 649,279 150,53 235,205 337,237 149,41 180,-159 34,-211 -259,-86 -557,-125 -647,-426 -82,-293 489,-36 599,45 211,163 366,434 657,442 173,-18 365,-211 414,-373 46,-155 -48,-191 -154,-301 -150,-153 -35,-471 -484,-313 -223,78 -397,349 -147,420 112,32 227,-5 256,-128 15,-63 -2,-120 -32,-175 -170,-271 -457,-314 -753,-291 -171,14 -320,172 -252,348 128,194 506,438 738,333 99,-52 152,-141 84,-243 -77,-116 -304,-161 -381,-33 -95,176 255,491 370,596 90,82 160,145 239,244 203,260 45,279 29,252 -22,-37 41,-89 65,-107 113,-77 272,-120 335,-251 34,-75 119,-353 242,-259 83,63 28,204 -21,271 -114,154 -312,266 -451,406 -125,128 -177,160 -346,216 -486,155 -767,-103 -1066,-439 -111,-125 -258,-304 -423,-354"
@@ -10,6 +17,16 @@ const LEAF_PATH_1 = "M20 50 Q30 20 50 10 Q40 30 45 50 Q35 40 20 50 Z"
 const LEAF_PATH_2 = "M80 50 Q70 20 50 10 Q60 30 55 50 Q65 40 80 50 Z"
 
 export function SplashScreen() {
+  // Pre-generate particles with deterministic values — no hydration mismatch
+  const particles = useMemo(() => 
+    Array.from({ length: 6 }, (_, i) => ({
+      width: 2 + seededRandom(i * 5 + 1) * 3,
+      height: 2 + seededRandom(i * 5 + 2) * 3,
+      left: 15 + seededRandom(i * 5 + 3) * 70,
+      top: 20 + seededRandom(i * 5 + 4) * 60,
+      duration: 2.5 + seededRandom(i * 5 + 5) * 1.5,
+    }))
+  , [])
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -172,16 +189,16 @@ export function SplashScreen() {
 
       {/* Ambient floating particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
+        {particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
             style={{
-              width: `${2 + Math.random() * 3}px`,
-              height: `${2 + Math.random() * 3}px`,
+              width: `${p.width}px`,
+              height: `${p.height}px`,
               backgroundColor: 'rgba(237,237,237,0.08)',
-              left: `${15 + Math.random() * 70}%`,
-              top: `${20 + Math.random() * 60}%`,
+              left: `${p.left}%`,
+              top: `${p.top}%`,
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ 
@@ -189,7 +206,7 @@ export function SplashScreen() {
               y: [20, -30, -60],
             }}
             transition={{
-              duration: 2.5 + Math.random() * 1.5,
+              duration: p.duration,
               delay: 0.3 + i * 0.2,
               ease: 'easeOut',
             }}

@@ -24,13 +24,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
   // Use -1 as initial state so nothing is highlighted on first load per user request
   const [activeIndex, setActiveIndex] = useState(-1)
   const [showContactPopup, setShowContactPopup] = useState(false)
-  const [showLoginPopup, setShowLoginPopup] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
 
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', icon: <Home className="w-6 h-6" strokeWidth={2.5} />, href: '#home' },
     { id: 'contact', label: 'Contact', icon: <MessageCircle className="w-6 h-6" strokeWidth={2.5} />, href: '#contact', isContact: true },
-    { id: 'login', label: 'Login', icon: <User className="w-6 h-6" strokeWidth={2.5} />, href: '/login' },
     { id: 'catalog', label: 'Catalog', icon: <Grid3X3 className="w-6 h-6" strokeWidth={2.5} />, href: '#catalog' },
     { id: 'pricing', label: 'Pricing', icon: <Tag className="w-6 h-6" strokeWidth={2.5} />, href: '#pricing' },
   ]
@@ -45,21 +43,11 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
     if (item.id === 'contact') {
       e.preventDefault()
       setShowContactPopup(!showContactPopup)
-      setShowLoginPopup(false)
-      setActiveIndex(index)
-      return
-    }
-
-    if (item.id === 'login') {
-      e.preventDefault()
-      setShowLoginPopup(!showLoginPopup)
-      setShowContactPopup(false)
       setActiveIndex(index)
       return
     }
 
     setShowContactPopup(false)
-    setShowLoginPopup(false)
     setActiveIndex(index)
 
     if (item.href.startsWith('#')) {
@@ -85,7 +73,7 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              className="absolute bottom-[90px] left-[30%] -translate-x-1/2 flex flex-col items-center pointer-events-auto z-[110]"
+              className="absolute bottom-[90px] left-[25%] -translate-x-1/2 flex flex-col items-center pointer-events-auto z-[110]"
             >
               <div className={`flex flex-col gap-1 p-2 rounded-2xl shadow-2xl border ${
                 isLight ? 'bg-white border-gray-100' : 'bg-[#1a2f26] border-white/10'
@@ -112,63 +100,6 @@ export function MagicFloatingNav({ activeSection: initialSection = 'home', whats
                   </div>
                   <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Instagram</span>
                 </a>
-              </div>
-              {/* Tooltip Arrow */}
-              <div className={`w-4 h-4 rotate-45 -mt-2.5 border-r border-b ${
-                isLight ? 'bg-white border-gray-100' : 'bg-[#1a2f26] border-white/10'
-              }`} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Login Selection Popup */}
-        <AnimatePresence>
-          {showLoginPopup && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              className="absolute bottom-[90px] left-[50%] -translate-x-1/2 flex flex-col items-center pointer-events-auto z-[110]"
-            >
-              <div className={`flex flex-col gap-1 p-2 rounded-2xl shadow-2xl border ${
-                isLight ? 'bg-white border-gray-100' : 'bg-[#1a2f26] border-white/10'
-              }`}>
-                <Link
-                  href="/login?role=member"
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/10 transition-colors group"
-                  onClick={() => setShowLoginPopup(false)}
-                >
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg group-hover:scale-110 transition-transform">
-                    {/* @ts-ignore */}
-                    <lord-icon
-                        src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="loop"
-                        delay="2000"
-                        state="morph-group"
-                        colors="primary:#66d7ee,secondary:#f4dc9c"
-                        style={{ width: '40px', height: '40px' }}>
-                    </lord-icon>
-                  </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Member</span>
-                </Link>
-                <Link
-                  href="/login?role=admin"
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-500/10 transition-colors group"
-                  onClick={() => setShowLoginPopup(false)}
-                >
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg group-hover:scale-110 transition-transform">
-                    {/* @ts-ignore */}
-                    <lord-icon
-                        src="https://cdn.lordicon.com/hroklero.json"
-                        trigger="loop"
-                        delay="2000"
-                        state="hover-looking-around"
-                        colors="primary:#66d7ee,secondary:#f4dc9c"
-                        style={{ width: '40px', height: '40px' }}>
-                    </lord-icon>
-                  </div>
-                  <span className={`text-sm font-semibold tracking-wide ${isLight ? 'text-gray-700' : 'text-white'}`}>Admin</span>
-                </Link>
               </div>
               {/* Tooltip Arrow */}
               <div className={`w-4 h-4 rotate-45 -mt-2.5 border-r border-b ${

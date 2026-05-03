@@ -1,7 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { ScrollReveal } from './ScrollReveal'
+import { StaggerContainer } from './animations/StaggerContainer'
+import { Card3DRotation } from './animations/Card3DRotation'
 import { Check, Star, Crown, Sparkles } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 import { useCustomLanding } from '@/context/CustomLandingContext'
@@ -121,8 +124,18 @@ export function PricingSection() {
   const { isLight } = useTheme()
   const landingContext = useCustomLanding ? useCustomLanding() : null
   const customConfig = landingContext?.config
+  const headerRef = useRef<HTMLDivElement>(null)
 
   const themeColors = getThemeColors(customConfig?.themeColor)
+  
+  // Scale-on-scroll effect for section header
+  const { scrollYProgress } = useScroll({
+    target: headerRef,
+    offset: ['start end', 'end start']
+  })
+  
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.2, 0.9])
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.5])
 
   const displayPlans = customConfig?.pricingPackages && customConfig.pricingPackages.length > 0
     ? customConfig.pricingPackages
@@ -148,7 +161,11 @@ export function PricingSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <ScrollReveal>
-          <div className="text-center mb-20">
+          <motion.div 
+            ref={headerRef}
+            style={{ scale, opacity }}
+            className="text-center mb-20"
+          >
             <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 ${
               isLight ? 'text-[#2d3748]' : 'text-white'
             }`}>
@@ -159,26 +176,20 @@ export function PricingSection() {
             }`}>
               Harga terjangkau dengan fitur lengkap untuk pernikahan impian Anda
             </p>
-          </div>
+          </motion.div>
         </ScrollReveal>
 
         {/* Pricing Cards */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${displayPlans.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'} gap-8`}>
-          {displayPlans.map((plan: any, index: number) => (
-            <ScrollReveal key={plan.name} delay={index * 0.1}>
-              <motion.div
-                whileHover={{ y: -12, scale: plan.highlighted ? 1.03 : 1.02, rotate: index % 2 === 0 ? 1 : -1 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative rounded-3xl p-8 transition-all duration-500 ${
-                  isLight
-                    ? plan.highlighted
-                      ? 'neu-raised-lg border-2 border-[#b8bec7]'
-                      : 'neu-raised hover:shadow-[10px_10px_20px_#b8bec7,-10px_-10px_20px_#ffffff]'
-                    : plan.highlighted
-                      ? `${plan.color} shadow-[0_20px_60px_rgba(165,180,252,0.25)] border border-[#A5B4FC]/50`
-                      : `bg-white/10 backdrop-blur-xl hover:bg-white/15 hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15`
-                }`}
-              >
+        <StaggerContainer staggerDelay={100} className={`grid grid-cols-1 md:grid-cols-2 ${displayPlans.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'} gap-8`}>
+          {displayPlans.map((plan: any, index: number) => {
+            // Child variant for stagger animation
+            const childVariant = {
+              initial: { opacity: 0, y: 30, scale: 0.95 },
+              animate: { opacity: 1, y: 0, scale: 1 }
+            }
+
+            const cardContent = (
+              <>
                 {/* Popular Badge */}
                 {plan.highlighted && (
                   <motion.div
@@ -244,7 +255,7 @@ export function PricingSection() {
 
                 {/* Features List */}
                 <ul className="space-y-4 mb-10">
-                  {plan.features.map((feature, featureIndex) => (
+                  {plan.features.map((feature: string, featureIndex: number) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check
                         className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
@@ -278,10 +289,45 @@ export function PricingSection() {
                 >
                   {plan.highlighted ? 'Pilih Paket Ini' : 'Mulai Sekarang'}
                 </motion.button>
+              </>
+            )
+
+            return (
+              <motion.div
+                key={plan.name}
+                variants={childVariant}
+                whileHover={{ y: -12, scale: plan.highlighted ? 1.03 : 1.02, rotate: index % 2 === 0 ? 1 : -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 350,
+                  damping: 25
+                }}
+                className={`relative rounded-3xl p-8 transition-all duration-500 ${
+                  isLight
+                    ? plan.highlighted
+                      ? 'neu-raised-lg border-2 border-[#b8bec7]'
+                      : 'neu-raised hover:shadow-[10px_10px_20px_#b8bec7,-10px_-10px_20px_#ffffff]'
+                    : plan.highlighted
+                      ? `${plan.color} shadow-[0_20px_60px_rgba(165,180,252,0.25)] border border-[#A5B4FC]/50`
+                      : `bg-white/10 backdrop-blur-xl hover:bg-white/15 hover:shadow-[0_16px_48px_rgba(165,180,252,0.15)] shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/15`
+                }`}
+              >
+                {plan.highlighted ? (
+                  <Card3DRotation
+                    rotationDuration={12}
+                    enableTilt={true}
+                    className="w-full h-full"
+                  >
+                    {cardContent}
+                  </Card3DRotation>
+                ) : (
+                  cardContent
+                )}
               </motion.div>
-            </ScrollReveal>
-          ))}
-        </div>
+            )
+          })}
+        </StaggerContainer>
 
         {/* Additional Info */}
         <ScrollReveal delay={0.5}>

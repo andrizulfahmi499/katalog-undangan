@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Heart, Sparkles, MessageCircle, Sun, Moon } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 import { useCustomLanding } from '@/context/CustomLandingContext'
+import { useScrollSectionTracking } from '@/lib/hooks'
 
 interface NavItem {
   name: string
@@ -41,6 +42,16 @@ export function Navbar() {
   const customConfig = landingContext?.config
   const customMember = landingContext?.member
   const themeColors = getThemeColors(customConfig?.themeColor)
+
+  // Scroll section tracking
+  const sections = [
+    { id: 'home', start: 0, end: 0.15 },
+    { id: 'catalog', start: 0.15, end: 0.35 },
+    { id: 'features', start: 0.35, end: 0.55 },
+    { id: 'pricing', start: 0.55, end: 0.75 },
+    { id: 'contact', start: 0.75, end: 1 }
+  ]
+  const activeSection = useScrollSectionTracking({ sections })
 
   useEffect(() => {
     const handleScroll = () => {
@@ -208,34 +219,42 @@ export function Navbar() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="hidden lg:flex items-center gap-1"
             >
-              {navItems.slice(0, 2).map((item, index) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  custom={index}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 relative group ${
-                    isLight
-                      ? 'text-[#6b7280] hover:text-[#2d3748]'
-                      : 'text-purple-200/80 hover:text-white'
-                  }`}
-                >
-                  {item.name}
-                  {/* Animated Underline */}
-                  <motion.div
-                    className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
+              {navItems.slice(0, 2).map((item, index) => {
+                const isActive = activeSection === item.href.replace('#', '')
+                return (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    custom={index}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 relative group ${
                       isLight
-                        ? 'bg-[#8b8fa3]'
-                        : `bg-gradient-to-r ${themeColors.highlight}`
+                        ? isActive
+                          ? 'text-[#2d3748] font-bold'
+                          : 'text-[#6b7280] hover:text-[#2d3748]'
+                        : isActive
+                          ? 'text-white font-bold'
+                          : 'text-purple-200/80 hover:text-white'
                     }`}
-                    initial={{ scaleX: 0, originX: 0.5 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.a>
-              ))}
+                  >
+                    {item.name}
+                    {/* Animated Underline */}
+                    <motion.div
+                      className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
+                        isLight
+                          ? 'bg-[#8b8fa3]'
+                          : `bg-gradient-to-r ${themeColors.highlight}`
+                      }`}
+                      initial={{ scaleX: isActive ? 1 : 0, originX: 0.5 }}
+                      animate={{ scaleX: isActive ? 1 : 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </motion.a>
+                )
+              })}
 
               {/* Centered Order Button with Vibrating Animation */}
               <motion.button
@@ -266,34 +285,42 @@ export function Navbar() {
                 Buat Undangan
               </motion.button>
 
-              {navItems.slice(2).map((item, index) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  custom={index + 2}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 relative group ${
-                    isLight
-                      ? 'text-[#6b7280] hover:text-[#2d3748]'
-                      : 'text-purple-200/80 hover:text-white'
-                  }`}
-                >
-                  {item.name}
-                  {/* Animated Underline */}
-                  <motion.div
-                    className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
+              {navItems.slice(2).map((item, index) => {
+                const isActive = activeSection === item.href.replace('#', '')
+                return (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    custom={index + 2}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 relative group ${
                       isLight
-                        ? 'bg-[#8b8fa3]'
-                        : `bg-gradient-to-r ${themeColors.highlight}`
+                        ? isActive
+                          ? 'text-[#2d3748] font-bold'
+                          : 'text-[#6b7280] hover:text-[#2d3748]'
+                        : isActive
+                          ? 'text-white font-bold'
+                          : 'text-purple-200/80 hover:text-white'
                     }`}
-                    initial={{ scaleX: 0, originX: 0.5 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.a>
-              ))}
+                  >
+                    {item.name}
+                    {/* Animated Underline */}
+                    <motion.div
+                      className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${
+                        isLight
+                          ? 'bg-[#8b8fa3]'
+                          : `bg-gradient-to-r ${themeColors.highlight}`
+                      }`}
+                      initial={{ scaleX: isActive ? 1 : 0, originX: 0.5 }}
+                      animate={{ scaleX: isActive ? 1 : 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </motion.a>
+                )
+              })}
 
               {/* Theme Toggle */}
               <motion.button

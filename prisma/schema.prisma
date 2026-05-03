@@ -29,6 +29,13 @@ model Admin {
   @@map("Admin")
 }
 
+// Enum for landing page theme options
+enum LandingPageTheme {
+  default
+  neumorphism
+  cleanapp
+}
+
 // Members who can send invitations
 model Member {
   id                 String                @id @default(cuid())
@@ -39,7 +46,7 @@ model Member {
   creditPoints       Int                   @default(0)
   status             String                @default("active") // 'active' | 'inactive'
   landingPageEnabled Boolean               @default(false)
-  landingPageTheme   String                @default("default")
+  landingPageTheme   LandingPageTheme      @default(default)
   customSlug         String?               @unique
   landingPageConfig  Json?
   createdAt          DateTime              @default(now())
@@ -49,6 +56,7 @@ model Member {
   invitationMessages   InvitationMessages[]
   invitationSends      InvitationSends[]
   creditTransactions   CreditTransaction[]
+  orders               Order[]
 
   @@map("Member")
 }
@@ -142,6 +150,26 @@ model CreditTransaction {
   @@index([adminId])
   @@index([invitationId])
   @@map("CreditTransaction")
+}
+
+// Order inquiries from landing page
+model Order {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String
+  eventType  String   // 'Pernikahan' | 'Ultah' | 'Lainnya'
+  message    String?
+  status     String   @default("new") // 'new' | 'contacted' | 'converted' | 'cancelled'
+  memberId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  member     Member?  @relation(fields: [memberId], references: [id])
+
+  @@index([memberId])
+  @@index([status])
+  @@map("Order")
 }
 
 // Global settings for the portal (like landing page theme)

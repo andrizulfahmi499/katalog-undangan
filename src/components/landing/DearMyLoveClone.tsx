@@ -10,6 +10,7 @@ import { MagicFloatingNav } from './MagicFloatingNav'
 import { FAQSection } from './FAQSection'
 import { Sidebar } from './Sidebar'
 import { SplashScreen } from './SplashScreen'
+import Product3DModel from './Product3DModel'
 // ─── Rose SVG path (exact from dearmylove.org) ─────────────────────────────
 const ROSE_PATH = "M1431 5750c0,-651 0,-1302 0,-1954 -205,-447 -746,-551 -950,-512 -613,115 -279,-290 49,302 269,394 572,437 901,210 0,-300 0,-600 0,-900 226,-16 504,-84 555,-264 166,-514 319,-435 246,-367 -67,62 -192,66 -277,71 -175,2 -284,8 -435,75 -368,163 -72,305 -97,-131 -8,-140 -56,-244 -99,-348 -218,-530 324,-205 -238,-118 -392,60 -855,28 -1003,-404 -126,-386 130,-448 437,-302 233,111 471,263 708,358 114,46 239,82 362,50 297,-90 466,-207 464,-541 -1,-281 -201,-121 -337,-48 -282,150 -659,293 -940,63 -158,-133 -172,-263 -153,-454 9,-86 23,-170 -66,-215 -113,-38 -186,56 -232,146 -53,104 -75,280 -21,388 113,191 455,209 649,279 150,53 235,205 337,237 149,41 180,-159 34,-211 -259,-86 -557,-125 -647,-426 -82,-293 489,-36 599,45 211,163 366,434 657,442 173,-18 365,-211 414,-373 46,-155 -48,-191 -154,-301 -150,-153 -35,-471 -484,-313 -223,78 -397,349 -147,420 112,32 227,-5 256,-128 15,-63 -2,-120 -32,-175 -170,-271 -457,-314 -753,-291 -171,14 -320,172 -252,348 128,194 506,438 738,333 99,-52 152,-141 84,-243 -77,-116 -304,-161 -381,-33 -95,176 255,491 370,596 90,82 160,145 239,244 203,260 45,279 29,252 -22,-37 41,-89 65,-107 113,-77 272,-120 335,-251 34,-75 119,-353 242,-259 83,63 28,204 -21,271 -114,154 -312,266 -451,406 -125,128 -177,160 -346,216 -486,155 -767,-103 -1066,-439 -111,-125 -258,-304 -423,-354"
 
@@ -52,13 +53,13 @@ const DEFAULT_PACKAGES = [
 // ─── Section Reveal (whileInView) ─────────────────────────────────────────────
 function Reveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const inView = useInView(ref, { once: true, margin: '-100px' })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 60 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay }}
       className={className}
     >
       {children}
@@ -67,17 +68,17 @@ function Reveal({ children, delay = 0, className = '' }: { children: React.React
 }
 
 // ─── Parallax Image wrapper ────────────────────────────────────────────────────
-function ParallaxImg({ src, alt, speed = 0.12 }: { src: string; alt: string; speed?: number }) {
+function ParallaxImg({ src, alt, speed = 0.15 }: { src: string; alt: string; speed?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [`${speed * -80}px`, `${speed * 80}px`])
+  const y = useTransform(scrollYProgress, [0, 1], [`${speed * -100}px`, `${speed * 100}px`])
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden rounded-2xl">
       <motion.img
         src={src}
         alt={alt}
         style={{ y }}
-        className="w-full h-[120%] -top-[10%] absolute object-cover brightness-90"
+        className="w-full h-[130%] -top-[15%] absolute object-cover brightness-90"
       />
     </div>
   )
@@ -147,26 +148,37 @@ function PricingCard({ pkg, index }: { pkg: any; index: number }) {
   const features = typeof pkg.features === 'string' ? pkg.features.split('\n').filter(Boolean) : (pkg.features || [])
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -8, scale: 1.02 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.9, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -12, scale: 1.03, transition: { duration: 0.3 } }}
       className={`relative flex flex-col rounded-3xl p-7 transition-all duration-300 ${
         isHighlighted
           ? 'bg-[#ededed] shadow-2xl shadow-black/40'
-          : 'bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15'
+          : 'bg-white/10 backdrop-blur-md border border-white/15 hover:bg-white/15 hover:shadow-xl hover:shadow-black/30'
       }`}
     >
       {isHighlighted && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#172a26] text-[#ededed] text-[10px] font-bold px-4 py-1 rounded-full tracking-[0.2em] uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: index * 0.15 + 0.3, duration: 0.5 }}
+          className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#172a26] text-[#ededed] text-[10px] font-bold px-4 py-1 rounded-full tracking-[0.2em] uppercase" 
+          style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+        >
           ✦ Populer
-        </div>
+        </motion.div>
       )}
       <div className="mb-5 text-center">
-        <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-3 ${isHighlighted ? 'bg-[#172a26] text-white' : 'bg-white/20 text-white'}`}>
+        <motion.div 
+          initial={{ scale: 0, rotate: -180 }}
+          whileInView={{ scale: 1, rotate: 0 }}
+          transition={{ delay: index * 0.15 + 0.2, duration: 0.6, type: "spring" }}
+          className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-3 ${isHighlighted ? 'bg-[#172a26] text-white' : 'bg-white/20 text-white'}`}
+        >
           {index === 0 ? <Sparkles className="w-5 h-5" /> : index === 1 ? <Crown className="w-5 h-5" /> : <Star className="w-5 h-5" />}
-        </div>
+        </motion.div>
         <h3 className={`text-xl font-bold tracking-widest uppercase ${isHighlighted ? 'text-[#172a26]' : 'text-white'}`} style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{pkg.name}</h3>
       </div>
       <div className="text-center mb-6">
@@ -175,15 +187,21 @@ function PricingCard({ pkg, index }: { pkg: any; index: number }) {
       </div>
       <ul className="space-y-2.5 flex-1 mb-7">
         {features.map((feat: string, i: number) => (
-          <li key={i} className="flex items-start gap-2">
+          <motion.li 
+            key={i} 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.15 + 0.1 * i, duration: 0.5 }}
+            className="flex items-start gap-2"
+          >
             <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isHighlighted ? 'text-[#172a26]' : 'text-[#ededed]/80'}`} />
             <span className={`text-sm ${isHighlighted ? 'text-[#172a26]/80' : 'text-white/80'}`} style={{ fontFamily: "'Lato', sans-serif" }}>{feat}</span>
-          </li>
+          </motion.li>
         ))}
       </ul>
       <motion.a
         href="#pesan"
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.05, y: -2 }}
         whileTap={{ scale: 0.97 }}
         className={`w-full py-3 rounded-full text-xs font-bold text-center tracking-widest uppercase transition-all ${
           isHighlighted ? 'bg-[#172a26] text-white hover:bg-[#223e36]' : 'bg-white/15 text-white border border-white/30 hover:bg-white/25'
@@ -231,9 +249,19 @@ export function DearMyLoveClone() {
 
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="relative min-h-screen"
       style={{ fontFamily: "'Arapey', Georgia, serif", background: 'linear-gradient(160deg, #172a26 0%, #1a2f2a 60%, #1c352e 100%)' }}
     >
+      {/* Global styles to prevent overflow cutting */}
+      <style jsx global>{`
+        body {
+          overflow-x: hidden;
+        }
+        html {
+          overflow-x: hidden;
+        }
+      `}</style>
+      
       <Sidebar />
       {/* ── Preloader ─────────────────────────────────────────────── */}
       <AnimatePresence>
@@ -250,17 +278,17 @@ export function DearMyLoveClone() {
       </div>
 
       {/* ── Parallax Botanical Background ─────────────────────────── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div style={{ y: floralLeftY }} className="absolute -left-16 lg:left-0 top-0 opacity-[0.2] w-[300px] h-[700px]">
+      <div className="fixed inset-0 pointer-events-none z-0 px-2">
+        <motion.div style={{ y: floralLeftY }} className="absolute left-2 lg:left-8 top-0 opacity-[0.2] w-[260px] lg:w-[300px] h-[700px]">
           <img src="/svg/dearmylove.org-2.svg" className="w-full h-full object-contain breathing-1" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralRightY }} className="absolute -right-16 lg:right-0 top-0 opacity-[0.2] w-[300px] h-[700px]">
+        <motion.div style={{ y: floralRightY }} className="absolute right-2 lg:right-8 top-0 opacity-[0.2] w-[260px] lg:w-[300px] h-[700px]">
           <img src="/svg/dearmylove.org-3.svg" className="w-full h-full object-contain breathing-2 transform scale-x-[-1]" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralLeftY }} className="absolute -left-12 lg:left-10 bottom-0 opacity-[0.15] w-[220px] h-[500px]">
+        <motion.div style={{ y: floralLeftY }} className="absolute left-2 lg:left-10 bottom-0 opacity-[0.15] w-[180px] lg:w-[220px] h-[500px]">
           <img src="/svg/dearmylove.org-4.svg" className="w-full h-full object-contain breathing-3" alt="" />
         </motion.div>
-        <motion.div style={{ y: floralRightY }} className="absolute -right-12 lg:right-10 bottom-0 opacity-[0.15] w-[220px] h-[500px]">
+        <motion.div style={{ y: floralRightY }} className="absolute right-2 lg:right-10 bottom-0 opacity-[0.15] w-[180px] lg:w-[220px] h-[500px]">
           <img src="/svg/dearmylove.org-2.svg" className="w-full h-full object-contain breathing-4 transform scale-x-[-1]" alt="" />
         </motion.div>
       </div>
@@ -295,6 +323,14 @@ export function DearMyLoveClone() {
               <p style={{ fontFamily: "'Lato', sans-serif" }} className="text-xs tracking-widest">scroll down</p>
               <svg viewBox="0 0 24 24" className="w-4 fill-white/35 -rotate-90"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
             </div>
+          </Reveal>
+
+          {/* 3D Interactive Model */}
+          <Reveal delay={0.15}>
+            <Product3DModel
+              className="w-full max-w-xs md:max-w-sm mx-auto mt-4"
+              style={{ height: '320px' }}
+            />
           </Reveal>
         </section>
 
