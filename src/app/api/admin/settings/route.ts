@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    const setting = await prisma.globalSetting.findUnique({
+    const setting = await db.globalSetting.findUnique({
       where: { id: 'global' },
     })
 
@@ -36,7 +34,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const setting = await prisma.globalSetting.upsert({
+    const setting = await db.globalSetting.upsert({
       where: { id: 'global' },
       update: {
         landingPageTheme,

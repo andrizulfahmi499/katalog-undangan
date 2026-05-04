@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
 import { DEFAULT_CLEANAPP_CONFIG } from '@/lib/schemas/cleanapp-theme'
 
 export const dynamic = 'force-dynamic'
@@ -26,6 +25,9 @@ export async function GET(request: NextRequest) {
 
     // If slug or memberId is provided, fetch member-specific settings
     if (slug || memberId) {
+      // Dynamic import — Prisma hanya diinisialisasi saat benar-benar butuh database
+      const { db } = await import('@/lib/db')
+      
       const member = await db.member.findUnique({
         where: slug ? { customSlug: slug } : { id: memberId! },
         select: {
@@ -66,8 +68,8 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Fallback to global settings — return default theme without database query
-    // This prevents 500 errors and improves performance
+    // Fallback to global settings — return default theme tanpa query database
+    // Ini mencegah error 500 dan mempercepat loading halaman utama
     return NextResponse.json(
       { 
         success: true, 
@@ -75,16 +77,20 @@ export async function GET(request: NextRequest) {
       },
       {
         headers: {
-          // Allow browser to cache for 5 minutes
+          // Cache di browser selama 5 menit
           'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
         },
       }
     )
   } catch (error: any) {
     console.error('Error fetching settings:', error)
+    // Jika error, tetap return default agar halaman tidak blank
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch settings' },
-      { status: 500 }
+      { 
+        success: true, 
+        data: { landingPageTheme: 'light' } 
+      },
+      { status: 200 }
     )
   }
 }

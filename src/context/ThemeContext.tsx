@@ -21,22 +21,30 @@ async function fetchGlobalTheme(): Promise<ThemeMode> {
   if (cachedTheme !== null) return cachedTheme
   if (fetchPromise) return fetchPromise
 
-  fetchPromise = fetch('/api/public/settings', {
-    // Cache for 5 minutes at the HTTP level
-    next: { revalidate: 300 },
-  } as RequestInit)
-    .then(res => res.json())
-    .then(data => {
+  fetchPromise = new Promise<ThemeMode>(async (resolve) => {
+    try {
+      // AbortController dengan timeout 3 detik — jika API lambat, langsung pakai default
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 3000)
+
+      const res = await fetch('/api/public/settings', {
+        signal: controller.signal,
+        cache: 'force-cache',
+      })
+      clearTimeout(timeoutId)
+
+      const data = await res.json()
       const theme = (data.success && data.data?.landingPageTheme
         ? data.data.landingPageTheme
         : 'default') as ThemeMode
       cachedTheme = theme
-      return theme
-    })
-    .catch(() => {
-      fetchPromise = null // allow retry on error
-      return 'default' as ThemeMode
-    })
+      resolve(theme)
+    } catch {
+      // Timeout, network error, atau API gagal — pakai default
+      fetchPromise = null // allow retry on next navigation
+      resolve('default')
+    }
+  })
 
   return fetchPromise
 }
