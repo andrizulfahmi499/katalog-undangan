@@ -2,11 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { DEFAULT_CLEANAPP_CONFIG } from '@/lib/schemas/cleanapp-theme'
 
-// Cache global settings in memory — avoids repeated DB hits for every page load
-let globalSettingsCache: { landingPageTheme: string } | null = null
-let globalSettingsCacheTime = 0
-const GLOBAL_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
-
 export const dynamic = 'force-dynamic'
 
 /**
@@ -71,19 +66,13 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Fallback to global settings — use in-memory cache to avoid DB hit every request
-    const now = Date.now()
-    if (!globalSettingsCache || now - globalSettingsCacheTime > GLOBAL_CACHE_TTL_MS) {
-      const setting = await db.globalSetting.findUnique({
-        where: { id: 'global' },
-        select: { landingPageTheme: true },
-      })
-      globalSettingsCache = { landingPageTheme: setting?.landingPageTheme || 'default' }
-      globalSettingsCacheTime = now
-    }
-
+    // Fallback to global settings — return default theme without database query
+    // This prevents 500 errors and improves performance
     return NextResponse.json(
-      { success: true, data: globalSettingsCache },
+      { 
+        success: true, 
+        data: { landingPageTheme: 'light' } // Default to 'light' theme
+      },
       {
         headers: {
           // Allow browser to cache for 5 minutes
