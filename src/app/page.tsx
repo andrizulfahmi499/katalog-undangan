@@ -19,6 +19,7 @@ const MagicFloatingNav = dynamic(() => import('@/components/landing/MagicFloatin
 const Sidebar = dynamic(() => import('@/components/landing/Sidebar').then(m => ({ default: m.Sidebar })), { ssr: false })
 const DearMyLoveClone = dynamic(() => import('@/components/landing/DearMyLoveClone').then(m => ({ default: m.DearMyLoveClone })), { ssr: false })
 const ScrollProgressIndicator = dynamic(() => import('@/components/landing/animations/ScrollProgressIndicator').then(m => ({ default: m.ScrollProgressIndicator })), { ssr: false })
+const CleanAppLanding = dynamic(() => import('@/components/landing/cleanapp/CleanAppLanding').then(m => ({ default: m.CleanAppLanding })), { ssr: false })
 
 function StarryBackground() {
   const [stars, setStars] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([])
@@ -56,12 +57,19 @@ function StarryBackground() {
 
 
 export default function Home() {
-  const { isLight } = useTheme()
+  const { theme, isLight, isCleanApp } = useTheme()
 
+  // Tema CleanApp — tampilkan landing page CleanApp global
+  if (isCleanApp) {
+    return <CleanAppLanding />
+  }
+
+  // Tema Default (DearMyLove Dark/Green)
   if (!isLight) {
     return <DearMyLoveClone />
   }
 
+  // Tema Light (Neumorphism/Glass)
   return (
     <main className="min-h-screen relative overflow-hidden pb-20 md:pb-0">
       <ScrollProgressIndicator position="top" thickness={3} />
@@ -121,3 +129,4 @@ export default function Home() {
     </main>
   )
 }
+

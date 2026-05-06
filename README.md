@@ -23,6 +23,21 @@ Platform undangan digital dengan fitur member dan admin dashboard.
   - Edit template pesan
   - Lihat riwayat pengiriman
 
+- **Landing Page Themes**
+  - **Default Theme** - Classic invitation template
+  - **Neumorphism Theme** - Modern soft UI design
+  - **CleanApp Theme** - Mobile-first modern landing page with full customization
+    - Customizable hero section with CTA
+    - Feature showcase with icons
+    - Template grid with category filtering
+    - Pricing tiers with recommended highlighting
+    - Order form with validation
+    - FAQ accordion
+    - Footer with social media links
+    - Mobile bottom navigation
+    - Full color palette customization
+    - Live preview in admin dashboard
+
 - **Multi-Domain Support**
   - `satumomen.com` - menggunakan `?guest=` parameter
   - `id.akainvitation.com` - menggunakan `?to=` parameter
@@ -77,10 +92,17 @@ bun run dev
 
 ## 📚 Documentation
 
+### General
 - [QUICK_START.md](./QUICK_START.md) - Panduan cepat deployment (15-20 menit)
 - [DEPLOYMENT.md](./DEPLOYMENT.md) - Panduan deployment lengkap
 - [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) - Checklist deployment
 - [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Solusi error umum
+
+### CleanApp Theme
+- [CLEANAPP_THEME.md](./docs/CLEANAPP_THEME.md) - CleanApp theme overview and features
+- [CLEANAPP_QUICK_START.md](./docs/CLEANAPP_QUICK_START.md) - Quick start guide for CleanApp
+- [CLEANAPP_TESTING_GUIDE.md](./docs/CLEANAPP_TESTING_GUIDE.md) - Testing guide for CleanApp
+- [CLEANAPP_COLOR_CONTRAST.md](./docs/CLEANAPP_COLOR_CONTRAST.md) - Color contrast compliance
 
 ---
 
@@ -124,19 +146,34 @@ katalog-undangan/
 │   │   │   └── dashboard/     # Admin dashboard page
 │   │   ├── member/            # Member dashboard
 │   │   │   └── dashboard/     # Member dashboard page
+│   │   ├── [slug]/            # Dynamic landing pages
 │   │   └── api/               # API routes
 │   │       ├── auth/          # Authentication APIs
 │   │       ├── admin/         # Admin APIs
-│   │       └── member/        # Member APIs
+│   │       ├── member/        # Member APIs
+│   │       └── public/        # Public APIs (theme config)
 │   ├── components/            # React components
 │   │   ├── landing/           # Landing page components
+│   │   │   ├── cleanapp/      # CleanApp theme components
+│   │   │   ├── neumorphism/   # Neumorphism theme components
+│   │   │   └── default/       # Default theme components
 │   │   └── ui/                # shadcn/ui components
 │   ├── lib/                   # Utility libraries
-│   │   └── db.ts              # Prisma client
+│   │   ├── db.ts              # Prisma client
+│   │   ├── schemas/           # Zod validation schemas
+│   │   └── color-contrast.ts  # Color contrast utilities
+│   ├── context/               # React contexts
+│   │   └── CleanAppConfigContext.tsx  # CleanApp theme config
 │   └── hooks/                 # Custom React hooks
+│       └── useReducedMotion.ts  # Accessibility hook
 ├── prisma/
 │   ├── schema.prisma          # Database schema
 │   └── migrations/            # Database migrations
+├── docs/                      # Documentation
+│   ├── CLEANAPP_THEME.md      # CleanApp theme docs
+│   ├── CLEANAPP_QUICK_START.md
+│   ├── CLEANAPP_TESTING_GUIDE.md
+│   └── CLEANAPP_COLOR_CONTRAST.md
 ├── supabase/
 │   └── init.sql               # Supabase initialization script
 ├── public/                    # Static assets

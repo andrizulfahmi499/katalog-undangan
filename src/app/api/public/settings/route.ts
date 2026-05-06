@@ -68,17 +68,23 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Fallback to global settings — return default theme tanpa query database
-    // Ini mencegah error 500 dan mempercepat loading halaman utama
+    // Fetch global theme dari database
+    const { db } = await import('@/lib/db')
+    const globalSetting = await db.globalSetting.findUnique({
+      where: { id: 'global' },
+    })
+
+    const landingPageTheme = globalSetting?.landingPageTheme || 'default'
+
     return NextResponse.json(
       { 
         success: true, 
-        data: { landingPageTheme: 'light' } // Default to 'light' theme
+        data: { landingPageTheme } 
       },
       {
         headers: {
-          // Cache di browser selama 5 menit
-          'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+          // Cache di browser selama 30 detik agar perubahan tema lebih cepat terasa
+          'Cache-Control': 'public, max-age=30, stale-while-revalidate=10',
         },
       }
     )
@@ -88,7 +94,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         success: true, 
-        data: { landingPageTheme: 'light' } 
+        data: { landingPageTheme: 'default' } 
       },
       { status: 200 }
     )
