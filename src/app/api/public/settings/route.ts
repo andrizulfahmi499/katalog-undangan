@@ -68,23 +68,24 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Fetch global theme dari database
+    // Fetch global theme & favicon dari database
     const { db } = await import('@/lib/db')
     const globalSetting = await db.globalSetting.findUnique({
       where: { id: 'global' },
     })
 
     const landingPageTheme = globalSetting?.landingPageTheme || 'default'
+    const landingPageFavicon = globalSetting?.landingPageFavicon || '/favicon-rose.svg'
 
     return NextResponse.json(
       { 
         success: true, 
-        data: { landingPageTheme } 
+        data: { landingPageTheme, landingPageFavicon } 
       },
       {
         headers: {
-          // Cache di browser selama 30 detik agar perubahan tema lebih cepat terasa
-          'Cache-Control': 'public, max-age=30, stale-while-revalidate=10',
+          // Tidak cache agar perubahan tema & favicon langsung terasa
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
         },
       }
     )
