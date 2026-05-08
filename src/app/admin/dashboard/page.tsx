@@ -1070,7 +1070,7 @@ export default function AdminDashboard() {
               </div>
 
               {/* Open Graph Image Section */}
-              <div className="bg-white/5 backdrop-blur-sm p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10">
+              <div className="bg-white/5 backdrop-blur-sm p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 mt-4 sm:mt-6">
                 <h3 className="text-base sm:text-lg font-semibold text-[#f4e4c1] mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Open Graph Image</h3>
                 <p className="text-xs sm:text-sm text-[#f4e4c1]/70 mb-4 sm:mb-6" style={{ fontFamily: "'Lato', sans-serif" }}>
                   Upload gambar kustom untuk preview di media sosial (WhatsApp, Facebook, Twitter). Gambar ini akan muncul ketika link website dibagikan.
