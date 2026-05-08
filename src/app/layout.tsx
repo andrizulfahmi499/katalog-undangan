@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { getOGImageForMetadata } from "@/lib/metadata";
 
 // font-display: swap agar teks langsung tampil dengan fallback font
 // sementara Google Font masih loading
@@ -28,8 +29,9 @@ const playfair = Playfair_Display({
   preload: false, // dekoratif, tidak perlu preload
 });
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   const favicon = '/favicon-rose.svg'
+  const ogImage = await getOGImageForMetadata()
 
   return {
     metadataBase: new URL('https://katalog-id.vercel.app'),
@@ -50,7 +52,7 @@ export function generateMetadata(): Metadata {
       type: "website",
       images: [
         {
-          url: "/logo.png",
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: "Katalog Undanganku - Undangan Pernikahan Digital",
@@ -61,7 +63,7 @@ export function generateMetadata(): Metadata {
       card: "summary_large_image",
       title: "Katalog Undanganku - Undangan Pernikahan Digital",
       description: "Platform undangan pernikahan digital terbaik di Indonesia",
-      images: ["/logo.png"],
+      images: [ogImage],
     },
   }
 }

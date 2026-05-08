@@ -53,3 +53,7 @@ server.log
 # Skills directory
 /skills/
 .env*.local
+
+# Uploaded OG images (keep directory, ignore files)
+/public/uploads/og-images/*
+!/public/uploads/og-images/.gitkeep

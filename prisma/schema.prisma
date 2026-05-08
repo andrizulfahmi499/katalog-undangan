@@ -16,12 +16,12 @@ datasource db {
 
 // Admin users who manage members and invitations
 model Admin {
-  id        String                  @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
-  email     String                  @unique
+  email     String   @unique
   password  String
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   invitations        Invitations[]
   creditTransactions CreditTransaction[]
@@ -38,53 +38,53 @@ enum LandingPageTheme {
 
 // Members who can send invitations
 model Member {
-  id                 String                @id @default(cuid())
+  id                 String           @id @default(cuid())
   name               String
-  email              String                @unique
+  email              String           @unique
   whatsapp           String
   password           String
-  creditPoints       Int                   @default(0)
-  status             String                @default("active") // 'active' | 'inactive'
-  landingPageEnabled Boolean               @default(false)
-  landingPageTheme   LandingPageTheme      @default(default)
-  customSlug         String?               @unique
+  creditPoints       Int              @default(0)
+  status             String           @default("active") // 'active' | 'inactive'
+  landingPageEnabled Boolean          @default(false)
+  landingPageTheme   LandingPageTheme @default(default)
+  customSlug         String?          @unique
   landingPageConfig  Json?
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 
-  invitations          Invitations[]
-  invitationMessages   InvitationMessages[]
-  invitationSends      InvitationSends[]
-  creditTransactions   CreditTransaction[]
-  orders               Order[]
+  invitations        Invitations[]
+  invitationMessages InvitationMessages[]
+  invitationSends    InvitationSends[]
+  creditTransactions CreditTransaction[]
+  orders             Order[]
 
   @@map("Member")
 }
 
 // Invitations created by admin
 model Invitations {
-  id                String                @id @default(cuid())
-  title             String
-  eventName         String
-  eventDate         DateTime
-  location          String
-  invitationLink    String
-  invitationDomain  String                // 'satumomen' | 'akainvitation'
-  templateId        String?
-  templateMessage   String
-  costPoints        Int                   @default(20)
-  status            String                @default("draft") // 'draft' | 'published' | 'completed'
-  editorConfig      Json?
-  createdById       String
-  assignedMemberId  String
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
+  id               String   @id @default(cuid())
+  title            String
+  eventName        String
+  eventDate        DateTime
+  location         String
+  invitationLink   String
+  invitationDomain String // 'satumomen' | 'akainvitation'
+  templateId       String?
+  templateMessage  String
+  costPoints       Int      @default(20)
+  status           String   @default("draft") // 'draft' | 'published' | 'completed'
+  editorConfig     Json?
+  createdById      String
+  assignedMemberId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  createdBy         Admin               @relation(fields: [createdById], references: [id])
-  assignedMember    Member              @relation(fields: [assignedMemberId], references: [id])
+  createdBy          Admin                @relation(fields: [createdById], references: [id])
+  assignedMember     Member               @relation(fields: [assignedMemberId], references: [id])
   invitationMessages InvitationMessages[]
-  invitationSends     InvitationSends[]
-  creditTransactions  CreditTransaction[]
+  invitationSends    InvitationSends[]
+  creditTransactions CreditTransaction[]
 
   @@index([assignedMemberId])
   @@index([createdById])
@@ -94,14 +94,14 @@ model Invitations {
 
 // Custom message templates created by member
 model InvitationMessages {
-  id              String        @id @default(cuid())
+  id              String   @id @default(cuid())
   memberId        String
   invitationId    String
   messageTemplate String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  member     Member     @relation(fields: [memberId], references: [id])
+  member     Member      @relation(fields: [memberId], references: [id])
   invitation Invitations @relation(fields: [invitationId], references: [id])
 
   @@unique([memberId, invitationId])
@@ -110,7 +110,7 @@ model InvitationMessages {
 
 // Log of invitations sent by member
 model InvitationSends {
-  id               String    @id @default(cuid())
+  id               String   @id @default(cuid())
   memberId         String
   invitationId     String
   guestName        String
@@ -118,11 +118,11 @@ model InvitationSends {
   guestEmail       String?
   generatedMessage String
   generatedLink    String
-  sentAt           DateTime  @default(now())
-  status           String    @default("pending") // 'pending' | 'sent' | 'failed'
+  sentAt           DateTime @default(now())
+  status           String   @default("pending") // 'pending' | 'sent' | 'failed'
   errorMessage     String?
 
-  member     Member     @relation(fields: [memberId], references: [id])
+  member     Member      @relation(fields: [memberId], references: [id])
   invitation Invitations @relation(fields: [invitationId], references: [id])
 
   @@index([memberId])
@@ -133,17 +133,17 @@ model InvitationSends {
 
 // Credit point transactions
 model CreditTransaction {
-  id           String     @id @default(cuid())
+  id           String   @id @default(cuid())
   memberId     String
   adminId      String?
   invitationId String?
-  type         String     // 'credit' | 'debit'
+  type         String // 'credit' | 'debit'
   amount       Int
   description  String
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime @default(now())
 
-  member     Member      @relation(fields: [memberId], references: [id])
-  admin      Admin?      @relation(fields: [adminId], references: [id])
+  member     Member       @relation(fields: [memberId], references: [id])
+  admin      Admin?       @relation(fields: [adminId], references: [id])
   invitation Invitations? @relation(fields: [invitationId], references: [id])
 
   @@index([memberId])
@@ -154,18 +154,18 @@ model CreditTransaction {
 
 // Order inquiries from landing page
 model Order {
-  id         String   @id @default(cuid())
-  name       String
-  email      String
-  phone      String
-  eventType  String   // 'Pernikahan' | 'Ultah' | 'Lainnya'
-  message    String?
-  status     String   @default("new") // 'new' | 'contacted' | 'converted' | 'cancelled'
-  memberId   String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  eventType String // 'Pernikahan' | 'Ultah' | 'Lainnya'
+  message   String?
+  status    String   @default("new") // 'new' | 'contacted' | 'converted' | 'cancelled'
+  memberId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  member     Member?  @relation(fields: [memberId], references: [id])
+  member Member? @relation(fields: [memberId], references: [id])
 
   @@index([memberId])
   @@index([status])
@@ -174,10 +174,11 @@ model Order {
 
 // Global settings for the portal (like landing page theme)
 model GlobalSetting {
-  id               String   @id @default("global")
-  landingPageTheme String   @default("default") // 'default' | 'light'
+  id                 String   @id @default("global")
+  landingPageTheme   String   @default("default") // 'default' | 'light'
   landingPageFavicon String?
-  updatedAt        DateTime @updatedAt
+  landingPageOgImage String? // Custom Open Graph image URL for landing page social media previews
+  updatedAt          DateTime @updatedAt
 
   @@map("GlobalSetting")
 }

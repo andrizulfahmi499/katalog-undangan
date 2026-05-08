@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText } from 'lucide-react'
 import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
+import OGImageUploader from '@/components/admin/OGImageUploader'
+import ImagePreview from '@/components/admin/ImagePreview'
 
 const DEFAULT_PRICING_PACKAGES = [
   { id: 1, name: 'Basic', price: '70.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas', enabled: true },
@@ -1065,6 +1067,16 @@ export default function AdminDashboard() {
                     {isSavingGlobalTheme ? 'Menyimpan...' : 'Simpan Pengaturan'}
                   </motion.button>
                 </div>
+              </div>
+
+              {/* Open Graph Image Section */}
+              <div className="bg-white/5 backdrop-blur-sm p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10">
+                <h3 className="text-base sm:text-lg font-semibold text-[#f4e4c1] mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Open Graph Image</h3>
+                <p className="text-xs sm:text-sm text-[#f4e4c1]/70 mb-4 sm:mb-6" style={{ fontFamily: "'Lato', sans-serif" }}>
+                  Upload gambar kustom untuk preview di media sosial (WhatsApp, Facebook, Twitter). Gambar ini akan muncul ketika link website dibagikan.
+                </p>
+                
+                <OGImageUploaderSection />
               </div>
             </motion.div>
           )}
@@ -3456,4 +3468,60 @@ export default function AdminDashboard() {
       </AnimatePresence>
     </div>
   )
+}
+
+
+// OG Image Uploader Section Component
+function OGImageUploaderSection() {
+  const [currentOgImage, setCurrentOgImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCurrentOgImage();
+  }, []);
+
+  const fetchCurrentOgImage = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/admin/og-image');
+      const data = await response.json();
+      if (data.success && data.data) {
+        setCurrentOgImage(data.data.ogImage);
+      }
+    } catch (error) {
+      console.error('Error fetching OG image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUploadSuccess = (imageUrl: string) => {
+    setCurrentOgImage(imageUrl);
+  };
+
+  const handleDelete = () => {
+    setCurrentOgImage(null);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-[#f4e4c1]/60">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {currentOgImage ? (
+        <ImagePreview imageUrl={currentOgImage} onDelete={handleDelete} />
+      ) : (
+        <div className="text-center py-4 text-[#f4e4c1]/60 text-sm mb-4">
+          No custom OG image set. Using default image (/logo.png)
+        </div>
+      )}
+      
+      <OGImageUploader onUploadSuccess={handleUploadSuccess} currentImage={currentOgImage} />
+    </div>
+  );
 }
