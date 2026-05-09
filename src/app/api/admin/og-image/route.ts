@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import {
-  validateImageFile,
-  generateUniqueFilename,
-  saveFileToDisk,
-  deleteFileFromDisk,
-  getPublicImageUrl,
-  getAbsoluteImagePath,
-  extractFilenameFromUrl,
-} from '@/lib/fileUpload';
+import { validateImageFile } from '@/lib/fileUpload';
 
 /**
  * POST /api/admin/og-image
  * Upload a custom Open Graph image for landing page
+ * Stores image as base64 in database (Vercel-compatible, no filesystem dependency)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -36,56 +29,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const filename = generateUniqueFilename(file.name);
-    const absolutePath = getAbsoluteImagePath(filename);
-    const publicUrl = getPublicImageUrl(filename);
+    // Convert file to base64
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64Data = buffer.toString('base64');
+    const mimeType = file.type || 'image/png';
 
-    // Get current OG image to delete old file
-    const currentSetting = await db.globalSetting.findUnique({
+    // The public URL that will be used in OG meta tags
+    const ogImageUrl = '/api/public/og-image';
+
+    // Store image data in database (works on Vercel serverless)
+    await db.globalSetting.upsert({
       where: { id: 'global' },
+      update: {
+        landingPageOgImage: ogImageUrl,
+        landingPageOgImageData: base64Data,
+        landingPageOgImageMime: mimeType,
+      },
+      create: {
+        id: 'global',
+        landingPageTheme: 'default',
+        landingPageOgImage: ogImageUrl,
+        landingPageOgImageData: base64Data,
+        landingPageOgImageMime: mimeType,
+      },
     });
 
-    try {
-      // Save new file to disk
-      await saveFileToDisk(file, absolutePath);
-
-      // Update database with new image URL
-      await db.globalSetting.upsert({
-        where: { id: 'global' },
-        update: { landingPageOgImage: publicUrl },
-        create: {
-          id: 'global',
-          landingPageTheme: 'default',
-          landingPageOgImage: publicUrl,
-        },
-      });
-
-      // Delete old file if exists
-      if (currentSetting?.landingPageOgImage) {
-        const oldFilename = extractFilenameFromUrl(currentSetting.landingPageOgImage);
-        if (oldFilename) {
-          const oldPath = getAbsoluteImagePath(oldFilename);
-          await deleteFileFromDisk(oldPath).catch((err) => {
-            console.warn('Failed to delete old OG image:', err);
-          });
-        }
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          url: publicUrl,
-          filename,
-          metadata: validation.metadata,
-        },
-      });
-    } catch (error) {
-      // Rollback: delete uploaded file if database update fails
-      await deleteFileFromDisk(absolutePath).catch(() => {});
-
-      throw error;
-    }
+    return NextResponse.json({
+      success: true,
+      data: {
+        url: ogImageUrl,
+        metadata: validation.metadata,
+      },
+    });
   } catch (error) {
     console.error('Error uploading OG image:', error);
     return NextResponse.json(
@@ -104,36 +80,15 @@ export async function POST(request: NextRequest) {
  */
 export async function DELETE(request: NextRequest) {
   try {
-    // Get current OG image from database
-    const currentSetting = await db.globalSetting.findUnique({
-      where: { id: 'global' },
-    });
-
-    if (!currentSetting?.landingPageOgImage) {
-      return NextResponse.json({
-        success: true,
-        message: 'No custom OG image to delete',
-      });
-    }
-
-    // Extract filename from URL
-    const filename = extractFilenameFromUrl(currentSetting.landingPageOgImage);
-
-    // Update database to remove OG image
+    // Update database to remove OG image data
     await db.globalSetting.update({
       where: { id: 'global' },
-      data: { landingPageOgImage: null },
+      data: {
+        landingPageOgImage: null,
+        landingPageOgImageData: null,
+        landingPageOgImageMime: null,
+      },
     });
-
-    // Delete file from disk (handle missing file gracefully)
-    if (filename) {
-      const absolutePath = getAbsoluteImagePath(filename);
-      const deleted = await deleteFileFromDisk(absolutePath);
-
-      if (!deleted) {
-        console.warn('OG image file not found on disk, but database was updated');
-      }
-    }
 
     return NextResponse.json({
       success: true,

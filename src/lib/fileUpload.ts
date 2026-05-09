@@ -1,8 +1,4 @@
-import { writeFile, unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
 import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Validation result for file upload
@@ -87,86 +83,4 @@ export async function validateImageFile(file: File): Promise<ValidationResult> {
       error: error instanceof Error ? error.message : 'Failed to validate image',
     };
   }
-}
-
-/**
- * Generates a unique filename for uploaded file
- * 
- * @param originalName - Original filename
- * @returns Unique filename with timestamp and UUID
- */
-export function generateUniqueFilename(originalName: string): string {
-  const ext = path.extname(originalName);
-  const timestamp = Date.now();
-  const uuid = uuidv4().split('-')[0]; // Use first segment of UUID for brevity
-  return `og-${timestamp}-${uuid}${ext}`;
-}
-
-/**
- * Saves a file to disk
- * 
- * @param file - The file to save
- * @param filePath - Absolute path where file should be saved
- */
-export async function saveFileToDisk(file: File, filePath: string): Promise<void> {
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    await writeFile(filePath, buffer);
-  } catch (error) {
-    throw new Error(
-      `Failed to save file: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-  }
-}
-
-/**
- * Deletes a file from disk
- * 
- * @param filePath - Absolute path of file to delete
- * @returns True if file was deleted, false if file didn't exist
- */
-export async function deleteFileFromDisk(filePath: string): Promise<boolean> {
-  try {
-    if (!existsSync(filePath)) {
-      return false;
-    }
-    await unlink(filePath);
-    return true;
-  } catch (error) {
-    throw new Error(
-      `Failed to delete file: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-  }
-}
-
-/**
- * Gets the public URL path for an uploaded OG image
- * 
- * @param filename - The filename of the uploaded image
- * @returns Public URL path (e.g., /uploads/og-images/filename.png)
- */
-export function getPublicImageUrl(filename: string): string {
-  return `/uploads/og-images/${filename}`;
-}
-
-/**
- * Gets the absolute file system path for an OG image
- * 
- * @param filename - The filename of the image
- * @returns Absolute file system path
- */
-export function getAbsoluteImagePath(filename: string): string {
-  return path.join(process.cwd(), 'public', 'uploads', 'og-images', filename);
-}
-
-/**
- * Extracts filename from a public URL path
- * 
- * @param url - Public URL path (e.g., /uploads/og-images/filename.png)
- * @returns Filename or null if invalid URL
- */
-export function extractFilenameFromUrl(url: string): string | null {
-  const match = url.match(/\/uploads\/og-images\/(.+)$/);
-  return match ? match[1] : null;
 }

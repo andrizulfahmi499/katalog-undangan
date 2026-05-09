@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Trash2, Loader2, ExternalLink } from 'lucide-react';
-import Image from 'next/image';
 import { toast } from 'sonner';
 
 interface ImagePreviewProps {
@@ -67,11 +66,10 @@ export default function ImagePreview({ imageUrl, onDelete }: ImagePreviewProps) 
               <p>Failed to load image</p>
             </div>
           ) : (
-            <Image
+            <img
               src={imageUrl}
               alt="Open Graph preview"
-              fill
-              className="object-contain"
+              className="absolute inset-0 w-full h-full object-contain"
               onError={() => setImageError(true)}
             />
           )}

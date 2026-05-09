@@ -174,11 +174,13 @@ model Order {
 
 // Global settings for the portal (like landing page theme)
 model GlobalSetting {
-  id                 String   @id @default("global")
-  landingPageTheme   String   @default("default") // 'default' | 'light'
-  landingPageFavicon String?
-  landingPageOgImage String? // Custom Open Graph image URL for landing page social media previews
-  updatedAt          DateTime @updatedAt
+  id                      String   @id @default("global")
+  landingPageTheme        String   @default("default") // 'default' | 'light'
+  landingPageFavicon      String?
+  landingPageOgImage      String?  // Custom Open Graph image URL marker for landing page
+  landingPageOgImageData  String?  @db.Text // Base64 encoded OG image data (stored in DB for Vercel compatibility)
+  landingPageOgImageMime  String?  // MIME type of the OG image (e.g. 'image/png')
+  updatedAt               DateTime @updatedAt
 
   @@map("GlobalSetting")
 }
