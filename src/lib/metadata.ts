@@ -20,6 +20,7 @@ const fetchOGSetting = cache(async () => {
     select: { 
       landingPageOgImage: true,
       landingPageOgImageData: true,
+      updatedAt: true,
     },
   });
 });
@@ -36,7 +37,8 @@ export async function getOGImageForMetadata(): Promise<string> {
 
     // Return custom OG image API URL if image data exists in database
     if (setting?.landingPageOgImage && setting?.landingPageOgImageData) {
-      return `${SITE_URL}/api/public/og-image`;
+      const timestamp = setting.updatedAt ? new Date(setting.updatedAt).getTime() : Date.now();
+      return `${SITE_URL}/api/public/og-image?v=${timestamp}`;
     }
 
     return DEFAULT_OG_IMAGE;

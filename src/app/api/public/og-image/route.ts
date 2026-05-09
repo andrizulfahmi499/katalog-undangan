@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/public/og-image
  * Serves the custom OG image from database storage.
- * This route is publicly accessible (no auth required) so social media
- * crawlers (Facebook, Twitter, etc.) can fetch the image.
- * 
- * Returns the image binary with proper Content-Type and cache headers.
- * Falls back to a redirect to /logo.png if no custom OG image is set.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -35,10 +32,9 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': mimeType,
         'Content-Length': imageBuffer.length.toString(),
-        // Cache for 1 hour, allow CDN to cache for 24 hours
-        // Use stale-while-revalidate so crawlers always get a fast response
-        'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400',
-        // Prevent Vercel from adding no-cache headers
+        // Cache for 60 seconds for browsers, allow CDN to cache for 24 hours
+        // The query parameter ?v=timestamp in metadata.ts will bust this cache when updated
+        'Cache-Control': 'public, max-age=60, s-maxage=86400, stale-while-revalidate=86400',
         'CDN-Cache-Control': 'public, max-age=86400',
         'Vercel-CDN-Cache-Control': 'public, max-age=86400',
       },
