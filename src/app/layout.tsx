@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -81,8 +82,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.lordicon.com" />
         <link rel="dns-prefetch" href="https://ajax.googleapis.com" />
-        {/* Defer heavy external scripts until after page load to avoid blocking render */}
-        <script
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-background text-foreground`}
+      >
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
+        {/* Defer heavy external scripts until after page load */}
+        <Script
+          id="deferred-scripts"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.addEventListener('load', function() {
@@ -100,14 +111,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-background text-foreground`}
-      >
-        <ThemeProvider>
-          {children}
-          <Toaster />
-        </ThemeProvider>
       </body>
     </html>
   );
