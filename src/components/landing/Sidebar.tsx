@@ -1,13 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Shield, Menu, X } from 'lucide-react'
+import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Menu, X, Heart } from 'lucide-react'
 import Link from 'next/link'
+import { useFavorites } from '@/hooks/useFavorites'
+import FavoritesPanel from '@/components/catalog/FavoritesPanel'
+import PreviewModal from '@/components/catalog/PreviewModal'
+import type { CatalogTheme } from '@/lib/catalogThemes'
+import { CATALOG_THEMES } from '@/lib/catalogThemes'
 
 export function Sidebar() {
-  // Default is CLOSED (false) so it doesn't block the screen
   const [isOpen, setIsOpen] = useState(false)
+  const [isFavPanelOpen, setIsFavPanelOpen] = useState(false)
+  const [previewTheme, setPreviewTheme] = useState<CatalogTheme | null>(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+
+  // Get memberId from localStorage (client-side only)
+  const [memberId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('memberId')
+    return null
+  })
+
+  const { favorites, toggleFavorite } = useFavorites(memberId)
+
+  const openPreview = useCallback((theme: CatalogTheme) => {
+    setIsFavPanelOpen(false)
+    setPreviewTheme(theme)
+    setIsPreviewOpen(true)
+  }, [])
+
+  const closePreview = useCallback(() => {
+    setIsPreviewOpen(false)
+    setTimeout(() => setPreviewTheme(null), 300)
+  }, [])
+
+  const handleRemoveFavorite = useCallback(
+    (slug: string) => {
+      const theme = CATALOG_THEMES.find((t) => t.slug === slug)
+      if (theme) toggleFavorite(slug, theme.name)
+    },
+    [toggleFavorite]
+  )
 
   const menuItems = [
     { id: 'login', label: 'Login', icon: <User size={20} />, href: '/login' },
@@ -31,7 +65,7 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Overlay: Meredupkan layar saat sidebar terbuka di Mobile */}
+      {/* Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -52,7 +86,7 @@ export function Sidebar() {
         style={{
           width: isOpen ? '280px' : 'auto',
           height: isOpen ? 'calc(100vh - 32px)' : 'auto',
-          borderRadius: isOpen ? '24px' : '99px' // Bentuk Pil saat tertutup, Kotak rounded saat terbuka
+          borderRadius: isOpen ? '24px' : '99px',
         }}
       >
         {/* HEADER */}
@@ -69,7 +103,7 @@ export function Sidebar() {
           ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 cursor-pointer py-1" onClick={() => setIsOpen(true)}>
               <div className="w-9 h-9 flex-shrink-0 rounded-full overflow-hidden bg-white/10 border border-white/20 flex items-center justify-center p-0.5">
-                <img src="/logo.png" alt="Admin" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
+                <img src="/logo.png" alt="Menu" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
               </div>
               <button className="text-white pr-2 flex items-center gap-2 flex-shrink-0">
                 <Menu size={22} className="text-[#a8d5c4]" />
@@ -90,10 +124,36 @@ export function Sidebar() {
               }}
               className="flex items-center gap-3 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 active:bg-white/15 transition-colors group"
             >
-              <span className="text-white/50 group-hover:text-[#a8d5c4] group-active:text-[#a8d5c4] transition-colors">{item.icon}</span>
+              <span className="text-white/50 group-hover:text-[#a8d5c4] transition-colors">{item.icon}</span>
               <span className="font-bold text-[12px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>{item.label}</span>
             </a>
           ))}
+
+          {/* Favorites menu item */}
+          <button
+            onClick={() => {
+              setIsOpen(false)
+              setIsFavPanelOpen(true)
+            }}
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors group w-full text-left"
+          >
+            <span className="text-white/50 group-hover:text-rose-400 transition-colors relative">
+              <Heart size={20} />
+              {favorites.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                  {favorites.length > 9 ? '9+' : favorites.length}
+                </span>
+              )}
+            </span>
+            <span className="font-bold text-[12px] tracking-wide uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>
+              Favorit
+            </span>
+            {favorites.length > 0 && (
+              <span className="ml-auto bg-rose-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                {favorites.length}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* FOOTER */}
@@ -101,7 +161,7 @@ export function Sidebar() {
           <div className="p-5 border-t border-white/5 mt-auto bg-black/20">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10 border border-white/20 p-0.5">
-                <img src="/logo.png" alt="Admin" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain rounded-full bg-black/20" onError={(e) => { e.currentTarget.src = 'https://gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }} />
               </div>
               <div className="flex flex-col">
                 <span className="text-white text-[13px] font-bold tracking-wider" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>AKA Team</span>
@@ -111,6 +171,18 @@ export function Sidebar() {
           </div>
         )}
       </motion.div>
+
+      {/* Favorites Panel */}
+      <FavoritesPanel
+        isOpen={isFavPanelOpen}
+        onClose={() => setIsFavPanelOpen(false)}
+        favorites={favorites}
+        onRemoveFavorite={handleRemoveFavorite}
+        onPreview={openPreview}
+      />
+
+      {/* Preview Modal */}
+      <PreviewModal isOpen={isPreviewOpen} onClose={closePreview} theme={previewTheme} />
     </>
   )
 }

@@ -25,7 +25,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { landingPageTheme, landingPageFavicon } = body
+    const { landingPageTheme, landingPageFavicon, catalogLayout } = body
 
     if (!landingPageTheme) {
       return NextResponse.json(
@@ -34,16 +34,22 @@ export async function POST(request: Request) {
       )
     }
 
+    // Validate catalogLayout
+    const validLayouts = ['grid', 'thumbnail']
+    const resolvedLayout = validLayouts.includes(catalogLayout) ? catalogLayout : undefined
+
     const setting = await db.globalSetting.upsert({
       where: { id: 'global' },
       update: {
         landingPageTheme,
         landingPageFavicon,
+        ...(resolvedLayout !== undefined && { catalogLayout: resolvedLayout }),
       },
       create: {
         id: 'global',
         landingPageTheme,
         landingPageFavicon,
+        catalogLayout: resolvedLayout || 'grid',
       },
     })
 

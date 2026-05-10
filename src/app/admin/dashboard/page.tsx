@@ -50,6 +50,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [globalThemeSetting, setGlobalThemeSetting] = useState<'default' | 'light' | 'cleanapp'>('default')
   const [globalFaviconSetting, setGlobalFaviconSetting] = useState<string>('/favicon-rose.svg')
+  const [catalogLayout, setCatalogLayout] = useState<'grid' | 'thumbnail'>('grid')
   const [isSavingGlobalTheme, setIsSavingGlobalTheme] = useState(false)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showAddInvitationModal, setShowAddInvitationModal] = useState(false)
@@ -186,6 +187,7 @@ export default function AdminDashboard() {
       if (data.success && data.data) {
         setGlobalThemeSetting(data.data.landingPageTheme)
         setGlobalFaviconSetting(data.data.landingPageFavicon || '/favicon-rose.svg')
+        if (data.data.catalogLayout) setCatalogLayout(data.data.catalogLayout)
       }
     } catch (e) {
       console.error(e)
@@ -285,7 +287,8 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           landingPageTheme: theme,
-          landingPageFavicon: globalFaviconSetting 
+          landingPageFavicon: globalFaviconSetting,
+          catalogLayout,
         })
       })
       alert('Pengaturan landing page berhasil disimpan! Semua pengunjung akan melihat perubahan ini.')
@@ -1053,6 +1056,40 @@ export default function AdminDashboard() {
                       </button>
                     </div>
                   )}
+                </div>
+
+                {/* Catalog Layout Setting */}
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-[#f4e4c1] mb-2" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Tampilan Katalog Tema</h3>
+                  <p className="text-xs sm:text-sm text-[#f4e4c1]/70 mb-3" style={{ fontFamily: "'Lato', sans-serif" }}>
+                    Pilih tampilan section katalog tema pada landing page.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setCatalogLayout('grid')}
+                      className={`py-3 sm:py-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                        catalogLayout === 'grid'
+                          ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
+                          : 'border-white/20 bg-white/5 text-[#f4e4c1]/70 hover:bg-white/10'
+                      }`}
+                      style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                    >
+                      <div className="font-bold mb-1">Tema Katalog 1</div>
+                      <div className="text-xs opacity-70">(Grid / Default)</div>
+                    </button>
+                    <button
+                      onClick={() => setCatalogLayout('thumbnail')}
+                      className={`py-3 sm:py-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                        catalogLayout === 'thumbnail'
+                          ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
+                          : 'border-white/20 bg-white/5 text-[#f4e4c1]/70 hover:bg-white/10'
+                      }`}
+                      style={{ fontFamily: "'Josefin Sans', sans-serif" }}
+                    >
+                      <div className="font-bold mb-1">Tema Katalog 2</div>
+                      <div className="text-xs opacity-70">(Thumbnail / Product Detail)</div>
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="flex justify-end">

@@ -57,6 +57,7 @@ model Member {
   invitationSends    InvitationSends[]
   creditTransactions CreditTransaction[]
   orders             Order[]
+  favoriteThemes     FavoriteTheme[]
 
   @@map("Member")
 }
@@ -180,7 +181,23 @@ model GlobalSetting {
   landingPageOgImage      String?  // Custom Open Graph image URL marker for landing page
   landingPageOgImageData  String?  @db.Text // Base64 encoded OG image data (stored in DB for Vercel compatibility)
   landingPageOgImageMime  String?  // MIME type of the OG image (e.g. 'image/png')
+  catalogLayout           String   @default("grid") // 'grid' | 'thumbnail'
   updatedAt               DateTime @updatedAt
 
   @@map("GlobalSetting")
+}
+
+// Favorite themes saved by members
+model FavoriteTheme {
+  id        String   @id @default(cuid())
+  memberId  String
+  themeSlug String
+  themeName String
+  createdAt DateTime @default(now())
+
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, themeSlug])
+  @@index([memberId])
+  @@map("FavoriteTheme")
 }

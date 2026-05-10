@@ -76,11 +76,12 @@ export async function GET(request: NextRequest) {
 
     const landingPageTheme = globalSetting?.landingPageTheme || 'default'
     const landingPageFavicon = globalSetting?.landingPageFavicon || '/favicon-rose.svg'
+    const catalogLayout = globalSetting?.catalogLayout || 'grid'
 
     return NextResponse.json(
       { 
         success: true, 
-        data: { landingPageTheme, landingPageFavicon } 
+        data: { landingPageTheme, landingPageFavicon, catalogLayout } 
       },
       {
         headers: {
