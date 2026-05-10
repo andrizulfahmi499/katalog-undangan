@@ -57,7 +57,7 @@ Implementasi fitur katalog undangan dengan static data, dua layout (grid & thumb
     - **Validates: Requirements 4.3**
     - Test bahwa slugs di localStorage tercermin dengan benar di state `favorites`
 
-- [-] 4. API Routes Favorites
+- [x] 4. API Routes Favorites
   - [ ] 4.1 Buat `src/app/api/member/favorites/route.ts` (GET dan POST)
     - `GET`: Baca header `x-member-id`, query `FavoriteTheme` by `memberId`, return array
     - `POST`: Baca header `x-member-id` dan body `{ themeSlug, themeName }`, upsert ke DB, return 200 (idempotent)
