@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink, Loader2 } from 'lucide-react'
 import type { CatalogTheme } from '@/lib/catalogThemes'
@@ -14,7 +15,12 @@ interface PreviewModalProps {
 export default function PreviewModal({ isOpen, onClose, theme }: PreviewModalProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (isOpen && theme) {
@@ -43,14 +49,14 @@ export default function PreviewModal({ isOpen, onClose, theme }: PreviewModalPro
     return () => window.removeEventListener('keydown', handler)
   }, [onClose])
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && theme && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-4"
           style={{ backdropFilter: 'blur(8px)', backgroundColor: 'rgba(0,0,0,0.7)' }}
           onClick={onClose}
         >
@@ -111,7 +117,6 @@ export default function PreviewModal({ isOpen, onClose, theme }: PreviewModalPro
                     className="w-full h-full border-0"
                     onLoad={handleIframeLoad}
                     title={`Preview ${theme.name}`}
-                    sandbox="allow-scripts allow-same-origin allow-forms"
                   />
                 )}
               </div>
@@ -121,19 +126,30 @@ export default function PreviewModal({ isOpen, onClose, theme }: PreviewModalPro
             <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-600 rounded-full" />
           </motion.div>
 
-          {/* Open in new tab link */}
-          <a
-            href={theme.previewUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 text-white/70 hover:text-white text-sm transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Buka di tab baru
-          </a>
+          {/* Open in new tab link & Close Button */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+            <button
+              onClick={(e) => { e.stopPropagation(); onClose(); }}
+              className="px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full font-medium text-sm transition-colors border border-white/30 backdrop-blur-sm"
+            >
+              Tutup Preview
+            </button>
+            <a
+              href={theme.previewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Buka di tab baru
+            </a>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   )
+
+  if (!mounted) return null
+  return createPortal(modalContent, document.body)
 }
