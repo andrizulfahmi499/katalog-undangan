@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, Eye } from 'lucide-react'
 import Image from 'next/image'
@@ -24,7 +26,10 @@ export default function FavoritesPanel({
     .map((slug) => getCatalogThemeBySlug(slug))
     .filter(Boolean) as CatalogTheme[]
 
-  return (
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const panelContent = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -130,4 +135,7 @@ export default function FavoritesPanel({
       )}
     </AnimatePresence>
   )
+
+  if (!mounted) return null
+  return createPortal(panelContent, document.body)
 }
