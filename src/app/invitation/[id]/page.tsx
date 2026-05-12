@@ -75,7 +75,7 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
 
   // If Dream Land template, render special layout
   if (invitation.templateId === 'dream-land') {
-    return <DreamLandTemplate invitation={invitation} formattedDate={formattedDate} />
+    return <DreamLandTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
   }
 
   // If Elgaze template, render special layout

@@ -808,6 +808,8 @@ function AdminEditorPageInner() {
                                     eventDate={form.eventDate}
                                     location={form.location}
                                     backgroundImageUrl={form.backgroundImageUrl}
+                                    templateId={selectedTemplateId}
+                                    invitationId={createdInvitation?.id || editingInvitationId || 'new'}
                                   />
                                 </div>
 
