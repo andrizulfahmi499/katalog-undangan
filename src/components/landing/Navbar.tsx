@@ -10,14 +10,27 @@ import { useScrollSectionTracking } from '@/lib/hooks'
 interface NavItem {
   name: string
   href: string
+  icon?: React.ReactNode
   children?: NavItem[]
 }
 
+const CatalogSvg = () => (
+  <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor" className="mr-1 inline-block">
+    <path d="M61.8,29.4l8.9,8.9l0,0c2,1.9,2,5.1,0,7l0,0L47.5,68.4V36.6l7.2-7.2C56.6,27.4,59.9,27.4,61.8,29.4z M80,62.5V75c0,2.8-2.2,5-5,5H43.8l22.5-22.5H75C77.8,57.5,80,59.8,80,62.5z M20,68.8V25c0-2.8,2.2-5,5-5h12.5c2.8,0,5,2.2,5,5v43.8 c0,6.2-5,11.2-11.2,11.2S20,75,20,68.8z M31.2,73.8c2.8,0,5-2.2,5-5s-2.2-5-5-5s-5,2.2-5,5S28.5,73.8,31.2,73.8z"></path>
+  </svg>
+)
+
+const PriceSvg = () => (
+  <svg width="20" height="20" viewBox="-3 -1 21 21" xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="mr-1 inline-block">
+    <path strokeLinecap="round" strokeLinejoin="round" d="m13.842 11.52-4.389 4.388a1.112 1.112 0 0 1-1.567 0l-6.28-6.28a3.027 3.027 0 0 1-.771-1.892l.043-3.681A1.141 1.141 0 0 1 2 2.935L5.67 2.9a3.04 3.04 0 0 1 1.892.773l6.28 6.28a1.112 1.112 0 0 1 0 1.567zM3.826 5.133a.792.792 0 1 0-.792.792.792.792 0 0 0 .792-.792zm6.594 7.348a.554.554 0 0 0 0-.784l-.401-.401a2.53 2.53 0 0 0 .35-.83 1.565 1.565 0 0 0-.397-1.503 1.59 1.59 0 0 0-1.017-.46 2.14 2.14 0 0 0-.75.085h-.002a2.444 2.444 0 0 0-.59.277H7.61a2.677 2.677 0 0 0-.438.357 2.043 2.043 0 0 1-.259.22 1.29 1.29 0 0 1-.329.17h-.002a.835.835 0 0 1-.338.038h-.002a.53.53 0 0 1-.314-.136.539.539 0 0 1-.106-.534 1.54 1.54 0 0 1 .41-.71 1.632 1.632 0 0 1 .23-.165l.03-.019a1.783 1.783 0 0 1 .322-.155.942.942 0 0 1 .325-.06.554.554 0 0 0 0-1.108h-.001a2.058 2.058 0 0 0-.717.132 2.846 2.846 0 0 0-.529.26l-.01.006-.398-.4a.554.554 0 1 0-.784.785l.388.387a2.513 2.513 0 0 0-.347.803 1.644 1.644 0 0 0 .404 1.561 1.622 1.622 0 0 0 .983.456 1.922 1.922 0 0 0 .805-.089 2.372 2.372 0 0 0 .624-.319 3.142 3.142 0 0 0 .398-.339 1.569 1.569 0 0 1 .256-.208 1.381 1.381 0 0 1 .32-.151 1.023 1.023 0 0 1 .348-.038.485.485 0 0 1 .308.139c.05.049.165.165.097.488a1.558 1.558 0 0 1-.413.729 2.476 2.476 0 0 1-.28.219 1.727 1.727 0 0 1-.306.157.687.687 0 0 1-.32.042.554.554 0 1 0-.08 1.106c.052.004.103.005.152.005a1.723 1.723 0 0 0 .685-.134 2.678 2.678 0 0 0 .507-.27l.01-.007.397.398a.555.555 0 0 0 .783 0z"></path>
+  </svg>
+)
+
 const navItems: NavItem[] = [
   { name: 'Beranda', href: '#home' },
-  { name: 'Tema', href: '#catalog' },
+  { name: 'Tema', href: '#katalog', icon: <CatalogSvg /> },
   { name: 'Fitur', href: '#features' },
-  { name: 'Harga', href: '#pricing' },
+  { name: 'Harga', href: '#pricing', icon: <PriceSvg /> },
   { name: 'Kontak', href: '#contact' },
 ]
 
@@ -76,6 +89,23 @@ export function Navbar() {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      
+      // Khusus untuk home, kembali ke paling atas
+      if (href === '#home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+
+      const element = document.getElementById(href.replace('#', ''))
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
   }
 
   // Animation variants
@@ -176,6 +206,7 @@ export function Navbar() {
             {/* Logo */}
             <motion.a
               href="#home"
+              onClick={(e) => handleScroll(e, '#home')}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
@@ -238,7 +269,9 @@ export function Navbar() {
                           ? 'text-white font-bold'
                           : 'text-purple-200/80 hover:text-white'
                     }`}
+                    onClick={(e) => handleScroll(e, item.href)}
                   >
+                    {item.icon}
                     {item.name}
                     {/* Animated Underline */}
                     <motion.div
@@ -304,7 +337,9 @@ export function Navbar() {
                           ? 'text-white font-bold'
                           : 'text-purple-200/80 hover:text-white'
                     }`}
+                    onClick={(e) => handleScroll(e, item.href)}
                   >
+                    {item.icon}
                     {item.name}
                     {/* Animated Underline */}
                     <motion.div
@@ -433,10 +468,13 @@ export function Navbar() {
                   >
                     <motion.a
                       href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={(e) => {
+                        setIsMobileMenuOpen(false)
+                        handleScroll(e, item.href)
+                      }}
                       whileHover={{ x: 10 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`block px-6 py-4 rounded-2xl transition-all font-medium text-lg ${
+                      className={`block px-6 py-4 rounded-2xl transition-all font-medium text-lg flex items-center ${
                         isLight
                           ? 'text-[#2d3748] hover:text-[#2d3748]'
                           : 'text-white/90 hover:text-white hover:bg-white/10'
@@ -445,6 +483,7 @@ export function Navbar() {
                         boxShadow: 'none',
                       } : {}}
                     >
+                      {item.icon}
                       {item.name}
                     </motion.a>
                   </motion.div>

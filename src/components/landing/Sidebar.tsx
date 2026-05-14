@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Grid3X3, Tag, User, Zap, HelpCircle, ShoppingCart, Menu, X, Heart, ChevronRight } from 'lucide-react'
+import { Home, Zap, HelpCircle, ShoppingCart, Menu, X, Heart, ChevronRight, User } from 'lucide-react'
 import Link from 'next/link'
 import { useFavorites } from '@/hooks/useFavorites'
 import FavoritesPanel from '@/components/catalog/FavoritesPanel'
@@ -10,9 +10,23 @@ import PreviewModal from '@/components/catalog/PreviewModal'
 import type { CatalogTheme } from '@/lib/catalogThemes'
 import { CATALOG_THEMES } from '@/lib/catalogThemes'
 
+// Custom SVGs matching the user's requested style
+const CatalogSvg = () => (
+  <svg width="22" height="22" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+    <path d="M61.8,29.4l8.9,8.9l0,0c2,1.9,2,5.1,0,7l0,0L47.5,68.4V36.6l7.2-7.2C56.6,27.4,59.9,27.4,61.8,29.4z M80,62.5V75c0,2.8-2.2,5-5,5H43.8l22.5-22.5H75C77.8,57.5,80,59.8,80,62.5z M20,68.8V25c0-2.8,2.2-5,5-5h12.5c2.8,0,5,2.2,5,5v43.8 c0,6.2-5,11.2-11.2,11.2S20,75,20,68.8z M31.2,73.8c2.8,0,5-2.2,5-5s-2.2-5-5-5s-5,2.2-5,5S28.5,73.8,31.2,73.8z"></path>
+  </svg>
+)
+
+const PriceSvg = () => (
+  <svg width="20" height="20" viewBox="-3 -1 21 21" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="m13.842 11.52-4.389 4.388a1.112 1.112 0 0 1-1.567 0l-6.28-6.28a3.027 3.027 0 0 1-.771-1.892l.043-3.681A1.141 1.141 0 0 1 2 2.935L5.67 2.9a3.04 3.04 0 0 1 1.892.773l6.28 6.28a1.112 1.112 0 0 1 0 1.567zM3.826 5.133a.792.792 0 1 0-.792.792.792.792 0 0 0 .792-.792zm6.594 7.348a.554.554 0 0 0 0-.784l-.401-.401a2.53 2.53 0 0 0 .35-.83 1.565 1.565 0 0 0-.397-1.503 1.59 1.59 0 0 0-1.017-.46 2.14 2.14 0 0 0-.75.085h-.002a2.444 2.444 0 0 0-.59.277H7.61a2.677 2.677 0 0 0-.438.357 2.043 2.043 0 0 1-.259.22 1.29 1.29 0 0 1-.329.17h-.002a.835.835 0 0 1-.338.038h-.002a.53.53 0 0 1-.314-.136.539.539 0 0 1-.106-.534 1.54 1.54 0 0 1 .41-.71 1.632 1.632 0 0 1 .23-.165l.03-.019a1.783 1.783 0 0 1 .322-.155.942.942 0 0 1 .325-.06.554.554 0 0 0 0-1.108h-.001a2.058 2.058 0 0 0-.717.132 2.846 2.846 0 0 0-.529.26l-.01.006-.398-.4a.554.554 0 1 0-.784.785l.388.387a2.513 2.513 0 0 0-.347.803 1.644 1.644 0 0 0 .404 1.561 1.622 1.622 0 0 0 .983.456 1.922 1.922 0 0 0 .805-.089 2.372 2.372 0 0 0 .624-.319 3.142 3.142 0 0 0 .398-.339 1.569 1.569 0 0 1 .256-.208 1.381 1.381 0 0 1 .32-.151 1.023 1.023 0 0 1 .348-.038.485.485 0 0 1 .308.139c.05.049.165.165.097.488a1.558 1.558 0 0 1-.413.729 2.476 2.476 0 0 1-.28.219 1.727 1.727 0 0 1-.306.157.687.687 0 0 1-.32.042.554.554 0 1 0-.08 1.106c.052.004.103.005.152.005a1.723 1.723 0 0 0 .685-.134 2.678 2.678 0 0 0 .507-.27l.01-.007.397.398a.555.555 0 0 0 .783 0z"></path>
+  </svg>
+)
+
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isFavPanelOpen, setIsFavPanelOpen] = useState(false)
+  const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false)
   const [previewTheme, setPreviewTheme] = useState<CatalogTheme | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
@@ -44,18 +58,25 @@ export function Sidebar() {
   )
 
   const menuItems = [
-    { id: 'login', label: 'Sign-in', icon: <User size={18} className="text-white" />, href: '/login', bgColor: 'bg-[#8dc34f]' },
+    { id: 'login', label: 'Sign-in', icon: <User size={18} className="text-white" />, href: '#', bgColor: 'bg-[#8dc34f]' },
     { id: 'home', label: 'Home', icon: <Home size={18} className="text-white" />, href: '#home', bgColor: 'bg-[#ef4444]' },
     { id: 'order', label: 'Order', icon: <ShoppingCart size={18} className="text-white" />, href: '#order', bgColor: 'bg-[#3b82f6]' },
     { id: 'fitur', label: 'Fitur', icon: <Zap size={18} className="text-white" />, href: '#fitur', bgColor: 'bg-[#14b8a6]' },
-    { id: 'katalog', label: 'Katalog', icon: <Grid3X3 size={18} className="text-white" />, href: '#catalog', bgColor: 'bg-[#d946ef]' },
-    { id: 'harga', label: 'Harga', icon: <Tag size={18} className="text-white" />, href: '#pricing', bgColor: 'bg-[#f59e0b]' },
+    { id: 'katalog', label: 'Katalog', icon: <CatalogSvg />, href: '#katalog', bgColor: 'bg-[#d946ef]' },
+    { id: 'harga', label: 'Harga', icon: <PriceSvg />, href: '#pricing', bgColor: 'bg-[#f59e0b]' },
     { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18} className="text-white" />, href: '#faq', bgColor: 'bg-[#8b5cf6]' },
   ]
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('#')) {
       e.preventDefault()
+      
+      // Khusus untuk home, kembali ke paling atas
+      if (href === '#home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+
       const element = document.getElementById(href.replace('#', ''))
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
@@ -142,25 +163,62 @@ export function Sidebar() {
                 <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>MENU</span>
               </div>
 
-              {menuItems.map(item => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => {
-                    if (item.href.startsWith('#')) {
-                      setIsOpen(false)
-                      handleScroll(e, item.href)
-                    }
-                  }}
-                  className="flex items-center gap-4 px-2 py-2.5 rounded-xl text-white/90 hover:bg-white/10 active:bg-white/15 transition-colors group"
-                >
-                  <div className={`w-9 h-9 flex items-center justify-center rounded-full shadow-inner ${item.bgColor}`}>
-                    {item.icon}
-                  </div>
-                  <span className="font-medium text-[15px] tracking-wide" style={{ fontFamily: "'Lato', sans-serif" }}>{item.label}</span>
-                  <ChevronRight size={16} className="ml-auto text-white/30 group-hover:text-white/60 transition-colors" />
-                </a>
-              ))}
+              {menuItems.map(item => {
+                if (item.id === 'login') {
+                  return (
+                    <div key={item.id} className="flex flex-col">
+                      <button
+                        onClick={() => setIsLoginDropdownOpen(!isLoginDropdownOpen)}
+                        className="flex items-center gap-4 px-2 py-2.5 rounded-xl text-white/90 hover:bg-white/10 active:bg-white/15 transition-colors group w-full text-left"
+                      >
+                        <div className={`w-9 h-9 flex items-center justify-center rounded-full shadow-inner ${item.bgColor}`}>
+                          {item.icon}
+                        </div>
+                        <span className="font-medium text-[15px] tracking-wide" style={{ fontFamily: "'Lato', sans-serif" }}>{item.label}</span>
+                        <ChevronRight size={16} className={`ml-auto text-white/30 group-hover:text-white/60 transition-transform duration-300 ${isLoginDropdownOpen ? 'rotate-90' : ''}`} />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {isLoginDropdownOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden pl-12 pr-2 flex flex-col gap-1 mt-1"
+                          >
+                            <a href="/login" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-white/30"></span> Admin
+                            </a>
+                            <a href="/login-member" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-white/30"></span> Member
+                            </a>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )
+                }
+
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (item.href.startsWith('#')) {
+                        setIsOpen(false)
+                        handleScroll(e, item.href)
+                      }
+                    }}
+                    className="flex items-center gap-4 px-2 py-2.5 rounded-xl text-white/90 hover:bg-white/10 active:bg-white/15 transition-colors group"
+                  >
+                    <div className={`w-9 h-9 flex items-center justify-center rounded-full shadow-inner ${item.bgColor}`}>
+                      {item.icon}
+                    </div>
+                    <span className="font-medium text-[15px] tracking-wide" style={{ fontFamily: "'Lato', sans-serif" }}>{item.label}</span>
+                    <ChevronRight size={16} className="ml-auto text-white/30 group-hover:text-white/60 transition-colors" />
+                  </a>
+                )
+              })}
 
               <div className="px-2 pt-4 pb-2 mt-2 border-t border-white/10">
                 <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>SETTINGS</span>
