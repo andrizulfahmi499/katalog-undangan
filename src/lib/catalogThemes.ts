@@ -1,4 +1,4 @@
-﻿export type CatalogTheme = {
+export type CatalogTheme = {
   slug: string
   name: string
   category: string
@@ -27,6 +27,7 @@ export const CATALOG_THEMES: CatalogTheme[] = [
   makeTheme('dream-land', 'Dream Land', 'Pernikahan', ['floral', 'elegan', 'premium']),
   makeTheme('corelia', 'Corelia', 'Pernikahan', ['cream', 'mewah', 'tipografi']),
   makeTheme('elgaze', 'Elgaze Luxury', 'Pernikahan', ['dark', 'luxury', 'cinematic']),
+  makeTheme('royal-garden', 'Royal Garden', 'Pernikahan', ['royal', 'garden', 'floral', 'elegan']),
   makeTheme('verdant', 'Verdant Elegance', 'Pernikahan', ['hijau', 'elegan', 'segar']),
   makeTheme('red-beige', 'Red Beige', 'Pernikahan', ['merah', 'beige', 'klasik']),
   makeTheme('spotilove', 'SpotiLove', 'Pernikahan', ['spotify', 'modern', 'unik']),

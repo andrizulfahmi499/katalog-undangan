@@ -97,6 +97,17 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     defaultMessage:
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nMenjadi suatu kehormatan bagi kami untuk mengundang Anda merayakan persatuan cinta kami.\n\nDetail lengkap undangan dapat dilihat di:\n{link_undangan}\n\nTerima kasih atas doa dan kehadirannya.',
   },
+  {
+    id: 'royal-garden',
+    title: 'Royal Garden',
+    category: 'Pernikahan',
+    accent: 'from-amber-200 to-green-200',
+    description: 'Tema royal garden elegan dengan ilustrasi taman vintage, bunga sakura, dan efek parallax. Fitur lengkap: countdown, gallery, RSVP, dress code, live streaming, dan wedding gift.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Royal Garden',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.\n\nDetail lengkap undangan:\n{link_undangan}\n\nMerupakan suatu kehormatan bagi kami apabila Anda berkenan hadir.',
+  },
 ]
 
 export function getTemplateById(id: string) {
