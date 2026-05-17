@@ -7,6 +7,7 @@ import VerdantTemplate from '@/components/VerdantTemplate'
 import ElgazeTemplate from '@/components/ElgazeTemplate'
 import CoreliTemplate from '@/components/CoreliTemplate'
 import RoyalGardenTemplate from '@/components/RoyalGardenTemplate'
+import DreamyJavaneseTemplate from '@/components/DreamyJavaneseTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 import { parseEditorConfig } from '@/lib/invitationEditorConfig'
@@ -92,6 +93,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   // If Royal Garden template, render special layout
   if (invitation.templateId === 'royal-garden') {
     return <RoyalGardenTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
+  }
+
+  // If Dreamy Javanese template, render special layout
+  if (invitation.templateId === 'dreamy-javanese') {
+    return <DreamyJavaneseTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
   }
 
   return (

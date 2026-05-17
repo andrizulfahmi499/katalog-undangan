@@ -2,8 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, LogOut, Send, MessageCircle, Users, CreditCard, Clock, CheckCircle, XCircle, Copy, Link as LinkIcon, Phone } from 'lucide-react'
+import { 
+  Home, Paintbrush, FileText, Users, Settings, ChevronRight, ChevronDown,
+  LogOut, Smartphone, Monitor, Menu, X, ArrowLeft, MessageCircle, Send,
+  CreditCard, CheckCircle, Clock, Copy, Image, Type, Palette, Music,
+  Globe, Heart, Camera, CalendarDays, BookOpen, Video, Gift, Sliders
+} from 'lucide-react'
 
+// Types
 type Invitation = {
   id: string
   title: string
@@ -15,16 +21,9 @@ type Invitation = {
   templateMessage: string
   costPoints: number
   status: string
-  invitationMessages: Array<{
-    id: string
-    messageTemplate: string
-  }>
-  invitationSends: Array<{
-    id: string
-    guestName: string
-    sentAt: string
-    status: string
-  }>
+  templateId?: string
+  invitationMessages: Array<{ id: string; messageTemplate: string }>
+  invitationSends: Array<{ id: string; guestName: string; sentAt: string; status: string }>
 }
 
 type Guest = {
@@ -34,64 +33,40 @@ type Guest = {
 }
 
 export default function MemberDashboard() {
+  const [activeMenu, setActiveMenu] = useState('dashboard')
+  const [activeSubMenu, setActiveSubMenu] = useState('preset')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile')
+  const [showWizard, setShowWizard] = useState(true)
+
+  // Existing states
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [selectedInvitation, setSelectedInvitation] = useState<Invitation | null>(null)
   const [customMessage, setCustomMessage] = useState('')
   const [guests, setGuests] = useState<Guest[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [sendResults, setSendResults] = useState<any[]>([])
   const [showSendModal, setShowSendModal] = useState(false)
-  const [activeTab, setActiveTab] = useState<'invitations' | 'history' | 'landing_page'>('invitations')
-  const [copiedLinks, setCopiedLinks] = useState<Record<number, boolean>>({})
   const [memberProfile, setMemberProfile] = useState<any>(null)
+  const [memberId, setMemberId] = useState<string>('')
   
-  // Landing Page Settings State
+  // Landing Page Settings
   const [lpSlug, setLpSlug] = useState('')
   const [lpConfig, setLpConfig] = useState<any>({
-    logoUrl: '',
-    address: '',
-    whatsappNumber: '',
-    socialMedia: {
-      instagram: { enabled: false, url: '' },
-      tiktok: { enabled: false, url: '' },
-      facebook: { enabled: false, url: '' },
-      twitter: { enabled: false, url: '' }
-    },
+    logoUrl: '', address: '', whatsappNumber: '',
+    socialMedia: { instagram: { enabled: false, url: '' }, tiktok: { enabled: false, url: '' }, facebook: { enabled: false, url: '' }, twitter: { enabled: false, url: '' } },
     themeColor: 'pink',
     pricingPackages: [
-      { id: 1, name: 'Basic', price: '150.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nGallery Foto Bebas', enabled: true },
-      { id: 2, name: 'Premium', price: '300.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu\nVideo Undangan Lengkap\nFilter Instagram', enabled: true },
-      { id: 3, name: 'Exclusive', price: '500.000', features: 'Masa aktif selamanya\nBebas Custom\nCustom Domain Pilihan\nDesain Sesuai Keinginan', enabled: true }
+      { id: 1, name: 'Basic', price: '150.000', features: 'Masa aktif selamanya\nTanpa Batas Tamu', enabled: true }
     ]
   })
-  
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (file.size > 1024 * 1024) {
-      alert("Ukuran gambar maksimal 1 MB")
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      setLpConfig({ ...lpConfig, logoUrl: event.target?.result as string })
-    }
-    reader.readAsDataURL(file)
-  }
   const [isSavingLp, setIsSavingLp] = useState(false)
 
-  // Get member ID from localStorage
-  const [memberId, setMemberId] = useState<string>('')
-
+  // Initialization
   useEffect(() => {
-    // Get member ID from localStorage
     const storedMemberId = localStorage.getItem('memberId')
     if (storedMemberId) {
       setMemberId(storedMemberId)
     } else {
-      // Redirect to login if no member ID found
       window.location.href = '/login'
     }
   }, [])
@@ -109,53 +84,23 @@ export default function MemberDashboard() {
       const data = await response.json()
       if (data.success) {
         setMemberProfile(data.data)
-        if (data.data.landingPageConfig) {
-          setLpConfig(data.data.landingPageConfig)
-        }
-        if (data.data.customSlug) {
-          setLpSlug(data.data.customSlug)
-        }
+        if (data.data.landingPageConfig) setLpConfig(data.data.landingPageConfig)
+        if (data.data.customSlug) setLpSlug(data.data.customSlug)
       }
     } catch (error) {
       console.error('Error fetching profile:', error)
     }
   }
 
-  const handleSaveLandingPage = async () => {
-    setIsSavingLp(true)
-    try {
-      const response = await fetch('/api/member/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          memberId,
-          customSlug: lpSlug,
-          landingPageConfig: lpConfig
-        })
-      })
-      const data = await response.json()
-      if (data.success) {
-        alert('Pengaturan Landing Page berhasil disimpan!')
-        fetchProfile()
-      } else {
-        alert(data.error || 'Gagal menyimpan pengaturan')
-      }
-    } catch (error) {
-      console.error('Error saving landing page:', error)
-      alert('Terjadi kesalahan')
-    } finally {
-      setIsSavingLp(false)
-    }
-  }
-
   const fetchInvitations = async () => {
     try {
-      const response = await fetch(`/api/member/invitations?memberId=${memberId}&_t=${Date.now()}`, {
-        cache: 'no-store',
-      })
+      const response = await fetch(`/api/member/invitations?memberId=${memberId}&_t=${Date.now()}`, { cache: 'no-store' })
       const data = await response.json()
       if (data.success) {
         setInvitations(data.data)
+        if (data.data.length > 0 && !selectedInvitation) {
+          setSelectedInvitation(data.data[0])
+        }
       }
     } catch (error) {
       console.error('Error fetching invitations:', error)
@@ -164,797 +109,443 @@ export default function MemberDashboard() {
     }
   }
 
-  const handleSelectInvitation = (invitation: Invitation) => {
-    setSelectedInvitation(invitation)
-    setCustomMessage(
-      invitation.invitationMessages[0]?.messageTemplate || invitation.templateMessage
-    )
-    setGuests([])
-    setShowSendModal(true)
-  }
-
-  const handleSaveCustomMessage = async () => {
-    if (!selectedInvitation) return
-
-    try {
-      const response = await fetch('/api/member/invitations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          memberId,
-          invitationId: selectedInvitation.id,
-          messageTemplate: customMessage,
-        }),
-      })
-
-      if (response.ok) {
-        alert('Template pesan berhasil disimpan!')
-        fetchInvitations()
-      }
-    } catch (error) {
-      console.error('Error saving message template:', error)
-      alert('Gagal menyimpan template pesan')
-    }
-  }
-
-  const handleAddGuest = () => {
-    setGuests([...guests, { name: '' }])
-  }
-
-  const handleGuestChange = (index: number, field: keyof Guest, value: string) => {
-    const updated = [...guests]
-    updated[index][field] = value
-    setGuests(updated)
-  }
-
-  const handleRemoveGuest = (index: number) => {
-    setGuests(guests.filter((_, i) => i !== index))
-  }
-
-  // Generate invitation link with guest name
-  const generateGuestLink = (guestName: string, invitationLink: string): string => {
-    if (!guestName.trim()) return invitationLink
-
-    const normalizedLink = invitationLink.startsWith('/') ? `${window.location.origin}${invitationLink}` : invitationLink
-    const paramName = invitationLink.includes('satumomen.com') ? 'guest' : 'to'
-    const separator = normalizedLink.includes('?') ? '&' : '?'
-    const encodedName = encodeURIComponent(guestName.trim())
-
-    return `${normalizedLink}${separator}${paramName}=${encodedName}`
-  }
-
-  // Copy link to clipboard
-  const handleCopyLink = async (guestIndex: number, link: string) => {
-    try {
-      await navigator.clipboard.writeText(link)
-      setCopiedLinks({ ...copiedLinks, [guestIndex]: true })
-      setTimeout(() => {
-        setCopiedLinks({ ...copiedLinks, [guestIndex]: false })
-      }, 2000)
-    } catch (error) {
-      console.error('Failed to copy link:', error)
-      alert('Gagal menyalin link. Silakan coba lagi.')
-    }
-  }
-
-  // Generate message with placeholders replaced
-  const generateWhatsAppMessage = (guestName: string, invitationLink: string): string => {
-    const guestLink = generateGuestLink(guestName, invitationLink)
-    const eventDate = selectedInvitation
-      ? new Date(selectedInvitation.eventDate).toLocaleDateString('id-ID', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      : ''
-
-    let message = customMessage
-      .replace(/{nama_tamu}/gi, guestName.trim())
-      .replace(/{link_undangan}/gi, guestLink)
-      .replace(/{event_name}/gi, selectedInvitation?.eventName || '')
-      .replace(/{event_date}/gi, eventDate)
-      .replace(/{location}/gi, selectedInvitation?.location || '')
-
-    return message
-  }
-
-  // Send via WhatsApp - redirect to WhatsApp API
-  const handleSendWhatsApp = (guestIndex: number) => {
-    const guest = guests[guestIndex]
-    if (!guest || !guest.name.trim()) {
-      alert('Mohon isi nama tamu terlebih dahulu')
-      return
-    }
-
-    if (!selectedInvitation) {
-      alert('Undangan tidak ditemukan')
-      return
-    }
-
-    let phoneNumber = guest.whatsapp?.trim() || ''
-
-    // Format phone number to international format
-    if (phoneNumber) {
-      // Remove all non-numeric characters
-      phoneNumber = phoneNumber.replace(/\D/g, '')
-
-      // If starts with 0, replace with 62
-      if (phoneNumber.startsWith('0')) {
-        phoneNumber = '62' + phoneNumber.slice(1)
-      }
-
-      // If doesn't start with 62, add 62
-      if (!phoneNumber.startsWith('62')) {
-        phoneNumber = '62' + phoneNumber
-      }
-    } else {
-      alert('Mohon isi nomor WhatsApp tamu')
-      return
-    }
-
-    const message = generateWhatsAppMessage(guest.name, selectedInvitation.invitationLink)
-    const encodedMessage = encodeURIComponent(message)
-
-    // Redirect to WhatsApp API
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-    window.open(whatsappUrl, '_blank')
-  }
-
   const handleLogout = () => {
-    // Clear member data from localStorage
     localStorage.removeItem('memberId')
     localStorage.removeItem('memberName')
     localStorage.removeItem('memberEmail')
     window.location.href = '/login'
   }
 
+  // SVG icon paths from our-wedding.link reference
+  const svgIcon = (name: string) => `/icons/dashboard/our-wedding.link-${name}.svg`
+  
+  const [selectedThemeId, setSelectedThemeId] = useState<string>(selectedInvitation?.templateId || 'dreamy-javanese')
+  const [showThemeGrid, setShowThemeGrid] = useState(false)
+
+  const menuItems = [
+    { id: 'dashboard', label: 'Dasbor', svg: svgIcon('4') },
+    { id: 'theme', label: 'Tampilan', svg: svgIcon('5'), subMenus: [
+      { id: 'preset', label: 'Preset', svg: svgIcon('7') },
+      { id: 'warna', label: 'Warna', svg: svgIcon('8') },
+      { id: 'font', label: 'Jenis tulisan', svg: svgIcon('9') },
+    ]},
+    { id: 'content', label: 'Isi', svg: svgIcon('14'), subMenus: [
+      { id: 'sampul', label: 'Sampul', svg: svgIcon('10') },
+      { id: 'pembukaan', label: 'Pembukaan', svg: svgIcon('11') },
+      { id: 'profil', label: 'Profil', svg: svgIcon('12') },
+      { id: 'acara', label: 'Detail Acara', svg: svgIcon('2') },
+      { id: 'galeri', label: 'Album Foto', svg: svgIcon('12') },
+      { id: 'penutup', label: 'Penutup', svg: svgIcon('15') },
+    ]},
+    { id: 'guest', label: 'Tamu', svg: svgIcon('16') },
+    { id: 'settings', label: 'Pengaturan', svg: svgIcon('17'), subMenus: [
+      { id: 'musik', label: 'Musik Latar', svg: svgIcon('13') },
+      { id: 'landing', label: 'Landing Page', svg: svgIcon('18') },
+    ]},
+  ]
+
+  const themeList = [
+    { id: 'dreamy-javanese', name: 'Dreamy Javanese', cat: 'Premium', img: '/images/themes/dreamy-javanese/585c26d0-e603-11f0-87fb-874a516696dc.jpg' },
+    { id: 'royal-garden', name: 'Royal Garden', cat: 'Premium', img: '/icons/bg.webp' },
+    { id: 'dream-land', name: 'Dream Land', cat: 'Basic', img: '/icons/flowers.webp' },
+    { id: 'verdant', name: 'Verdant Elegance', cat: 'Basic', img: '/icons/right.webp' },
+    { id: 'elgaze', name: 'Elgaze Luxury', cat: 'Luxury', img: '/icons/bg-end.webp' },
+    { id: 'corelia', name: 'Corelia', cat: 'Basic', img: '/icons/frame-mempelai.webp' },
+  ]
+  const currentTheme = themeList.find(t => t.id === selectedThemeId) || themeList[0]
+
   const totalSent = invitations.reduce((sum, inv) => sum + inv.invitationSends.length, 0)
   const totalCreditUsed = invitations.reduce((sum, inv) => sum + inv.costPoints, 0)
 
   return (
-    <div className="min-h-screen text-[#f4e4c1] pb-10" style={{ fontFamily: "'Lato', sans-serif", background: 'linear-gradient(160deg, #172a26 0%, #1a2f2a 60%, #1c352e 100%)' }}>
-      {/* Header */}
-      <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <motion.button
-                whileHover={{ x: -3 }}
-                onClick={() => window.location.href = '/'}
-                className="flex items-center gap-1 sm:gap-2 text-[#f4e4c1]/70 hover:text-[#f4e4c1] transition-colors min-h-[44px] min-w-[44px] justify-center sm:justify-start"
+    <div className="flex h-screen bg-[#f4f7f6] overflow-hidden text-slate-800 font-sans">
+      {/* 1. SIDEBAR (Left Column) */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100">
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-rose-500">Katalog</span>
+          <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-slate-400 hover:text-slate-600">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="overflow-y-auto h-[calc(100vh-4rem)] p-3 space-y-0.5">
+          {menuItems.map((menu) => (
+            <div key={menu.id}>
+              <button
+                onClick={() => {
+                  setActiveMenu(menu.id)
+                  if (menu.subMenus) setActiveSubMenu(menu.subMenus[0].id)
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl transition-all duration-200 ${activeMenu === menu.id ? 'bg-[#fce4ec] text-[#e91e63] font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}
               >
-                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-medium text-xs sm:text-sm hidden sm:inline" style={{ fontFamily: "'Lato', sans-serif" }}>Kembali</span>
-              </motion.button>
-              <h1 className="text-base sm:text-2xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Josefin Sans', sans-serif" }}>Member Dashboard</h1>
+                <img src={menu.svg} alt="" className="w-[22px] h-[22px]" />
+                <span className="flex-1 text-left text-[14px]">{menu.label}</span>
+                {menu.subMenus && <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${activeMenu === menu.id ? 'rotate-90 text-[#e91e63]' : 'text-slate-300'}`} />}
+              </button>
+              <AnimatePresence>
+                {menu.subMenus && activeMenu === menu.id && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="ml-6 mt-1 space-y-0.5 overflow-hidden border-l-[3px] border-[#f8bbd0] pl-3">
+                    {menu.subMenus.map((sub) => (
+                      <button key={sub.id} onClick={() => setActiveSubMenu(sub.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-xl transition-all duration-200 ${activeSubMenu === sub.id ? 'text-[#e91e63] font-semibold bg-[#fce4ec]' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}>
+                        <img src={sub.svg} alt="" className="w-4 h-4" />
+                        <span>{sub.label}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 rounded-xl transition-colors font-medium min-h-[44px] text-xs sm:text-sm"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden sm:inline">Logout</span>
-            </motion.button>
+          ))}
+
+          <div className="pt-6 mt-6 border-t border-slate-100">
+            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors">
+              <LogOut className="w-5 h-5" />
+              <span className="text-[14px]">Logout</span>
+            </button>
           </div>
         </div>
-      </header>
+      </aside>
 
-      {/* Content */}
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shrink-0">
-                <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Total Undangan</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{invitations.length}</p>
-              </div>
+      {/* 2. MAIN CONTENT (Center Column) */}
+      <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#f4f7f6]">
+        {/* Header */}
+        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 z-40 sticky top-0">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden text-slate-500">
+              <Menu className="w-6 h-6" />
+            </button>
+            <div>
+              <h1 className="text-lg font-semibold text-slate-800 capitalize">
+                {activeMenu === 'dashboard' ? 'Selamat Datang, ' + (memberProfile?.name || 'Member') : activeMenu} 
+                {activeMenu !== 'dashboard' && activeSubMenu && <span className="text-slate-400 font-normal"> / {activeSubMenu}</span>}
+              </h1>
             </div>
-          </motion.div>
+          </div>
+          <div className="flex items-center gap-4">
+             <button onClick={() => window.location.href = '/'} className="text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center gap-2">
+               <ArrowLeft className="w-4 h-4" /> Ke Halaman Utama
+             </button>
+          </div>
+        </header>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center shrink-0">
-                <Send className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Total Dikirim</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{totalSent}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:bg-white/15 transition-all"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0">
-                <CreditCard className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm text-[#f4e4c1]/70" style={{ fontFamily: "'Lato', sans-serif" }}>Credit Terpakai</p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#f4e4c1]" style={{ fontFamily: "'Arapey', Georgia, serif" }}>{totalCreditUsed} coin</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setActiveTab('invitations')}
-            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
-              activeTab === 'invitations'
-                ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
-                : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
-            }`}
-            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-          >
-            Undangan
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setActiveTab('history')}
-            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
-              activeTab === 'history'
-                ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
-                : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
-            }`}
-            style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-          >
-            Riwayat Pengiriman
-          </motion.button>
-          {memberProfile?.landingPageEnabled && (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setActiveTab('landing_page')}
-              className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-all min-h-[44px] text-xs sm:text-sm ${
-                activeTab === 'landing_page'
-                  ? 'bg-[#d4af37] text-[#172a26] shadow-lg'
-                  : 'bg-white/10 backdrop-blur-md border border-white/20 text-[#f4e4c1]/70 hover:bg-white/15'
-              }`}
-              style={{ fontFamily: "'Josefin Sans', sans-serif" }}
-            >
-              Pengaturan Landing Page
-            </motion.button>
-          )}
-        </div>
-
-        {/* Invitations Tab */}
-        <AnimatePresence mode="wait">
-          {activeTab === 'invitations' && (
-            <motion.div
-              key="invitations"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-6"
-            >
-              {isLoading ? (
-                <div className="bg-white rounded-3xl p-12 text-center text-gray-500">
-                  Memuat data...
+        {/* Workspace Area */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8">
+          
+          {/* Dashboard Stats & Wizard */}
+          {activeMenu === 'dashboard' && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+              {/* Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-500"><MessageCircle className="w-7 h-7" /></div>
+                  <div><p className="text-sm text-slate-500">Undangan Aktif</p><p className="text-2xl font-bold">{invitations.length}</p></div>
                 </div>
-              ) : invitations.length === 0 ? (
-                <div className="bg-white rounded-3xl p-12 text-center text-gray-500">
-                  <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg">Belum ada undangan yang di-assign ke Anda.</p>
-                  <p className="text-sm mt-2">Hubungi admin untuk mendapatkan undangan.</p>
+                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-500"><Send className="w-7 h-7" /></div>
+                  <div><p className="text-sm text-slate-500">Total Dikirim</p><p className="text-2xl font-bold">{totalSent}</p></div>
                 </div>
-              ) : (
-                invitations.map((invitation) => (
-                  <motion.div
-                    key={invitation.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-3xl p-6 shadow-xl"
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">{invitation.title}</h3>
-                        <div className="space-y-1 text-gray-600">
-                          <p><span className="font-medium">Event:</span> {invitation.eventName}</p>
-                          <p><span className="font-medium">Tanggal:</span> {new Date(invitation.eventDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                          <p><span className="font-medium">Lokasi:</span> {invitation.location}</p>
-                          <p>
-                            <span className="font-medium">Link:</span>{' '}
-                            <a
-                              href={invitation.invitationLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-pink-600 hover:underline"
-                            >
-                              {invitation.invitationLink}
-                            </a>
-                          </p>
-                          <p>
-                            <span className="font-medium">Status:</span>{' '}
-                            <span className={`px-2 py-1 rounded-full text-sm ${
-                              invitation.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                            }`}>
-                              {invitation.status}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleSelectInvitation(invitation)}
-                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                      >
-                        <Send className="w-5 h-5" />
-                        Kirim Undangan
-                      </motion.button>
+                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-500"><CreditCard className="w-7 h-7" /></div>
+                  <div><p className="text-sm text-slate-500">Sisa Kredit</p><p className="text-2xl font-bold">100</p></div>
+                </div>
+              </div>
+
+              {/* Setup Wizard Checklist */}
+              {showWizard && (
+                <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-pink-100 to-rose-50 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-slate-800">Mari Lengkapi Undanganmu ✨</h2>
+                      <p className="text-slate-500 mt-1">Ikuti langkah-langkah berikut untuk mempublikasikan undangan.</p>
                     </div>
-                  </motion.div>
-                ))
-              )}
-            </motion.div>
-          )}
-
-          {/* History Tab */}
-          {activeTab === 'history' && (
-            <motion.div
-              key="history"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
-            >
-              <div className="p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-gray-800">Riwayat Pengiriman</h2>
-              </div>
-              {totalSent === 0 ? (
-                <div className="p-12 text-center text-gray-500">
-                  <Clock className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg">Belum ada riwayat pengiriman.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Nama Tamu</th>
-                        <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Undangan</th>
-                        <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Tanggal Kirim</th>
-                        <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {invitations.flatMap((inv) =>
-                        inv.invitationSends.map((send) => (
-                          <tr key={send.id} className="border-t border-gray-100 hover:bg-gray-50">
-                            <td className="px-6 py-4 font-medium text-gray-800">{send.guestName}</td>
-                            <td className="px-6 py-4 text-gray-600">{inv.title}</td>
-                            <td className="px-6 py-4 text-gray-600">
-                              {new Date(send.sentAt).toLocaleString('id-ID')}
-                            </td>
-                            <td className="px-6 py-4">
-                              {send.status === 'sent' ? (
-                                <span className="flex items-center gap-2 text-green-600">
-                                  <CheckCircle className="w-4 h-4" />
-                                  Terkirim
-                                </span>
-                              ) : (
-                                <span className="flex items-center gap-2 text-red-600">
-                                  <XCircle className="w-4 h-4" />
-                                  Gagal
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Landing Page Settings Tab */}
-          {activeTab === 'landing_page' && memberProfile?.landingPageEnabled && (
-            <motion.div
-              key="landing_page"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="neu-raised-lg rounded-3xl overflow-hidden p-6"
-            >
-              <h2 className="text-xl font-bold text-[#2d3748] mb-6">Pengaturan Custom Landing Page</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                   <div>
-                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Custom Slug Profil (URL)</label>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[#6b7280] neu-flat px-4 py-3 rounded-xl text-sm whitespace-nowrap">
-                         {typeof window !== 'undefined' ? window.location.host : '...'} /
-                       </span>
-                       <input 
-                         type="text" 
-                         value={lpSlug}
-                         onChange={(e) => setLpSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                         placeholder="nama-kamu"
-                         className="flex-1 px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
-                       />
-                    </div>
-                    {lpSlug && (
-                      <p className="text-xs text-green-600 mt-2">
-                        Landing page Anda dapat diakses di: <a href={`/${lpSlug}`} target="_blank" rel="noreferrer" className="underline font-bold">/{lpSlug}</a>
-                      </p>
-                    )}
+                    <button onClick={() => setShowWizard(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Logo (Upload dari Komputer/HP)</label>
-                    <div className="flex items-center gap-4">
-                      {lpConfig.logoUrl && (
-                        <div className="w-16 h-16 rounded-xl border border-[#d1d9e6] overflow-hidden bg-[#e0e5ec] neu-pressed-sm shrink-0 p-1">
-                          <img src={lpConfig.logoUrl} alt="Logo preview" className="w-full h-full object-contain" />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <input 
-                          type="file" 
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#d1d9e6] file:text-[#2d3748] hover:file:bg-[#b8bec7] placeholder:text-[#9ca3af] focus:outline-none neu-pressed px-2 py-2 rounded-xl"
-                        />
-                        <p className="text-xs text-[#9ca3af] mt-1">Logo URL otomatis tersimpan jika gambar diunggah.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Pilih Warna Tema</label>
-                    <select 
-                      value={lpConfig.themeColor}
-                      onChange={(e) => setLpConfig({...lpConfig, themeColor: e.target.value})}
-                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
-                    >
-                      <option value="pink">Pink (Default)</option>
-                      <option value="purple">Purple</option>
-                      <option value="indigo">Indigo</option>
-                      <option value="teal">Teal</option>
-                      <option value="amber">Gold / Amber</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Nomor WhatsApp Bisnis</label>
-                    <input 
-                      type="text" 
-                      value={lpConfig.whatsappNumber}
-                      onChange={(e) => setLpConfig({...lpConfig, whatsappNumber: e.target.value})}
-                      placeholder="62812345678"
-                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[#6b7280] mb-2">Lokasi / Alamat Lengkap</label>
-                    <textarea 
-                      value={lpConfig.address}
-                      onChange={(e) => setLpConfig({...lpConfig, address: e.target.value})}
-                      className="w-full px-4 py-3 neu-pressed rounded-xl focus:outline-none text-[#2d3748] border-none resize-none"
-                      rows={3}
-                    />
-                  </div>
                   <div className="space-y-4">
-                    <label className="block text-sm font-medium text-[#6b7280]">Link Sosial Media</label>
-                    {['instagram', 'tiktok', 'facebook', 'twitter'].map((platform) => (
-                      <div key={platform} className="flex items-center gap-3">
-                        <button
-                          onClick={() => {
-                            const current = lpConfig.socialMedia?.[platform] || { enabled: false, url: '' };
-                            setLpConfig({
-                              ...lpConfig,
-                              socialMedia: {
-                                ...lpConfig.socialMedia,
-                                [platform]: { ...current, enabled: !current.enabled }
-                              }
-                            });
-                          }}
-                          className={`w-12 h-6 flex shrink-0 items-center rounded-full p-1 transition-colors ${
-                            lpConfig.socialMedia?.[platform]?.enabled ? 'bg-teal-500' : 'bg-gray-300'
-                          }`}
-                        >
-                          <div
-                            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                              lpConfig.socialMedia?.[platform]?.enabled ? 'translate-x-6' : 'translate-x-0'
-                            }`}
-                          />
-                        </button>
-                        <div className="flex-1 flex items-center neu-pressed rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-teal-400">
-                           <span className="bg-[#d1d9e6]/30 text-[#6b7280] px-3 py-2 text-xs font-semibold uppercase w-24 text-center shrink-0 border-r border-[#d1d9e6]">{platform}</span>
-                           <input 
-                             type="text" 
-                             value={lpConfig.socialMedia?.[platform]?.url || ''}
-                             onChange={(e) => setLpConfig({
-                               ...lpConfig,
-                               socialMedia: {
-                                 ...lpConfig.socialMedia,
-                                 [platform]: { ...lpConfig.socialMedia?.[platform], url: e.target.value }
-                               }
-                             })}
-                             placeholder={`https://${platform}.com/username`}
-                             disabled={!lpConfig.socialMedia?.[platform]?.enabled}
-                             className={`flex-1 px-3 py-2 text-sm focus:outline-none border-none bg-transparent ${!lpConfig.socialMedia?.[platform]?.enabled ? 'opacity-50' : ''}`}
-                           />
+                    {[
+                      { id: 'theme', label: 'Pilih Tema Preset', desc: 'Tentukan visual utama undangan', done: true },
+                      { id: 'profile', label: 'Isi Data Profil Pasangan', desc: 'Nama mempelai, orang tua, dsb', done: false },
+                      { id: 'event', label: 'Atur Jadwal Acara', desc: 'Tanggal akad dan resepsi', done: false },
+                      { id: 'gallery', label: 'Upload Galeri Foto', desc: 'Momen spesial kalian', done: false },
+                    ].map((step, idx) => (
+                      <div key={step.id} className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer" onClick={() => { setActiveMenu('content'); setActiveSubMenu(step.id); }}>
+                        <div className={`mt-1 w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${step.done ? 'bg-green-500 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                          {step.done ? <CheckCircle className="w-4 h-4" /> : <span className="text-xs">{idx + 1}</span>}
+                        </div>
+                        <div>
+                          <h3 className={`font-semibold ${step.done ? 'text-slate-800' : 'text-slate-700'}`}>{step.label}</h3>
+                          <p className="text-sm text-slate-500">{step.desc}</p>
+                        </div>
+                        <ChevronRight className="w-5 h-5 ml-auto text-slate-300 mt-2" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Theme Preset */}
+          {activeMenu === 'theme' && activeSubMenu === 'preset' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              {!showThemeGrid ? (
+                /* Current Theme Display */
+                <div className="space-y-5">
+                  <h2 className="text-lg font-bold text-slate-800">Preset yang digunakan: <span className="text-[#e91e63]">{currentTheme.name}</span></h2>
+                  <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+                    <img src={currentTheme.img} alt={currentTheme.name} className="w-full h-64 object-cover" />
+                  </div>
+                  <button onClick={() => setShowThemeGrid(true)} className="w-full py-3 bg-slate-900 text-white rounded-2xl font-semibold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                    <Copy className="w-4 h-4" /> Ganti preset
+                  </button>
+                </div>
+              ) : (
+                /* Theme Grid Selection */
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-slate-800">Pilih Preset Tema</h2>
+                    <button onClick={() => setShowThemeGrid(false)} className="text-sm text-pink-500 font-medium hover:underline">← Kembali</button>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {['Semua', 'Basic', 'Premium', 'Luxury'].map(cat => (
+                      <button key={cat} className="px-4 py-2 rounded-full text-sm font-medium border border-slate-200 bg-white hover:bg-pink-50 hover:border-pink-300 hover:text-pink-600 transition-colors">{cat}</button>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {themeList.map(t => (
+                      <div key={t.id} onClick={() => { setSelectedThemeId(t.id); setShowThemeGrid(false); }}
+                        className={`group relative rounded-2xl overflow-hidden border-2 cursor-pointer transition-all hover:shadow-lg ${selectedThemeId === t.id ? 'border-pink-500 shadow-pink-100 ring-2 ring-pink-200' : 'border-slate-200 hover:border-pink-300'}`}>
+                        {selectedThemeId === t.id && <div className="absolute top-3 right-3 z-10 w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center"><CheckCircle className="w-4 h-4 text-white" /></div>}
+                        <img src={t.img} alt={t.name} className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="p-4 bg-white">
+                          <h3 className="font-bold text-slate-800">{t.name}</h3>
+                          <span className="text-xs text-pink-500 font-medium">{t.cat}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-
-                <div className="space-y-6">
-                   <h3 className="text-lg font-semibold text-[#2d3748]">Paket Harga (Pricing)</h3>
-                   <p className="text-sm text-[#6b7280] mb-4">Ubah nama paket, harga, dan fitur (pisahkan dengan baris baru / Enter).</p>
-                   {lpConfig.pricingPackages?.map((pkg: any, index: number) => (
-                     <div key={pkg.id} className={`neu-flat p-5 rounded-2xl space-y-4 transition-all ${!pkg.enabled ? 'opacity-60' : ''}`}>
-                        <div className="flex items-center justify-between border-b border-[#d1d9e6] pb-2 mb-2">
-                          <span className="font-semibold text-sm text-[#2d3748]">Paket {index + 1}</span>
-                          <button
-                            onClick={() => {
-                              const newPkgs = [...lpConfig.pricingPackages];
-                              newPkgs[index].enabled = !newPkgs[index].enabled;
-                              setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                            }}
-                            className={`w-10 h-5 flex shrink-0 items-center rounded-full p-1 transition-colors ${
-                              pkg.enabled ? 'bg-teal-500' : 'bg-gray-300'
-                            }`}
-                          >
-                            <div
-                              className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform ${
-                                pkg.enabled ? 'translate-x-5' : 'translate-x-0'
-                              }`}
-                            />
-                          </button>
-                        </div>
-                        <div className="flex gap-4">
-                           <div className="flex-1">
-                             <label className="block text-xs font-semibold text-[#6b7280] mb-1">Nama Paket</label>
-                             <input type="text" value={pkg.name} onChange={(e) => {
-                               const newPkgs = [...lpConfig.pricingPackages];
-                               newPkgs[index].name = e.target.value;
-                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                             }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none" disabled={!pkg.enabled} />
-                           </div>
-                           <div className="flex-1">
-                             <label className="block text-xs font-semibold text-[#6b7280] mb-1">Harga (Rp)</label>
-                             <input type="text" value={pkg.price} onChange={(e) => {
-                               const newPkgs = [...lpConfig.pricingPackages];
-                               newPkgs[index].price = e.target.value;
-                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                             }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none" disabled={!pkg.enabled} />
-                           </div>
-                        </div>
-                        <div>
-                           <label className="block text-xs font-semibold text-[#6b7280] mb-1">Fitur (pisahkan enter)</label>
-                           <textarea value={pkg.features} rows={3} onChange={(e) => {
-                               const newPkgs = [...lpConfig.pricingPackages];
-                               newPkgs[index].features = e.target.value;
-                               setLpConfig({...lpConfig, pricingPackages: newPkgs});
-                           }} className="w-full text-sm py-2 px-3 neu-pressed rounded-xl border-none focus:outline-none resize-none" disabled={!pkg.enabled} />
-                        </div>
-                     </div>
-                   ))}
-
-                   <motion.button
-                     whileHover={{ scale: 1.02 }}
-                     whileTap={{ scale: 0.98 }}
-                     onClick={handleSaveLandingPage}
-                     disabled={isSavingLp}
-                     className="w-full py-4 neu-btn rounded-xl font-bold text-[#2d3748] disabled:opacity-70 flex justify-center items-center gap-2 mt-4"
-                   >
-                     {isSavingLp ? 'Menyimpan...' : 'Simpan Semua Pengaturan'}
-                   </motion.button>
-                </div>
+              )}
+              {/* Bottom bar */}
+              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                <span className="text-sm font-semibold text-slate-700">Preset</span>
+                <button className="text-sm font-semibold text-pink-500 hover:text-pink-600">Simpan</button>
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
-      </div>
 
-      {/* Send Modal */}
-      <AnimatePresence>
-        {showSendModal && selectedInvitation && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto"
-            >
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Kirim Undangan</h3>
-
-              {/* Invitation Info */}
-              <div className="bg-pink-50 rounded-2xl p-4 mb-6">
-                <h4 className="font-bold text-gray-800">{selectedInvitation.title}</h4>
-                <p className="text-sm text-gray-600">{selectedInvitation.eventName} • {new Date(selectedInvitation.eventDate).toLocaleDateString('id-ID')}</p>
-                <p className="text-xs text-gray-500 mt-1">{selectedInvitation.invitationLink}</p>
+          {/* Theme Warna */}
+          {activeMenu === 'theme' && activeSubMenu === 'warna' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100 space-y-6">
+              <h3 className="font-bold text-lg">Pilih Warna Utama</h3>
+              <div className="flex flex-wrap gap-3">
+                {['#e11d48','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#d4a373','#2d2d2d'].map(c => (
+                  <button key={c} className="w-10 h-10 rounded-full border-2 border-white shadow-md hover:scale-110 transition-transform ring-2 ring-transparent hover:ring-pink-300" style={{ backgroundColor: c }} />
+                ))}
               </div>
+              <div className="flex justify-end"><button className="px-6 py-2.5 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600">Simpan</button></div>
+            </motion.div>
+          )}
 
-              {/* Custom Message Template */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Edit Template Pesan</label>
-                <textarea
-                  value={customMessage}
-                  onChange={(e) => setCustomMessage(e.target.value)}
-                  rows={6}
-                  className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none resize-none"
-                />
-                <p className="text-xs text-gray-500 mt-1">Placeholder: {`{nama_tamu}, {link_undangan}, {event_name}, {event_date}, {location}`}</p>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSaveCustomMessage}
-                  className="mt-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-xl font-medium text-sm transition-colors"
-                >
-                  Simpan Template
-                </motion.button>
-              </div>
-
-              {/* Guest List */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Daftar Tamu</label>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleAddGuest}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-400 to-rose-500 text-white rounded-xl font-medium text-sm"
-                  >
-                    <Users className="w-4 h-4" />
-                    Tambah Tamu
-                  </motion.button>
-                </div>
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {guests.map((guest, index) => {
-                    const guestLink = selectedInvitation
-                      ? generateGuestLink(guest.name, selectedInvitation.invitationLink)
-                      : ''
-                    const isLinkGenerated = guest.name.trim() && guestLink !== selectedInvitation?.invitationLink
-
-                    return (
-                      <div key={index} className="bg-gray-50 rounded-2xl p-4 space-y-3">
-                        {/* Guest Name & WhatsApp */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Nama Tamu</label>
-                            <input
-                              type="text"
-                              value={guest.name}
-                              onChange={(e) => handleGuestChange(index, 'name', e.target.value)}
-                              placeholder="Masukkan nama tamu"
-                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none text-sm"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">WhatsApp *</label>
-                            <input
-                              type="text"
-                              value={guest.whatsapp || ''}
-                              onChange={(e) => handleGuestChange(index, 'whatsapp', e.target.value)}
-                              placeholder="08xxxxxxxxxx"
-                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:border-pink-400 focus:outline-none text-sm"
-                            />
-                          </div>
-                        </div>
-
-                        {/* Generated Link */}
-                        {isLinkGenerated && (
-                          <div className="bg-white rounded-xl p-3 border border-gray-200">
-                            <div className="flex items-center gap-2 mb-2">
-                              <LinkIcon className="w-4 h-4 text-pink-500" />
-                              <span className="text-xs font-medium text-gray-700">Link Undangan dengan Nama:</span>
-                            </div>
-                            <div className="flex gap-2">
-                              <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-600 break-all">
-                                {guestLink}
-                              </div>
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleCopyLink(index, guestLink)}
-                                className="px-3 py-2 bg-pink-100 hover:bg-pink-200 text-pink-700 rounded-lg transition-colors flex items-center gap-1 text-xs font-medium"
-                              >
-                                {copiedLinks[index] ? (
-                                  <>
-                                    <CheckCircle className="w-3 h-3" />
-                                    Disalin!
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3 h-3" />
-                                    Salin
-                                  </>
-                                )}
-                              </motion.button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Action Buttons */}
-                        <div className="flex gap-2">
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => handleSendWhatsApp(index)}
-                            disabled={!guest.name.trim() || !guest.whatsapp?.trim()}
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Phone className="w-4 h-4" />
-                            Kirim ke WhatsApp
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleRemoveGuest(index)}
-                            className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <XCircle className="w-5 h-5" />
-                          </motion.button>
-                        </div>
-                      </div>
-                    )
-                  })}
-                  {guests.length === 0 && (
-                    <div className="text-center py-8 bg-gray-50 rounded-2xl">
-                      <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p className="text-sm text-gray-500">Belum ada tamu. Klik "Tambah Tamu" untuk menambah.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="pt-4 border-t border-gray-200">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setShowSendModal(false)
-                    setSelectedInvitation(null)
-                    setGuests([])
-                    setCopiedLinks({})
-                  }}
-                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium text-gray-700 transition-colors"
-                >
-                  Tutup
-                </motion.button>
+          {/* Theme Font / Jenis Tulisan */}
+          {activeMenu === 'theme' && activeSubMenu === 'font' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100 space-y-6">
+              <h3 className="font-bold text-lg">Jenis Tulisan</h3>
+              <div><label className="text-sm font-medium text-slate-700">Font Judul</label>
+              <select className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none">
+                <option>Playfair Display</option><option>Great Vibes</option><option>Cormorant Garamond</option><option>Cinzel</option><option>Alex Brush</option>
+              </select></div>
+              <div><label className="text-sm font-medium text-slate-700">Font Body</label>
+              <select className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none">
+                <option>Inter</option><option>Poppins</option><option>Lato</option><option>Open Sans</option><option>Montserrat</option>
+              </select></div>
+              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                <span className="text-sm font-semibold text-slate-700">Jenis tulisan</span>
+                <button className="text-sm font-semibold text-pink-500 hover:text-pink-600">Simpan</button>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+
+          {/* Content Forms */}
+          {activeMenu === 'content' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100 space-y-6">
+              <h3 className="font-bold text-lg capitalize">{activeSubMenu === 'sampul' ? 'Sampul / Cover' : activeSubMenu === 'pembukaan' ? 'Pembukaan' : activeSubMenu === 'profil' ? 'Profil Pasangan' : activeSubMenu === 'acara' ? 'Detail Acara' : activeSubMenu === 'galeri' ? 'Album Foto' : 'Penutup'}</h3>
+              {activeSubMenu === 'sampul' && (<div className="space-y-4">
+                <div><label className="text-sm font-medium text-slate-700">Judul Sampul</label><input type="text" placeholder="The Wedding Of" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 focus:ring-1 focus:ring-pink-200 outline-none" /></div>
+                <div><label className="text-sm font-medium text-slate-700">Nama Pasangan</label><input type="text" placeholder="Andi & Sari" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 focus:ring-1 focus:ring-pink-200 outline-none" /></div>
+                <div><label className="text-sm font-medium text-slate-700">Upload Foto Sampul</label><input type="file" accept="image/*" className="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-pink-50 file:text-pink-600 file:font-medium" /></div>
+              </div>)}
+              {activeSubMenu === 'pembukaan' && (<div className="space-y-4">
+                <div><label className="text-sm font-medium text-slate-700">Kutipan / Ayat</label><textarea rows={3} placeholder="QS. Ar-Rum: 21" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 focus:ring-1 focus:ring-pink-200 outline-none" /></div>
+              </div>)}
+              {activeSubMenu === 'profil' && (<div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3 p-4 bg-slate-50 rounded-xl"><h4 className="font-semibold text-pink-600">Mempelai Pria</h4>
+                    <input type="text" placeholder="Nama lengkap" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                    <input type="text" placeholder="Putra dari Bapak & Ibu..." className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                    <input type="text" placeholder="@instagram" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                  </div>
+                  <div className="space-y-3 p-4 bg-slate-50 rounded-xl"><h4 className="font-semibold text-pink-600">Mempelai Wanita</h4>
+                    <input type="text" placeholder="Nama lengkap" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                    <input type="text" placeholder="Putri dari Bapak & Ibu..." className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                    <input type="text" placeholder="@instagram" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                  </div>
+                </div>
+              </div>)}
+              {activeSubMenu === 'acara' && (<div className="space-y-4">
+                <div><label className="text-sm font-medium text-slate-700">Nama Acara</label><input type="text" placeholder="Akad Nikah" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div><label className="text-sm font-medium text-slate-700">Tanggal</label><input type="date" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                  <div><label className="text-sm font-medium text-slate-700">Waktu</label><input type="time" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                </div>
+                <div><label className="text-sm font-medium text-slate-700">Tempat / Venue</label><input type="text" placeholder="Gedung Serbaguna" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                <div><label className="text-sm font-medium text-slate-700">Alamat Lengkap</label><textarea rows={2} className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                <div><label className="text-sm font-medium text-slate-700">Link Google Maps</label><input type="url" placeholder="https://goo.gl/maps/..." className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+              </div>)}
+              {activeSubMenu === 'galeri' && (<div className="space-y-4">
+                <p className="text-sm text-slate-500">Upload foto-foto momen spesial kalian (maks 10 foto).</p>
+                <input type="file" accept="image/*" multiple className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-pink-50 file:text-pink-600 file:font-medium" />
+              </div>)}
+              {activeSubMenu === 'penutup' && (<div className="space-y-4">
+                <div><label className="text-sm font-medium text-slate-700">Pesan Penutup</label><textarea rows={3} placeholder="Terima kasih atas kehadiran dan doa restunya..." className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+              </div>)}
+              <div className="flex justify-end pt-4"><button className="px-6 py-2.5 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600">Simpan</button></div>
+            </motion.div>
+          )}
+
+          {/* Guest / Tamu Area */}
+          {activeMenu === 'guest' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100">
+              <h2 className="text-xl font-bold mb-4">Daftar Tamu & Kirim Undangan</h2>
+              {invitations.length === 0 ? (
+                <div className="p-10 text-center text-slate-500"><p>Belum ada undangan.</p></div>
+              ) : (
+                <div className="space-y-4">
+                  {invitations.map(inv => (
+                    <div key={inv.id} className="p-4 border border-slate-200 rounded-2xl flex justify-between items-center">
+                      <div><h3 className="font-bold">{inv.title}</h3><p className="text-sm text-slate-500">{inv.invitationLink}</p></div>
+                      <button className="px-4 py-2 bg-pink-500 text-white rounded-xl text-sm font-medium hover:bg-pink-600">Kirim</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Settings - Musik */}
+          {activeMenu === 'settings' && activeSubMenu === 'musik' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100 space-y-6">
+              <h3 className="font-bold text-lg">Musik Latar</h3>
+              <div><label className="text-sm font-medium text-slate-700">URL Musik (MP3)</label><input type="url" placeholder="https://..." className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+              <div className="flex items-center gap-3"><input type="checkbox" id="autoplay" className="w-4 h-4 accent-pink-500" /><label htmlFor="autoplay" className="text-sm text-slate-700">Auto-play saat undangan dibuka</label></div>
+              <div className="flex justify-end"><button className="px-6 py-2.5 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600">Simpan</button></div>
+            </motion.div>
+          )}
+
+          {/* Settings - Landing Page (RESTORED) */}
+          {activeMenu === 'settings' && activeSubMenu === 'landing' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 space-y-5">
+                  <h3 className="font-bold text-lg">Pengaturan Custom Landing Page</h3>
+                  <div><label className="text-sm font-medium text-slate-700">Custom Slug Profil (URL)</label>
+                    <div className="mt-1 flex items-center gap-2"><span className="text-sm text-slate-400 bg-slate-50 px-3 py-2.5 rounded-l-xl border border-r-0 border-slate-200">katalog-id.vercel.app /</span>
+                    <input type="text" value={lpSlug} onChange={e => setLpSlug(e.target.value)} placeholder="nama-kamu" className="flex-1 px-4 py-2.5 rounded-r-xl border border-slate-200 focus:border-pink-400 outline-none" /></div>
+                  </div>
+                  <div><label className="text-sm font-medium text-slate-700">Logo (Upload dari Komputer/HP)</label>
+                    <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if(!f) return; if(f.size > 1024*1024){alert('Max 1MB');return;} const r = new FileReader(); r.onload = (ev) => setLpConfig({...lpConfig, logoUrl: ev.target?.result as string}); r.readAsDataURL(f); }} className="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-pink-50 file:text-pink-600 file:font-medium" />
+                    <p className="text-xs text-slate-400 mt-1">Logo URL otomatis tersimpan jika gambar diunggah.</p>
+                  </div>
+                  <div><label className="text-sm font-medium text-slate-700">Pilih Warna Tema</label>
+                    <select value={lpConfig.themeColor} onChange={e => setLpConfig({...lpConfig, themeColor: e.target.value})} className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none">
+                      <option value="pink">Pink (Default)</option><option value="green">Green</option><option value="blue">Blue</option><option value="purple">Purple</option><option value="amber">Amber</option>
+                    </select>
+                  </div>
+                  <div><label className="text-sm font-medium text-slate-700">Nomor WhatsApp Bisnis</label>
+                    <input type="text" value={lpConfig.whatsappNumber || ''} onChange={e => setLpConfig({...lpConfig, whatsappNumber: e.target.value})} placeholder="62812345678" className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                  </div>
+                  <div><label className="text-sm font-medium text-slate-700">Lokasi / Alamat Lengkap</label>
+                    <textarea rows={2} value={lpConfig.address || ''} onChange={e => setLpConfig({...lpConfig, address: e.target.value})} className="mt-1 w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-pink-400 outline-none" />
+                  </div>
+                  <div><label className="text-sm font-medium text-slate-700 mb-2 block">Link Sosial Media</label>
+                    {['instagram','tiktok','facebook','twitter'].map(soc => (
+                      <div key={soc} className="flex items-center gap-3 mb-2">
+                        <input type="checkbox" checked={lpConfig.socialMedia?.[soc]?.enabled || false} onChange={e => setLpConfig({...lpConfig, socialMedia: {...lpConfig.socialMedia, [soc]: {...lpConfig.socialMedia?.[soc], enabled: e.target.checked}}})} className="w-4 h-4 accent-pink-500" />
+                        <span className="text-xs font-semibold uppercase text-slate-600 w-20">{soc}</span>
+                        <input type="text" value={lpConfig.socialMedia?.[soc]?.url || ''} onChange={e => setLpConfig({...lpConfig, socialMedia: {...lpConfig.socialMedia, [soc]: {...lpConfig.socialMedia?.[soc], url: e.target.value}}})} placeholder={`URL ${soc}`} className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm focus:border-pink-400 outline-none" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 space-y-5">
+                  <h3 className="font-bold text-lg">Paket Harga (Pricing)</h3>
+                  <p className="text-sm text-slate-500">Ubah nama paket, harga, dan fitur (pisahkan dengan baris baru / Enter).</p>
+                  {(lpConfig.pricingPackages || []).map((pkg: any, i: number) => (
+                    <div key={pkg.id || i} className="border border-slate-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between"><h4 className="font-semibold">Paket {i + 1}</h4>
+                        <label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" checked={pkg.enabled !== false} onChange={e => { const pkgs = [...lpConfig.pricingPackages]; pkgs[i] = {...pkgs[i], enabled: e.target.checked}; setLpConfig({...lpConfig, pricingPackages: pkgs}); }} className="sr-only peer" /><div className="w-11 h-6 bg-slate-200 peer-checked:bg-teal-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" /></label>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div><label className="text-xs text-slate-500">Nama Paket</label><input type="text" value={pkg.name} onChange={e => { const pkgs = [...lpConfig.pricingPackages]; pkgs[i] = {...pkgs[i], name: e.target.value}; setLpConfig({...lpConfig, pricingPackages: pkgs}); }} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:border-pink-400 outline-none" /></div>
+                        <div><label className="text-xs text-slate-500">Harga (Rp)</label><input type="text" value={pkg.price} onChange={e => { const pkgs = [...lpConfig.pricingPackages]; pkgs[i] = {...pkgs[i], price: e.target.value}; setLpConfig({...lpConfig, pricingPackages: pkgs}); }} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:border-pink-400 outline-none" /></div>
+                      </div>
+                      <div><label className="text-xs text-slate-500">Fitur (pisahkan enter)</label><textarea rows={3} value={pkg.features} onChange={e => { const pkgs = [...lpConfig.pricingPackages]; pkgs[i] = {...pkgs[i], features: e.target.value}; setLpConfig({...lpConfig, pricingPackages: pkgs}); }} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:border-pink-400 outline-none" /></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button onClick={async () => { setIsSavingLp(true); try { const r = await fetch('/api/member/profile', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ memberId, customSlug: lpSlug, landingPageConfig: lpConfig }) }); const d = await r.json(); if(d.success){alert('Berhasil disimpan!');fetchProfile()}else{alert(d.error||'Gagal')} } catch{alert('Error')} finally{setIsSavingLp(false)} }} disabled={isSavingLp} className="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:opacity-50 transition-colors">
+                {isSavingLp ? 'Menyimpan...' : 'Simpan Semua Pengaturan'}
+              </button>
+            </motion.div>
+          )}
+
+        </div>
+      </main>
+
+      {/* 3. LIVE PREVIEW (Right Column) */}
+      <aside className="hidden lg:flex flex-col w-[380px] xl:w-[420px] bg-gradient-to-b from-slate-50 to-slate-100 border-l border-slate-200 relative z-20">
+        <div className="flex items-center justify-between px-5 py-3">
+          <span className="text-xs font-medium text-slate-500 tracking-wide">mode tampilan</span>
+          <div className="flex items-center gap-1 border border-slate-200 bg-white p-1 rounded-lg">
+            <button onClick={() => setPreviewMode('mobile')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-pink-50 text-pink-600 border border-pink-200' : 'text-slate-400 hover:text-slate-600'}`}><Smartphone className="w-4 h-4" /></button>
+            <button onClick={() => setPreviewMode('desktop')} className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-pink-50 text-pink-600 border border-pink-200' : 'text-slate-400 hover:text-slate-600'}`}><Monitor className="w-4 h-4" /></button>
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col justify-center items-center overflow-hidden px-4 pb-4">
+          {selectedInvitation ? (
+            <>
+              <div className={`transition-all duration-500 ease-in-out bg-black overflow-hidden relative ${previewMode === 'mobile' ? 'w-[290px] h-[590px] rounded-[3rem] border-[6px] border-slate-900 shadow-[0_0_40px_rgba(0,0,0,0.15)]' : 'w-full h-full rounded-xl border border-slate-200 shadow-sm bg-white'}`}>
+                {previewMode === 'mobile' && (
+                  <>
+                    {/* Status Bar */}
+                    <div className="absolute top-0 left-0 right-0 h-7 bg-black z-50 flex items-center justify-between px-6 text-white text-[10px] font-semibold">
+                      <span>9:41</span>
+                      <div className="flex items-center gap-1">
+                        <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><rect x="0" y="4" width="3" height="6" rx="0.5"/><rect x="4" y="2" width="3" height="8" rx="0.5"/><rect x="8" y="0" width="3" height="10" rx="0.5"/></svg>
+                        <svg width="16" height="10" viewBox="0 0 16 10" fill="white"><rect x="0" y="0" width="14" height="10" rx="2" stroke="white" strokeWidth="1" fill="none"/><rect x="2" y="2" width="9" height="6" rx="1" fill="white"/><rect x="15" y="3" width="1" height="4" rx="0.5" fill="white"/></svg>
+                      </div>
+                    </div>
+                    {/* Dynamic Island */}
+                    <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-full z-50" />
+                  </>
+                )}
+                <iframe src={selectedInvitation.invitationLink} className={`w-full h-full border-none ${previewMode === 'mobile' ? 'rounded-[2.4rem]' : ''}`} title="Preview" />
+              </div>
+              {previewMode === 'mobile' && (
+                <p className="mt-3 text-xs text-slate-400 text-center">{selectedInvitation.title?.toLowerCase().replace(/\s+/g, '-') || 'preview'}</p>
+              )}
+            </>
+          ) : (
+            <div className="text-slate-400 text-center">
+              <Smartphone className="w-12 h-12 mx-auto mb-4 opacity-20" />
+              <p className="text-sm">Pilih undangan untuk melihat preview.</p>
+            </div>
+          )}
+        </div>
+      </aside>
     </div>
   )
 }

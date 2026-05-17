@@ -108,6 +108,17 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     defaultMessage:
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.\n\nDetail lengkap undangan:\n{link_undangan}\n\nMerupakan suatu kehormatan bagi kami apabila Anda berkenan hadir.',
   },
+  {
+    id: 'dreamy-javanese',
+    title: 'Dreamy Javanese',
+    category: 'Pernikahan',
+    accent: 'from-orange-200 to-amber-100',
+    description: 'Tema tradisional Jawa eksklusif dengan elemen wayang dan floral premium. Terinspirasi dari our-wedding.link.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Dreamy Javanese',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami.\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.\n\nDetail lengkap undangan:\n{link_undangan}\n\nAtas kehadiran dan doa restunya kami ucapkan terima kasih.',
+  },
 ]
 
 export function getTemplateById(id: string) {
