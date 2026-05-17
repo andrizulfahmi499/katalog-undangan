@@ -86,6 +86,10 @@ model Invitations {
   invitationMessages InvitationMessages[]
   invitationSends    InvitationSends[]
   creditTransactions CreditTransaction[]
+  guests             Guest[]
+  weddingSessions    WeddingSession[]
+  digitalAngpao      DigitalAngpao?
+  giftRegistries     GiftRegistry[]
 
   @@index([assignedMemberId])
   @@index([createdById])
@@ -200,4 +204,84 @@ model FavoriteTheme {
   @@unique([memberId, themeSlug])
   @@index([memberId])
   @@map("FavoriteTheme")
+}
+
+// Guest data for invitations
+model Guest {
+  id               String      @id @default(cuid())
+  invitationId     String
+  name             String
+  whatsapp         String?
+  category         String      @default("Reguler") // 'VIP' | 'Reguler'
+  session          String      @default("Sesi 1")
+  sessionId        String?
+  tableNumber      String      @default("")
+  rsvpStatus       String      @default("Pending") // 'Hadir' | 'Menolak' | 'Pending'
+  checkIn          Boolean     @default(false)
+  invitationToken  String      @unique @default(cuid())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  invitation       Invitations @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  weddingSession   WeddingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  claimedGifts     GiftRegistry[]
+
+  @@index([invitationId])
+  @@index([sessionId])
+  @@map("Guest")
+}
+
+// Session Management for Crowd Control
+model WeddingSession {
+  id           String      @id @default(cuid())
+  invitationId String
+  sessionName  String
+  startTime    String
+  endTime      String
+  maxCapacity  Int         @default(100)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  invitation   Invitations @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guests       Guest[]
+
+  @@index([invitationId])
+  @@map("WeddingSession")
+}
+
+// Digital Angpao & QRIS Configuration
+model DigitalAngpao {
+  id              String      @id @default(cuid())
+  invitationId    String      @unique
+  bankName        String
+  accountNumber   String
+  accountName     String
+  qrisImageBase64 String?     @db.Text
+  deliveryAddress String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  invitation      Invitations @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  
+  @@map("DigitalAngpao")
+}
+
+// Gift Registry for Physical Gifts
+model GiftRegistry {
+  id                String      @id @default(cuid())
+  invitationId      String
+  itemName          String
+  itemImageBase64   String?     @db.Text
+  buyUrl            String?     @db.Text
+  isClaimed         Boolean     @default(false)
+  claimedByGuestId  String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  invitation        Invitations @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  claimedByGuest    Guest?      @relation(fields: [claimedByGuestId], references: [id], onDelete: SetNull)
+
+  @@index([invitationId])
+  @@index([claimedByGuestId])
+  @@map("GiftRegistry")
 }

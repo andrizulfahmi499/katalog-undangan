@@ -91,37 +91,7 @@ export function SplashScreen() {
           </svg>
         </motion.div>
 
-        {/* Decorative leaf accents */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] pointer-events-none">
-          <motion.svg
-            viewBox="0 0 100 60"
-            className="absolute -left-8 top-1/2 -translate-y-1/2 w-10 h-6"
-            fill="none"
-            stroke="rgba(237,237,237,0.2)"
-            strokeWidth="1"
-          >
-            <motion.path
-              d={LEAF_PATH_1}
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.2, delay: 0.8, ease: 'easeInOut' }}
-            />
-          </motion.svg>
-          <motion.svg
-            viewBox="0 0 100 60"
-            className="absolute -right-8 top-1/2 -translate-y-1/2 w-10 h-6"
-            fill="none"
-            stroke="rgba(237,237,237,0.2)"
-            strokeWidth="1"
-          >
-            <motion.path
-              d={LEAF_PATH_2}
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.2, delay: 0.9, ease: 'easeInOut' }}
-            />
-          </motion.svg>
-        </div>
+
 
         {/* Logo: DEAR my LOVE */}
         <motion.div

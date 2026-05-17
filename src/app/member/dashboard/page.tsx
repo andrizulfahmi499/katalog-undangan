@@ -8,6 +8,7 @@ import {
   CreditCard, CheckCircle, Clock, Copy, Image, Type, Palette, Music,
   Globe, Heart, Camera, CalendarDays, BookOpen, Video, Gift, Sliders
 } from 'lucide-react'
+import GuestManagementView from '@/components/dashboard/guest-management/GuestManagementView'
 
 // Types
 type Invitation = {
@@ -137,7 +138,13 @@ export default function MemberDashboard() {
       { id: 'galeri', label: 'Album Foto', svg: svgIcon('12') },
       { id: 'penutup', label: 'Penutup', svg: svgIcon('15') },
     ]},
-    { id: 'guest', label: 'Tamu', svg: svgIcon('16') },
+    { id: 'guest', label: 'Tamu', svg: svgIcon('16'), subMenus: [
+      { id: 'list', label: 'Daftar Tamu', svg: svgIcon('16') },
+      { id: 'management', label: 'Management Tamu', svg: svgIcon('17') },
+      { id: 'management-ai', label: 'AI Greeting Generator', svg: svgIcon('15') },
+      { id: 'management-sessions', label: 'Pengaturan Sesi & Kuota', svg: svgIcon('11') },
+      { id: 'management-qris', label: 'QRIS & Gift Registry', svg: svgIcon('14') },
+    ]},
     { id: 'settings', label: 'Pengaturan', svg: svgIcon('17'), subMenus: [
       { id: 'musik', label: 'Musik Latar', svg: svgIcon('13') },
       { id: 'landing', label: 'Landing Page', svg: svgIcon('18') },
@@ -416,7 +423,7 @@ export default function MemberDashboard() {
           )}
 
           {/* Guest / Tamu Area */}
-          {activeMenu === 'guest' && (
+          {activeMenu === 'guest' && activeSubMenu === 'list' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-6 rounded-2xl border border-slate-100">
               <h2 className="text-xl font-bold mb-4">Daftar Tamu & Kirim Undangan</h2>
               {invitations.length === 0 ? (
@@ -432,6 +439,16 @@ export default function MemberDashboard() {
                 </div>
               )}
             </motion.div>
+          )}
+
+          {/* Guest Management Area Baru */}
+          {activeMenu === 'guest' && (
+            (() => {
+              if (activeSubMenu.startsWith('management')) {
+                return <GuestManagementView invitationId={selectedInvitation?.id} initialAction={activeSubMenu} />
+              }
+              return null;
+            })()
           )}
 
           {/* Settings - Musik */}

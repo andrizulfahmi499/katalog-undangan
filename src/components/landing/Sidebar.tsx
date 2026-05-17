@@ -186,10 +186,10 @@ export function Sidebar() {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden pl-12 pr-2 flex flex-col gap-1 mt-1"
                           >
-                            <a href="/login" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
+                            <a href="/login?role=admin" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-white/30"></span> Admin
                             </a>
-                            <a href="/login-member" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
+                            <a href="/login?role=member" onClick={() => setIsOpen(false)} className="px-3 py-2 text-[14px] text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-white/30"></span> Member
                             </a>
                           </motion.div>
