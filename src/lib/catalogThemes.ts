@@ -9,13 +9,13 @@ export type CatalogTheme = {
 
 const BASE = 'https://id.akainvitation.com'
 
-function makeTheme(slug: string, name: string, category: string, tags: string[]): CatalogTheme {
+function makeTheme(slug: string, name: string, category: string, tags: string[], customImage?: string): CatalogTheme {
   return {
     slug,
     name,
     category,
     tags,
-    imageUrl: `${BASE}/themes/${slug}/${slug}.webp`,
+    imageUrl: customImage || `${BASE}/themes/${slug}/${slug}.webp`,
     previewUrl: `${BASE}/preview/${slug}`,
   }
 }
@@ -24,11 +24,11 @@ export const CATALOG_THEMES: CatalogTheme[] = [
   makeTheme('sage-watercolor', 'Sage Watercolor', 'Pernikahan', ['watercolor', 'sage', 'elegan']),
   makeTheme('fairy-pink', 'Fairy Pink', 'Pernikahan', ['pink', 'fairy', 'romantis']),
   makeTheme('minimalist-cream', 'Minimalist Cream', 'Pernikahan', ['minimalis', 'cream', 'modern']),
-  makeTheme('dream-land', 'Dream Land', 'Pernikahan', ['floral', 'elegan', 'premium']),
-  makeTheme('corelia', 'Corelia', 'Pernikahan', ['cream', 'mewah', 'tipografi']),
-  makeTheme('elgaze', 'Elgaze Luxury', 'Pernikahan', ['dark', 'luxury', 'cinematic']),
-  makeTheme('royal-garden', 'Royal Garden', 'Pernikahan', ['royal', 'garden', 'floral', 'elegan']),
-  makeTheme('verdant', 'Verdant Elegance', 'Pernikahan', ['hijau', 'elegan', 'segar']),
+  makeTheme('dream-land', 'Dream Land', 'Pernikahan', ['floral', 'elegan', 'premium'], '/images/themes/dream-land.jpg'),
+  makeTheme('corelia', 'Corelia', 'Pernikahan', ['cream', 'mewah', 'tipografi'], '/images/themes/corelia.png'),
+  makeTheme('elgaze', 'Elgaze Luxury', 'Pernikahan', ['dark', 'luxury', 'cinematic'], '/images/themes/elgaze.webp'),
+  makeTheme('royal-garden', 'Royal Garden', 'Pernikahan', ['royal', 'garden', 'floral', 'elegan'], '/images/themes/royal-garden.jpg'),
+  makeTheme('verdant', 'Verdant Elegance', 'Pernikahan', ['hijau', 'elegan', 'segar'], '/images/themes/verdant.jpg'),
   makeTheme('red-beige', 'Red Beige', 'Pernikahan', ['merah', 'beige', 'klasik']),
   makeTheme('spotilove', 'SpotiLove', 'Pernikahan', ['spotify', 'modern', 'unik']),
   makeTheme('maroon-vintage', 'Maroon Vintage', 'Pernikahan', ['maroon', 'vintage', 'klasik']),

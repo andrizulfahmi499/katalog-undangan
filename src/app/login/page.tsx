@@ -10,55 +10,12 @@ type LoginType = null | 'admin' | 'member'
 
 // ─── Matching Botanical Floral (same as DearMyLoveClone) ─────────────────────
 const FloralBotanical = ({ className = '', mirrored = false }: { className?: string; mirrored?: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 800 900"
-    stroke="white"
-    strokeWidth="1.2"
-    fill="none"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+  <img
+    src="/images/floral-bg.svg"
+    alt="Floral Pattern"
     className={className}
     style={mirrored ? { transform: 'scaleX(-1)' } : {}}
-  >
-    <ellipse cx="320" cy="280" rx="60" ry="70" strokeWidth="1.5"/>
-    <ellipse cx="320" cy="280" rx="30" ry="35"/>
-    <path d="M320 210 Q280 150 250 100 Q310 130 320 210z"/>
-    <path d="M320 210 Q360 150 390 100 Q330 130 320 210z"/>
-    <path d="M260 300 Q190 280 150 250 Q200 300 260 300z"/>
-    <path d="M380 300 Q450 280 490 250 Q440 300 380 300z"/>
-    <path d="M290 360 Q260 420 240 480 Q300 420 290 360z"/>
-    <path d="M350 360 Q380 420 400 480 Q340 420 350 360z"/>
-    <line x1="320" y1="270" x2="300" y2="240"/>
-    <line x1="320" y1="270" x2="330" y2="238"/>
-    <line x1="320" y1="270" x2="340" y2="242"/>
-    <circle cx="300" cy="238" r="4" fill="white" fillOpacity="0.6"/>
-    <circle cx="330" cy="236" r="4" fill="white" fillOpacity="0.6"/>
-    <circle cx="341" cy="240" r="4" fill="white" fillOpacity="0.6"/>
-    <path d="M230 450 Q140 500 80 580 Q120 520 200 480"/>
-    <path d="M230 450 Q190 480 100 500"/>
-    <path d="M200 500 Q130 560 90 630"/>
-    <path d="M200 500 Q150 530 80 540"/>
-    <path d="M80 200 Q30 160 10 80 Q60 140 100 180 Q130 130 180 100 Q150 160 120 200 Q110 240 80 200z"/>
-    <path d="M80 200 Q95 170 100 140"/>
-    <path d="M160 60 Q220 20 300 10"/>
-    <path d="M180 55 Q190 30 200 15"/>
-    <path d="M220 40 Q230 20 245 10"/>
-    <path d="M50 700 Q150 650 250 680 Q350 700 400 750"/>
-    <path d="M150 660 Q160 620 200 600"/>
-    <path d="M200 600 Q240 580 260 550"/>
-    <path d="M260 550 Q280 530 270 500"/>
-    <path d="M100 750 Q60 780 20 800"/>
-    <path d="M80 760 Q50 790 10 820"/>
-    <path d="M100 750 Q120 780 130 820"/>
-    <circle cx="400" cy="750" r="5" fill="white" fillOpacity="0.5"/>
-    <circle cx="420" cy="730" r="3" fill="white" fillOpacity="0.4"/>
-    <circle cx="440" cy="760" r="4" fill="white" fillOpacity="0.5"/>
-    <path d="M400 400 Q450 380 500 400 Q480 430 440 430 Q400 420 400 400z"/>
-    <path d="M480 300 Q530 260 560 220 Q520 270 480 300z"/>
-    <path d="M500 350 Q560 330 600 350 Q560 380 500 350z"/>
-    <path d="M320 380 Q340 450 320 520 Q300 590 320 650 Q340 710 320 750 Q310 780 320 820"/>
-  </svg>
+  />
 )
 
 function LoginForm() {
