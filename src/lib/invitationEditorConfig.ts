@@ -6,7 +6,9 @@ export type EditorSectionItem = {
   label: string
   enabled: boolean
   expanded?: boolean
-  content?: Record<string, string>
+  category?: string
+  layoutId?: string
+  content?: Record<string, any>
 }
 
 export type InvitationEditorConfig = {
@@ -25,6 +27,16 @@ export type InvitationEditorConfig = {
     enabled: boolean
     title: string
   }
+  rsvpConfig?: {
+    isActive: boolean
+    whoCanFill: string
+    showPublicComments: boolean
+    enableReconfirm: boolean
+    enableQRDownload: boolean
+    defaultCountryCode: string
+    fields: any[]
+    customFields: any[]
+  }
 }
 
 const sectionItemSchema = z.object({
@@ -32,7 +44,9 @@ const sectionItemSchema = z.object({
   label: z.string(),
   enabled: z.boolean(),
   expanded: z.boolean().optional(),
-  content: z.record(z.string(), z.string()).optional(),
+  category: z.string().optional(),
+  layoutId: z.string().optional(),
+  content: z.any().optional(),
 })
 
 const editorConfigSchema = z.object({
@@ -56,6 +70,7 @@ const editorConfigSchema = z.object({
       title: z.string().optional(),
     })
     .optional(),
+  rsvpConfig: z.any().optional(),
 })
 
 export const DEFAULT_EDITOR_SECTIONS: EditorSectionItem[] = [
@@ -192,6 +207,23 @@ export function defaultEditorConfig(): InvitationEditorConfig {
     isActive: true,
     invitationType: 'scroll',
     luckyDraw: { enabled: false, title: 'Lucky Draw' },
+    rsvpConfig: {
+      isActive: true,
+      whoCanFill: 'all',
+      showPublicComments: true,
+      enableReconfirm: false,
+      enableQRDownload: false,
+      defaultCountryCode: '+62',
+      fields: [
+        { id: 'name', label: 'Nama', enabled: true, required: true, editable: false },
+        { id: 'group', label: 'Grup / Rombongan', enabled: true, required: false, editable: true },
+        { id: 'whatsapp', label: 'No. WhatsApp', enabled: true, required: false, editable: true },
+        { id: 'attendance', label: 'Kehadiran', enabled: true, required: true, editable: true },
+        { id: 'guestCount', label: 'Jumlah Tamu', enabled: true, required: false, editable: true },
+        { id: 'message', label: 'Komentar atau Ucapan', enabled: true, required: false, editable: true },
+      ],
+      customFields: [],
+    },
   }
 }
 
@@ -215,15 +247,24 @@ function mergeEditorConfig(parsed: z.infer<typeof editorConfigSchema>): Invitati
       enabled: parsed.luckyDraw?.enabled ?? base.luckyDraw.enabled,
       title: parsed.luckyDraw?.title ?? base.luckyDraw.title,
     },
+    rsvpConfig: parsed.rsvpConfig ?? base.rsvpConfig,
   }
 }
 
 /** Parse stored JSON from DB; invalid or missing values fall back to defaults. */
 export function parseEditorConfig(raw: unknown): InvitationEditorConfig {
-  if (raw == null || typeof raw !== 'object') {
+  let parsed = raw
+  if (typeof raw === 'string') {
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      return defaultEditorConfig()
+    }
+  }
+  if (parsed == null || typeof parsed !== 'object') {
     return defaultEditorConfig()
   }
-  const result = editorConfigSchema.safeParse(raw)
+  const result = editorConfigSchema.safeParse(parsed)
   if (!result.success) {
     return defaultEditorConfig()
   }
@@ -238,6 +279,7 @@ export function editorConfigToJson(config: InvitationEditorConfig): object {
     isActive: config.isActive,
     invitationType: config.invitationType,
     luckyDraw: config.luckyDraw,
+    rsvpConfig: config.rsvpConfig,
   }
 }
 

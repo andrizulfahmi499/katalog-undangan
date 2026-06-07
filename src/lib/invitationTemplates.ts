@@ -119,6 +119,17 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     defaultMessage:
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami.\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.\n\nDetail lengkap undangan:\n{link_undangan}\n\nAtas kehadiran dan doa restunya kami ucapkan terima kasih.',
   },
+  {
+    id: 'black-aysha',
+    title: 'Black Aysha',
+    category: 'Pernikahan',
+    accent: 'from-stone-900 to-amber-700',
+    description: 'Aplikasi Undangan Online Digital Website premium dengan nuansa Aysha Classic. Menggunakan visualisasi estetik, Javanese/Christian layout ornaments, dan countdown timer.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Aysha Classic',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih atas kehadiran dan doanya.',
+  },
 ]
 
 export function getTemplateById(id: string) {

@@ -86,7 +86,11 @@ export default function CoreliTemplate({ invitation, formattedDate }: CoreliTemp
   const [copied, setCopied] = useState(false)
 
   const cfg = parseEditorConfig(invitation.editorConfig)
-  const sec = (id: string) => cfg.sections.find((s) => s.id === id)?.content ?? {}
+  const sec = (idOrCategory: string) => cfg.sections.find((s) => s.id === idOrCategory || (s as any).category === idOrCategory)?.content ?? {}
+  const isSectionEnabled = (idOrCategory: string) => {
+    const s = cfg.sections.find((s) => s.id === idOrCategory || (s as any).category === idOrCategory)
+    return s ? s.enabled : true
+  }
 
   const opening = sec('opening')
   const groomSec = sec('groom')
@@ -289,27 +293,32 @@ export default function CoreliTemplate({ invitation, formattedDate }: CoreliTemp
         </section>
 
         {/* GALLERY */}
-        <section className="py-16 px-4 max-w-2xl mx-auto">
-          <AnimDiv anim="coreli-fade-up" className="text-center mb-8">
-            <p className="font-outfit text-[9px] uppercase tracking-[0.4em] opacity-50 mb-1">our</p>
-            <h2 className="text-[32px]" style={{ fontFamily: "'Cloudy Aurora', serif" }}>Gallery</h2>
-          </AnimDiv>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-              <div
-                key={n}
-                className="overflow-hidden cursor-pointer aspect-square"
-                onClick={() => setLightbox(`${IMG}img-gallery-${n}.png`)}
-              >
-                <img
-                  src={`${IMG}img-gallery-${n}.png`}
-                  alt={`Gallery ${n}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+        {isSectionEnabled('gallery') && (
+          <section className="py-16 px-4 max-w-2xl mx-auto">
+            <AnimDiv anim="coreli-fade-up" className="text-center mb-8">
+              <p className="font-outfit text-[9px] uppercase tracking-[0.4em] opacity-50 mb-1">our</p>
+              <h2 className="text-[32px]" style={{ fontFamily: "'Cloudy Aurora', serif" }}>Gallery</h2>
+            </AnimDiv>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {(Array.isArray(sec('gallery').images) && sec('gallery').images.length > 0
+                ? sec('gallery').images.filter((img: any) => img.url).map((img: any) => img.url)
+                : Array.from({ length: 10 }, (_, i) => `${IMG}img-gallery-${i + 1}.png`)
+              ).map((photoUrl: string, i: number) => (
+                <div
+                  key={i}
+                  className="overflow-hidden cursor-pointer aspect-square"
+                  onClick={() => setLightbox(photoUrl)}
+                >
+                  <img
+                    src={photoUrl}
+                    alt={`Gallery ${i + 1}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* LIGHTBOX */}
         {lightbox && (

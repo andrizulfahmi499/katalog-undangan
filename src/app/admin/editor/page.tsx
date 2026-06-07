@@ -32,7 +32,15 @@ import {
   type InvitationEditorConfig,
 } from '@/lib/invitationEditorConfig'
 import SectionPreview from '@/components/editor/SectionPreview'
-
+import ThemePickerModal from '@/components/dashboard/editor/ThemePickerModal'
+import MusicManagerModal from '@/components/dashboard/editor/MusicManagerModal'
+import BackgroundManagerModal from '@/components/dashboard/editor/BackgroundManagerModal'
+import RSVPSettingsModal from '@/components/dashboard/editor/RSVPSettingsModal'
+import SendInvitationModal from '@/components/dashboard/editor/SendInvitationModal'
+import GlobalSettingsModal from '@/components/dashboard/editor/GlobalSettingsModal'
+import LayoutPickerModal from '@/components/dashboard/editor/LayoutPickerModal'
+import PageContentEditor from '@/components/dashboard/editor/PageContentEditor'
+import { PAGE_CATEGORIES } from '@/lib/pageCategories'
 type Member = {
   id: string
   name: string
@@ -64,11 +72,26 @@ function AdminEditorPageInner() {
   const [isActive, setIsActive] = useState(true)
   const [invitationType, setInvitationType] = useState(false) // false=scroll, true=paged
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
-  const [activeToolPanel, setActiveToolPanel] = useState<'tema' | 'music' | 'background' | 'luckyDraw' | null>(null)
+  const [activeToolPanel, setActiveToolPanel] = useState<'luckyDraw' | null>(null)
   const [isLoadingInvitation, setIsLoadingInvitation] = useState(false)
   const [luckyDraw, setLuckyDraw] = useState({ enabled: false, title: 'Lucky Draw' })
   const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null)
-  const [inlineEditContent, setInlineEditContent] = useState<Record<string, string>>({})
+  const [inlineEditContent, setInlineEditContent] = useState<Record<string, any>>({})
+  const [rsvpConfig, setRsvpConfig] = useState<any>({})
+  const [isLayoutPickerOpen, setIsLayoutPickerOpen] = useState(false)
+  const [iframeKey, setIframeKey] = useState(0)
+
+  // Modal states
+  const [modals, setModals] = useState({
+    theme: false,
+    music: false,
+    background: false,
+    rsvp: false,
+    send: false,
+    settings: false,
+  })
+  const openModal = (key: keyof typeof modals) => setModals(prev => ({ ...prev, [key]: true }))
+  const closeModal = (key: keyof typeof modals) => setModals(prev => ({ ...prev, [key]: false }))
 
   const refTextBlock = useRef<HTMLDivElement>(null)
   const refMemberSave = useRef<HTMLDivElement>(null)
@@ -151,6 +174,7 @@ function AdminEditorPageInner() {
         setIsActive(ec.isActive)
         setInvitationType(ec.invitationType === 'paged')
         setLuckyDraw(ec.luckyDraw)
+        setRsvpConfig(ec.rsvpConfig ?? {})
         setCreatedInvitation(inv)
       })
       .catch(() => {
@@ -191,13 +215,55 @@ function AdminEditorPageInner() {
     setForm((prev) => ({ ...prev, [field]: value }))
   }, [])
 
-  const handleToggleSection = useCallback((id: string) => {
-    setSections((prev) =>
-      prev.map((section) =>
+  const saveEditorConfigDirect = useCallback(async (updatedSections: SectionItem[]) => {
+    setIsSaving(true)
+    try {
+      if (editingInvitationId) {
+        const cfg = {
+          version: 1,
+          sections: updatedSections,
+          ui: {
+            primaryColor: form.primaryColor,
+            backgroundColor: form.backgroundColor,
+            backgroundImageUrl: form.backgroundImageUrl,
+            musicUrl: form.musicUrl,
+            musicEnabled: form.musicEnabled,
+          },
+          isActive,
+          invitationType: invitationType ? 'paged' : 'scroll',
+          luckyDraw,
+          rsvpConfig,
+        }
+        const editorPayload = editorConfigToJson(cfg)
+        await fetch(`/api/admin/invitations/${editingInvitationId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ editorConfig: editorPayload }),
+        })
+        setIframeKey((k) => k + 1)
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [editingInvitationId, form, isActive, invitationType, luckyDraw, rsvpConfig])
+
+  const handleToggleSection = useCallback(async (id: string) => {
+    let updatedSections: SectionItem[] = []
+    setSections((prev) => {
+      updatedSections = prev.map((section) =>
         section.id === id ? { ...section, enabled: !section.enabled } : section
       )
-    )
-  }, [])
+      return updatedSections
+    })
+    // Wait a tiny bit for the state update, but pass it directly to avoid stale closures
+    setTimeout(() => {
+      if (updatedSections.length > 0) {
+        saveEditorConfigDirect(updatedSections)
+      }
+    }, 50)
+  }, [saveEditorConfigDirect])
 
   const handleOpenEdit = useCallback((section: SectionItem) => {
     setExpandedSectionId((prev) => {
@@ -207,16 +273,38 @@ function AdminEditorPageInner() {
     })
   }, [])
 
-  const handleSaveInlineEdit = useCallback((sectionId: string) => {
-    setSections((prev) =>
-      prev.map((s) => s.id === sectionId ? { ...s, content: inlineEditContent } : s)
-    )
+  const handleSaveInlineEdit = useCallback(async (sectionId: string) => {
+    const updatedSections = sections.map((s) => s.id === sectionId ? { ...s, content: inlineEditContent } : s)
+    setSections(updatedSections)
     setExpandedSectionId(null)
-  }, [inlineEditContent])
+    await saveEditorConfigDirect(updatedSections)
+    setSuccessMessage('Perubahan section tersimpan!')
+  }, [inlineEditContent, sections, saveEditorConfigDirect])
 
-  const handleDeleteSection = useCallback((id: string) => {
-    setSections((prev) => prev.filter((s) => s.id !== id))
-  }, [])
+  const handleAddPage = useCallback(async (categoryId: string, layoutId: string) => {
+    const categoryInfo = PAGE_CATEGORIES.find(c => c.id === categoryId)
+    const layoutInfo = categoryInfo?.layouts.find(l => l.id === layoutId)
+    
+    const newSection: SectionItem = {
+      id: `${categoryId}-${Date.now()}`,
+      label: categoryInfo?.name || 'Halaman Baru',
+      enabled: true,
+      category: categoryId,
+      layoutId: layoutId,
+      content: layoutInfo?.defaultContent ? JSON.parse(JSON.stringify(layoutInfo.defaultContent)) : {}
+    }
+    
+    const updatedSections = [...sections, newSection]
+    setSections(updatedSections)
+    setIsLayoutPickerOpen(false)
+    await saveEditorConfigDirect(updatedSections)
+  }, [sections, saveEditorConfigDirect])
+
+  const handleDeleteSection = useCallback(async (id: string) => {
+    const updatedSections = sections.filter((s) => s.id !== id)
+    setSections(updatedSections)
+    await saveEditorConfigDirect(updatedSections)
+  }, [sections, saveEditorConfigDirect])
 
   const handleTemplateSelect = (id: string) => {
     setSelectedTemplateId(id)
@@ -240,6 +328,7 @@ function AdminEditorPageInner() {
       isActive,
       invitationType: invitationType ? 'paged' : 'scroll',
       luckyDraw,
+      rsvpConfig,
     }
   }, [
     sections,
@@ -251,6 +340,7 @@ function AdminEditorPageInner() {
     isActive,
     invitationType,
     luckyDraw,
+    rsvpConfig,
   ])
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -348,41 +438,31 @@ function AdminEditorPageInner() {
     (menuId: string) => {
       setActiveMenu(menuId)
       if (menuId === 'pengaturan') {
-        setActiveToolPanel(null)
-        scrollToRef(refTextBlock)
-        setTimeout(() => scrollToRef(refMemberSave), 400)
+        openModal('settings')
       } else if (menuId === 'tema') {
-        setActiveToolPanel((p) => (p === 'tema' ? null : 'tema'))
+        openModal('theme')
       } else if (menuId === 'music') {
-        setActiveToolPanel((p) => (p === 'music' ? null : 'music'))
+        openModal('music')
       } else if (menuId === 'background') {
-        setActiveToolPanel((p) => (p === 'background' ? null : 'background'))
+        openModal('background')
       } else if (menuId === 'rsvp') {
-        setActiveToolPanel(null)
-        const sec = sections.find((s) => s.id === 'rsvp')
-        if (sec) handleOpenEdit(sec)
-        else scrollToRef(refSectionsBlock)
+        openModal('rsvp')
       } else if (menuId === 'layarSapa') {
-        setActiveToolPanel(null)
         const sec = sections.find((s) => s.id === 'opening')
         if (sec) handleOpenEdit(sec)
         else scrollToRef(refSectionsBlock)
       } else if (menuId === 'preview') {
-        setActiveToolPanel(null)
         const origin = window.location.origin
         const id = createdInvitation?.id || editingInvitationId
-        const url =
-          form.invitationLink.trim() ||
-          (id ? `${origin}/invitation/${id}` : '')
+        const url = form.invitationLink.trim() || (id ? `${origin}/invitation/${id}` : '')
         if (url) window.open(url, '_blank', 'noopener,noreferrer')
       } else if (menuId === 'kirim') {
-        setActiveToolPanel(null)
-        void copyShareLink()
+        openModal('send')
       } else if (menuId === 'luckyDraw') {
         setActiveToolPanel((p) => (p === 'luckyDraw' ? null : 'luckyDraw'))
       }
     },
-    [sections, handleOpenEdit, copyShareLink, createdInvitation?.id, editingInvitationId, form.invitationLink]
+    [sections, handleOpenEdit, createdInvitation?.id, editingInvitationId, form.invitationLink]
   )
 
   const GRID_MENUS = [
@@ -527,9 +607,12 @@ function AdminEditorPageInner() {
                   const Icon = menu.icon
                   const isHighlighted =
                     activeMenu === menu.id ||
-                    (menu.id === 'tema' && activeToolPanel === 'tema') ||
-                    (menu.id === 'music' && activeToolPanel === 'music') ||
-                    (menu.id === 'background' && activeToolPanel === 'background') ||
+                    (menu.id === 'tema' && modals.theme) ||
+                    (menu.id === 'music' && modals.music) ||
+                    (menu.id === 'background' && modals.background) ||
+                    (menu.id === 'rsvp' && modals.rsvp) ||
+                    (menu.id === 'kirim' && modals.send) ||
+                    (menu.id === 'pengaturan' && modals.settings) ||
                     (menu.id === 'luckyDraw' && activeToolPanel === 'luckyDraw')
                   return (
                     <motion.button
@@ -553,118 +636,6 @@ function AdminEditorPageInner() {
               </div>
 
               <AnimatePresence>
-                {activeToolPanel === 'tema' && (
-                  <motion.div
-                    key="panel-tema"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-semibold text-[#2D3436]">Pilih tema</span>
-                      <button
-                        type="button"
-                        onClick={() => setActiveToolPanel(null)}
-                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
-                      >
-                        Tutup
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                      {TEMPLATE_OPTIONS.map((t) => (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => handleTemplateSelect(t.id)}
-                          className={`text-left rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                            selectedTemplateId === t.id
-                              ? 'bg-[#6C5CE7] text-white'
-                              : 'bg-[#F0F4F8] text-[#2D3436] hover:bg-[#6C5CE7]/15'
-                          }`}
-                        >
-                          {t.title}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeToolPanel === 'music' && (
-                  <motion.div
-                    key="panel-music"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-semibold text-[#2D3436]">Musik</span>
-                      <button
-                        type="button"
-                        onClick={() => setActiveToolPanel(null)}
-                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
-                      >
-                        Tutup
-                      </button>
-                    </div>
-                    <label className="block text-xs font-medium text-[#2D3436] mb-1">URL audio (mp3/ogg)</label>
-                    <input
-                      type="url"
-                      value={form.musicUrl}
-                      onChange={(e) => handleTextChange('musicUrl', e.target.value)}
-                      placeholder="https://..."
-                      className="w-full px-3 py-2 rounded-xl bg-[#F0F4F8] text-sm outline-none mb-3 shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]"
-                    />
-                    <label className="flex items-center gap-2 text-sm text-[#2D3436]">
-                      <input
-                        type="checkbox"
-                        checked={form.musicEnabled}
-                        onChange={(e) =>
-                          setForm((prev) => ({ ...prev, musicEnabled: e.target.checked }))
-                        }
-                      />
-                      Aktifkan musik di undangan
-                    </label>
-                  </motion.div>
-                )}
-
-                {activeToolPanel === 'background' && (
-                  <motion.div
-                    key="panel-bg"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 overflow-hidden rounded-xl bg-[#E0E5EC] p-4 shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-semibold text-[#2D3436]">Background</span>
-                      <button
-                        type="button"
-                        onClick={() => setActiveToolPanel(null)}
-                        className="text-xs text-[#A3B1C6] hover:text-[#2D3436]"
-                      >
-                        Tutup
-                      </button>
-                    </div>
-                    <label className="block text-xs font-medium text-[#2D3436] mb-1">Warna latar preview</label>
-                    <input
-                      type="color"
-                      value={form.backgroundColor}
-                      onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
-                      className="w-full h-10 rounded-xl cursor-pointer mb-3"
-                    />
-                    <label className="block text-xs font-medium text-[#2D3436] mb-1">URL gambar latar (opsional)</label>
-                    <input
-                      type="url"
-                      value={form.backgroundImageUrl}
-                      onChange={(e) => handleTextChange('backgroundImageUrl', e.target.value)}
-                      placeholder="https://..."
-                      className="w-full px-3 py-2 rounded-xl bg-[#F0F4F8] text-sm outline-none shadow-[inset_2px_2px_4px_#A3B1C6,inset_-2px_-2px_4px_#FFFFFF]"
-                    />
-                  </motion.div>
-                )}
-
                 {activeToolPanel === 'luckyDraw' && (
                   <motion.div
                     key="panel-lucky"
@@ -813,36 +784,23 @@ function AdminEditorPageInner() {
                                   />
                                 </div>
 
-                                {/* Edit Fields */}
-                                {Object.keys(inlineEditContent).length > 0 && (
-                                  <div>
-                                    <p className="text-xs text-[#A3B1C6] uppercase tracking-wider mb-2 font-semibold">Edit Konten</p>
-                                    <div className="space-y-2">
-                                      {Object.entries(inlineEditContent).map(([key, value]) => (
-                                        <div key={key}>
-                                          <label className="block text-xs font-medium text-[#2D3436] mb-1 capitalize">
-                                            {key.replace(/([A-Z])/g, ' $1')}
-                                          </label>
-                                          {(value as string).length > 60 ? (
-                                            <textarea
-                                              value={value as string}
-                                              onChange={(e) => setInlineEditContent(prev => ({ ...prev, [key]: e.target.value }))}
-                                              rows={2}
-                                              className="w-full px-3 py-2 rounded-xl bg-[#E0E5EC] text-[#2D3436] text-xs outline-none shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF] resize-none"
-                                            />
-                                          ) : (
-                                            <input
-                                              type="text"
-                                              value={value as string}
-                                              onChange={(e) => setInlineEditContent(prev => ({ ...prev, [key]: e.target.value }))}
-                                              className="w-full px-3 py-2 rounded-xl bg-[#E0E5EC] text-[#2D3436] text-xs outline-none shadow-[inset_3px_3px_6px_#A3B1C6,inset_-3px_-3px_6px_#FFFFFF]"
-                                            />
-                                          )}
-                                        </div>
-                                      ))}
-                                    </div>
+                                {/* Edit Fields via PageContentEditor - always show */}
+                                  <div className="mt-4 border-t border-slate-200 pt-4">
+                                    <PageContentEditor 
+                                      page={{
+                                        id: section.id,
+                                        category: section.category || section.id,
+                                        layoutId: section.layoutId || section.id,
+                                        order: 0,
+                                        isEnabled: section.enabled,
+                                        content: inlineEditContent
+                                      }} 
+                                      hideSaveButton={true}
+                                      onContentChange={(newContent) => {
+                                        setInlineEditContent(newContent)
+                                      }}
+                                    />
                                   </div>
-                                )}
 
                                 {/* Save Button */}
                                 <button
@@ -865,11 +823,17 @@ function AdminEditorPageInner() {
               <motion.button
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setSections(prev => [...prev, { id: `section-${Date.now()}`, label: 'Halaman Baru', enabled: true, content: {} }])}
+                onClick={() => setIsLayoutPickerOpen(true)}
                 className="w-full mt-4 py-3 rounded-xl bg-[#6C5CE7] text-white font-semibold flex items-center justify-center gap-2 shadow-[4px_4px_8px_rgba(108,92,231,0.3),-4px_-4px_8px_#FFFFFF] hover:opacity-90 transition-all"
               >
                 <Plus className="w-4 h-4" /> Tambah Halaman
               </motion.button>
+              
+              <LayoutPickerModal 
+                isOpen={isLayoutPickerOpen} 
+                onClose={() => setIsLayoutPickerOpen(false)} 
+                onSelectLayout={handleAddPage} 
+              />
             </div>
 
             {/* Member & Save */}
@@ -955,7 +919,7 @@ function AdminEditorPageInner() {
                   <div className="bg-white overflow-hidden" style={{ height: '680px' }}>
                     {(createdInvitation?.id || editingInvitationId) ? (
                       <iframe
-                        key={`${createdInvitation?.id || editingInvitationId}-${isSaving ? 'saving' : 'idle'}`}
+                        key={`${createdInvitation?.id || editingInvitationId}-${iframeKey}`}
                         src={`/invitation/${createdInvitation?.id || editingInvitationId}`}
                         className="w-full h-full border-0"
                         title="Preview Undangan"
@@ -1040,6 +1004,80 @@ function AdminEditorPageInner() {
           </motion.div>
         )}
       </div>
+
+      {/* ── Modals ─────────────────────────────────── */}
+      <ThemePickerModal
+        isOpen={modals.theme}
+        currentThemeId={selectedTemplateId}
+        onClose={() => closeModal('theme')}
+        onSaveTheme={(themeId) => {
+          handleTemplateSelect(themeId)
+          closeModal('theme')
+          setSuccessMessage('Tema berhasil diubah!')
+        }}
+      />
+
+      <MusicManagerModal
+        isOpen={modals.music}
+        onClose={() => closeModal('music')}
+        currentMusicUrl={form.musicUrl}
+        musicEnabled={form.musicEnabled}
+        onSave={(url, enabled) => {
+          setForm(prev => ({ ...prev, musicUrl: url, musicEnabled: enabled }))
+          closeModal('music')
+          setSuccessMessage('Pengaturan musik disimpan!')
+        }}
+      />
+
+      <BackgroundManagerModal
+        isOpen={modals.background}
+        onClose={() => closeModal('background')}
+        currentBgColor={form.backgroundColor}
+        currentBgImage={form.backgroundImageUrl}
+        onSave={(bgColor, bgImage) => {
+          setForm(prev => ({ ...prev, backgroundColor: bgColor, backgroundImageUrl: bgImage }))
+          closeModal('background')
+          setSuccessMessage('Background diperbarui!')
+        }}
+      />
+
+      <RSVPSettingsModal
+        isOpen={modals.rsvp}
+        onClose={() => closeModal('rsvp')}
+        initialConfig={rsvpConfig}
+        onSave={(config) => {
+          setRsvpConfig(config)
+          closeModal('rsvp')
+          setSuccessMessage('Pengaturan RSVP disimpan!')
+        }}
+      />
+
+      <SendInvitationModal
+        isOpen={modals.send}
+        onClose={() => closeModal('send')}
+        invitationLink={form.invitationLink || (typeof window !== 'undefined' ? `${window.location.origin}/invitation/${createdInvitation?.id || editingInvitationId || ''}` : '')}
+        invitationTitle={form.title}
+        templateMessage={form.templateMessage}
+      />
+
+      <GlobalSettingsModal
+        isOpen={modals.settings}
+        onClose={() => closeModal('settings')}
+        initialData={{
+          metaTitle: form.title,
+          eventDate: form.eventDate,
+          eventAddress: form.location,
+          slug: form.invitationLink,
+        }}
+        onSave={(settings) => {
+          if (settings.metaTitle) setForm(prev => ({ ...prev, title: settings.metaTitle }))
+          if (settings.eventDate) setForm(prev => ({ ...prev, eventDate: settings.eventDate }))
+          if (settings.eventAddress) setForm(prev => ({ ...prev, location: settings.eventAddress }))
+          if (settings.slug) setForm(prev => ({ ...prev, invitationLink: settings.slug }))
+          closeModal('settings')
+          setSuccessMessage('Pengaturan umum disimpan!')
+        }}
+      />
     </div>
   )
 }

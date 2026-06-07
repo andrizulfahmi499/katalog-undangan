@@ -90,12 +90,32 @@ model Invitations {
   weddingSessions    WeddingSession[]
   digitalAngpao      DigitalAngpao?
   giftRegistries     GiftRegistry[]
+  pages              InvitationPage[]
 
   @@index([assignedMemberId])
   @@index([createdById])
   @@index([status])
   @@map("Invitations")
 }
+
+model InvitationPage {
+  id             String      @id @default(cuid())
+  invitationId   String
+  category       String      // "Opening", "Gallery", "Quotes", "Profil", etc.
+  layoutId       String      // e.g. "opening-arch", "gallery-mosaic"
+  order          Int         // Sorting order
+  isEnabled      Boolean     @default(true)
+  content        Json        // Dynamic content JSON for this layout
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  invitation     Invitations @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@unique([invitationId, order])
+  @@index([invitationId])
+  @@map("InvitationPage")
+}
+
 
 // Custom message templates created by member
 model InvitationMessages {

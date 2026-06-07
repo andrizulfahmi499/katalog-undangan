@@ -33,8 +33,8 @@ interface RoyalGardenTemplateProps {
   editable?: boolean
 }
 
-function getSection(cfg: InvitationEditorConfig, id: string) {
-  return cfg.sections.find(s => s.id === id)
+function getSection(cfg: InvitationEditorConfig, idOrCategory: string) {
+  return cfg.sections.find(s => s.id === idOrCategory || (s as any).category === idOrCategory)
 }
 
 function isSectionEnabled(cfg: InvitationEditorConfig, id: string) {
@@ -139,7 +139,15 @@ export default function RoyalGardenTemplate({ invitation, formattedDate }: Royal
           <RoyalGardenAttire />
 
           {/* Gallery */}
-          {isSectionEnabled(cfg, 'gallery') && <RoyalGardenGallery />}
+          {isSectionEnabled(cfg, 'gallery') && (
+            <RoyalGardenGallery 
+              photos={
+                Array.isArray(getSectionContent(cfg, 'gallery').images) 
+                  ? getSectionContent(cfg, 'gallery').images.filter((img: any) => img.url).map((img: any) => img.url) 
+                  : undefined
+              }
+            />
+          )}
 
           {/* Streaming */}
           <RoyalGardenStreaming />

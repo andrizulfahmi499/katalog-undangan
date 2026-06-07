@@ -29,8 +29,8 @@ interface DreamyJavaneseTemplateProps {
   editable?: boolean
 }
 
-function getSection(cfg: InvitationEditorConfig, id: string) {
-  return cfg.sections.find(s => s.id === id)
+function getSection(cfg: InvitationEditorConfig, idOrCategory: string) {
+  return cfg.sections.find(s => s.id === idOrCategory || (s as any).category === idOrCategory)
 }
 
 function isSectionEnabled(cfg: InvitationEditorConfig, id: string) {
@@ -158,7 +158,13 @@ export default function DreamyJavaneseTemplate({ invitation, formattedDate }: Dr
 
         {/* Gallery */}
         {isSectionEnabled(cfg, 'gallery') && (
-          <DJGallery />
+          <DJGallery 
+            photos={
+              Array.isArray(getSectionContent(cfg, 'gallery').images) 
+                ? getSectionContent(cfg, 'gallery').images.filter((img: any) => img.url).map((img: any) => img.url) 
+                : undefined
+            }
+          />
         )}
 
         {/* RSVP */}

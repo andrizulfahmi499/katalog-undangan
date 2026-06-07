@@ -161,9 +161,11 @@ export default function SectionPreview({
   const color = primaryColor || '#6C5CE7'
   const isDreamLand = templateId === 'dream-land'
   const invId = invitationId || 'default'
+  // category (new pages) takes priority over legacy id
+  const sectionType = (section as any).category || section.id
 
   // ── OPENING ──
-  if (section.id === 'opening') {
+  if (sectionType === 'opening') {
     if (isDreamLand) {
       return (
         <div className="relative w-full overflow-hidden rounded-xl" style={{
@@ -218,7 +220,7 @@ export default function SectionPreview({
   }
 
   // ── QUOTES ──
-  if (section.id === 'quotes') {
+  if (sectionType === 'quotes') {
     return (
       <div className="rounded-xl p-5 text-center" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `linear-gradient(135deg, ${color}15, ${color}05)`, border: isDreamLand ? 'none' : `1px solid ${color}30` }}>
         <p className={`text-sm italic leading-relaxed ${isDreamLand ? 'font-cormorant text-[#555]' : 'text-gray-700'}`}>"{c.verse || 'Ayat Al-Quran...'}"</p>
@@ -228,7 +230,7 @@ export default function SectionPreview({
   }
 
   // ── GROOM ──
-  if (section.id === 'groom') {
+  if (sectionType === 'groom' || sectionType === 'mempelai') {
     return (
       <div className="rounded-xl p-4" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
         <div className="flex items-center gap-4">
@@ -249,7 +251,7 @@ export default function SectionPreview({
   }
 
   // ── BRIDE ──
-  if (section.id === 'bride') {
+  if (sectionType === 'bride') {
     return (
       <div className="rounded-xl p-4" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
         <div className="flex items-center gap-4">
@@ -270,7 +272,7 @@ export default function SectionPreview({
   }
 
   // ── EVENT ──
-  if (section.id === 'event') {
+  if (sectionType === 'event' || sectionType === 'acara') {
     return (
       <div className="rounded-xl p-4 space-y-2" style={{ background: isDreamLand ? `url(${DL}/bg-5.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
         <p className={`font-semibold text-sm ${isDreamLand ? 'font-michelia text-[#775D34] text-lg' : 'text-gray-800'}`}>{c.eventTitle || eventName}</p>
@@ -284,7 +286,7 @@ export default function SectionPreview({
   }
 
   // ── MAPS ──
-  if (section.id === 'maps') {
+  if (sectionType === 'maps') {
     return (
       <div className="rounded-xl p-4" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
         <p className="font-semibold text-gray-800 text-sm">{c.venueName || 'Nama Venue'}</p>
@@ -300,7 +302,7 @@ export default function SectionPreview({
   }
 
   // ── COUNTDOWN ──
-  if (section.id === 'countdown') {
+  if (sectionType === 'countdown') {
     const target = c.targetDate ? new Date(c.targetDate) : new Date(eventDate)
     const diff = target.getTime() - Date.now()
     const days = Math.max(0, Math.floor(diff / 86400000))
@@ -335,19 +337,35 @@ export default function SectionPreview({
   }
 
   // ── GALLERY ──
-  if (section.id === 'gallery') {
+  if (sectionType === 'gallery') {
+    const images: any[] = Array.isArray(c.images) ? c.images : []
+    const hasPhotos = images.some((img: any) => img.url)
     return (
-      <div className="rounded-xl p-3" style={{ background: isDreamLand ? `url(${DL}/bg-2.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
-        <p className={`text-xs mb-2 ${isDreamLand ? 'font-michelia text-[#775D34] text-lg text-center' : 'text-gray-500'}`}>
-          {isDreamLand ? 'Portrait of Us' : 'Gallery Foto'}
-        </p>
-        <GalleryUpload invitationId={invId} />
+      <div className="rounded-xl p-3" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
+        <p className="text-xs text-gray-500 font-medium mb-2">{c.sectionTitle || 'Gallery Foto'}</p>
+        {hasPhotos ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px', width: '100%' }}>
+            {images.filter((img: any) => img.url).map((img: any, i: number) => (
+              <div key={i} style={{ overflow: 'hidden', width: '100%', height: '80px', borderRadius: '0.375rem' }}>
+                <img src={img.url} alt={img.caption || ''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-1">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="aspect-square bg-slate-200 rounded-md flex items-center justify-center">
+                <span className="text-slate-400 text-xs">📷</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     )
   }
 
-  // ── YANG MENGUNDANG ──
-  if (section.id === 'yangMengundang') {
+  // ── YANG MENGUNDANG / MENGUNDANG ──
+  if (sectionType === 'yangMengundang' || sectionType === 'mengundang') {
     return (
       <div className="rounded-xl p-4 text-center" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
         <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Yang Mengundang</p>
@@ -356,8 +374,8 @@ export default function SectionPreview({
     )
   }
 
-  // ── TURUT MENGUNDANG ──
-  if (section.id === 'turutMengundang') {
+  // ── TURUT MENGUNDANG / PROTOKOL ──
+  if (sectionType === 'turutMengundang' || sectionType === 'protokol') {
     return (
       <div className="rounded-xl p-4" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
         <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Turut Mengundang</p>
@@ -370,7 +388,7 @@ export default function SectionPreview({
   }
 
   // ── RSVP ──
-  if (section.id === 'rsvp') {
+  if (sectionType === 'rsvp') {
     return (
       <div className="rounded-xl p-4" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
         <p className={`text-xs mb-3 ${isDreamLand ? 'font-cormorant text-[#555] text-center' : 'text-gray-500'}`}>{c.message || 'Konfirmasi kehadiran Anda'}</p>
@@ -386,22 +404,30 @@ export default function SectionPreview({
   }
 
   // ── GIFT ──
-  if (section.id === 'gift') {
+  if (sectionType === 'gift') {
+    const accounts: any[] = Array.isArray(c.accounts) ? c.accounts : []
     return (
-      <div className="rounded-xl p-4" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
-        <p className={`text-xs uppercase tracking-wider mb-2 ${isDreamLand ? 'font-michelia text-[#775D34] text-lg text-center normal-case' : 'text-gray-500'}`}>Wedding Gift</p>
-        <div className={`rounded-lg p-3 ${isDreamLand ? 'bg-[#F6EAD3] rounded-2xl' : 'bg-white border border-gray-100'}`}>
-          <p className={`text-xs font-bold ${isDreamLand ? 'font-cormorantSemiBold text-[#775D34]' : 'text-gray-700'}`}>{c.bankName || 'BCA'}</p>
-          <p className={`text-sm font-mono font-bold mt-1 ${isDreamLand ? 'text-[#775D34]' : ''}`} style={isDreamLand ? {} : { color }}>{c.accountNumber || '0000 0000 0000'}</p>
-          <p className={`text-xs ${isDreamLand ? 'font-cormorant text-[#555]' : 'text-gray-500'}`}>{c.accountName || 'Atas Nama'}</p>
-        </div>
-        {c.address && <p className="text-xs text-gray-400 mt-2">📍 {c.address}</p>}
+      <div className="rounded-xl p-4" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
+        <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Wedding Gift</p>
+        {accounts.length > 0 ? accounts.map((ac: any, i: number) => (
+          <div key={i} className="rounded-lg p-3 bg-white border border-gray-100 mb-2">
+            <p className="text-xs font-bold text-gray-700">{ac.bankName}</p>
+            <p className="text-sm font-mono font-bold mt-0.5" style={{ color }}>{ac.accountNumber}</p>
+            <p className="text-xs text-gray-500">{ac.accountName}</p>
+          </div>
+        )) : (
+          <div className="rounded-lg p-3 bg-white border border-gray-100">
+            <p className="text-xs font-bold text-gray-700">{c.bankName || 'BCA'}</p>
+            <p className="text-sm font-mono font-bold mt-1" style={{ color }}>{c.accountNumber || '0000 0000 0000'}</p>
+            <p className="text-xs text-gray-500">{c.accountName || 'Atas Nama'}</p>
+          </div>
+        )}
       </div>
     )
   }
 
   // ── THANKS ──
-  if (section.id === 'thanks') {
+  if (sectionType === 'thanks') {
     return (
       <div className="rounded-xl p-4 text-center" style={{ background: isDreamLand ? `url(${DL}/bg-1.jpg) center/cover` : `${color}08`, border: isDreamLand ? 'none' : `1px solid ${color}20` }}>
         <p className={`text-lg font-bold ${isDreamLand ? 'font-michelia text-[#775D34]' : ''}`} style={isDreamLand ? {} : { color }}>{c.groomName || 'Akbar'} & {c.brideName || 'Madia'}</p>
@@ -415,7 +441,7 @@ export default function SectionPreview({
     <div className="rounded-xl p-4" style={{ background: `${color}08`, border: `1px solid ${color}20` }}>
       <p className="text-xs text-gray-500">Preview section: <span className="font-semibold">{section.label}</span></p>
       {Object.entries(c).map(([k, v]) => (
-        <p key={k} className="text-xs text-gray-600 mt-1"><span className="font-medium">{k}:</span> {v}</p>
+        <p key={k} className="text-xs text-gray-600 mt-1"><span className="font-medium">{k}:</span> {typeof v === 'object' ? JSON.stringify(v) : String(v)}</p>
       ))}
     </div>
   )

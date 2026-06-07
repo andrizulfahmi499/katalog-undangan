@@ -8,9 +8,12 @@ import ElgazeTemplate from '@/components/ElgazeTemplate'
 import CoreliTemplate from '@/components/CoreliTemplate'
 import RoyalGardenTemplate from '@/components/RoyalGardenTemplate'
 import DreamyJavaneseTemplate from '@/components/DreamyJavaneseTemplate'
+import AyshaTemplate from '@/components/AyshaTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 import { parseEditorConfig } from '@/lib/invitationEditorConfig'
+
+export const dynamic = 'force-dynamic'
 
 type InvitationPreviewPageProps = {
   params: Promise<{
@@ -98,6 +101,11 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   // If Dreamy Javanese template, render special layout
   if (invitation.templateId === 'dreamy-javanese') {
     return <DreamyJavaneseTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
+  }
+
+  // If Aysha / Black Aysha template, render special layout
+  if (invitation.templateId === 'black-aysha' || invitation.templateId === 'aysha') {
+    return <AyshaTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
   }
 
   return (

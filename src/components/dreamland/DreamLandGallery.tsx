@@ -15,6 +15,7 @@ const MAX_PHOTOS = 12
 interface Props {
   invitationId: string
   editable?: boolean
+  photos?: string[]
 }
 
 function getStorageKey(invitationId: string) {
@@ -57,7 +58,7 @@ const DEFAULT_PHOTOS = [
   'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80',
 ]
 
-export default function DreamLandGallery({ invitationId, editable = false }: Props) {
+export default function DreamLandGallery({ invitationId, editable = false, photos: passedPhotos }: Props) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const [lightbox, setLightbox] = useState<number | null>(null)
@@ -65,15 +66,19 @@ export default function DreamLandGallery({ invitationId, editable = false }: Pro
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [editIndex, setEditIndex] = useState<number | null>(null)
 
-  // Load photos from localStorage on mount
+  // Load photos from localStorage on mount or use passedPhotos
   useEffect(() => {
+    if (passedPhotos && passedPhotos.length > 0) {
+      setPhotos(passedPhotos)
+      return
+    }
     const stored = loadPhotosFromStorage(invitationId)
     if (stored.length > 0) {
       setPhotos(stored)
     } else {
       setPhotos(DEFAULT_PHOTOS)
     }
-  }, [invitationId])
+  }, [invitationId, passedPhotos])
 
   const handleUpload = useCallback(async (files: FileList | null, replaceIndex?: number) => {
     if (!files || files.length === 0) return
