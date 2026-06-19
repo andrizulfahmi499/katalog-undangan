@@ -57,3 +57,13 @@ server.log
 # Uploaded OG images (keep directory, ignore files)
 /public/uploads/og-images/*
 !/public/uploads/og-images/.gitkeep
+
+# Scratch / reference screenshots
+/scratch/
+/upload/
+
+# Docs (PRDs)
+/docs/
+
+# Refactor scripts
+/refactor_modal.js

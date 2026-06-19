@@ -9,6 +9,8 @@ import CoreliTemplate from '@/components/CoreliTemplate'
 import RoyalGardenTemplate from '@/components/RoyalGardenTemplate'
 import DreamyJavaneseTemplate from '@/components/DreamyJavaneseTemplate'
 import AyshaTemplate from '@/components/AyshaTemplate'
+import EdenPurpleTemplate from '@/components/EdenPurpleTemplate'
+import BanjarTemplate from '@/components/BanjarTemplate'
 import { db } from '@/lib/db'
 import { getTemplateById, formatInvitationMessage } from '@/lib/invitationTemplates'
 import { parseEditorConfig } from '@/lib/invitationEditorConfig'
@@ -106,6 +108,16 @@ export default async function InvitationPreviewPage({ params }: InvitationPrevie
   // If Aysha / Black Aysha template, render special layout
   if (invitation.templateId === 'black-aysha' || invitation.templateId === 'aysha') {
     return <AyshaTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
+  }
+
+  // If Eden Purple template, render special layout
+  if (invitation.templateId === 'eden-purple') {
+    return <EdenPurpleTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
+  }
+
+  // If Banjar 3D Parallax template, render special layout
+  if (invitation.templateId === 'banjar-parallax') {
+    return <BanjarTemplate invitation={{...invitation, editorConfig: invitation.editorConfig}} formattedDate={formattedDate} editable={true} />
   }
 
   return (

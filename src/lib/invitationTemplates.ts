@@ -130,6 +130,28 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     defaultMessage:
       'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih atas kehadiran dan doanya.',
   },
+  {
+    id: 'eden-purple',
+    title: 'Eden Purple',
+    category: 'Pernikahan',
+    accent: 'from-purple-600 to-violet-400',
+    description: 'Tema elegan ungu dengan dekorasi taman surga, kupu-kupu, burung, countdown animasi rolling number, gallery carousel, RSVP, dan wedding gift. Terinspirasi dari dearmylove.org Eden Purple.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Eden Purple',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih atas kehadiran dan doanya.',
+  },
+  {
+    id: 'banjar-parallax',
+    title: 'Banjar 3D Parallax',
+    category: 'Pernikahan',
+    accent: 'from-amber-500 to-red-800',
+    description: 'Template 3D parallax premium dengan efek layer kedalaman, scroll-driven animation, dan curtain opening. Nuansa hangat ivory-gold dengan tipografi elegan.',
+    heroLabel: 'The Wedding Of',
+    heroLine: 'Banjar Parallax',
+    defaultMessage:
+      'Kepada Yth. Bapak/Ibu/Saudara/i *{nama_tamu}*\n\nDengan penuh kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nLink undangan:\n{link_undangan}\n\nTerima kasih atas kehadiran dan doanya.',
+  },
 ]
 
 export function getTemplateById(id: string) {

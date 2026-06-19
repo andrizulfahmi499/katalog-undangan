@@ -13,6 +13,8 @@ const THEME_LIST = [
   { id: 'verdant', name: 'Verdant Elegance', category: 'Minimalis', isPremium: false, thumbnail: '/icons/right.webp' },
   { id: 'elgaze', name: 'Elgaze Luxury', category: 'Luxury', isPremium: true, thumbnail: '/icons/bg-end.webp' },
   { id: 'corelia', name: 'Corelia', category: 'Minimalis', isPremium: false, thumbnail: '/icons/frame-mempelai.webp' },
+  { id: 'eden-purple', name: 'Eden Purple', category: 'Elegant', isPremium: true, thumbnail: '/templates/eden/images/portal.jpg' },
+  { id: 'banjar-parallax', name: 'Banjar 3D Parallax', category: 'Parallax', isPremium: true, thumbnail: '/templates/banjar/images/cover-img.webp' },
 ]
 
 type ThemePickerModalProps = {
