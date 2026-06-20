@@ -62,6 +62,20 @@ export const PAGE_CATEGORIES: PageCategory[] = [
           eventDate: '',
         },
       },
+      {
+        id: 'opening-modern',
+        name: 'Modern Fullscreen (Premium)',
+        thumbnail: '',
+        isPremium: true,
+        defaultContent: {
+          subtitle: 'The Wedding Of',
+          title: 'Akbar & Madia',
+          guestLabel: 'Kepada Yth. Bapak/Ibu/Saudara/i',
+          buttonLabel: 'Buka Undangan',
+          photoUrl: '',
+          eventDate: '',
+        },
+      },
     ],
   },
 

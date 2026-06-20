@@ -173,23 +173,65 @@ export default function SectionPreview({
         }}>
           <div className="absolute inset-0 bg-black/20" />
           <div className="relative z-20 flex flex-col items-center justify-center px-6 py-8" style={{ minHeight: '280px' }}>
-            <p className="font-michelia text-[#b1914f] text-xs mb-1">{c.subtitle || 'The Wedding Of'}</p>
+            <p className="font-michelia text-[#b1914f] text-xs mb-1">{c.title || c.subtitle || 'The Wedding Of'}</p>
             <h1 className="font-cormorantSemiBold text-white text-xl text-center" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-              {c.title || title}
+              {c.coupleNames || c.title || title}
             </h1>
             {c.guest && (
               <div className="text-center mt-3 px-4 py-2 rounded-xl bg-white/70 backdrop-blur-sm">
-                <p className="text-gray-600 text-xs">Kepada Yth.</p>
+                <p className="text-gray-600 text-xs">{c.guestLabel || 'Kepada Yth.'}</p>
                 <p className="font-cormorantSemiBold text-[#775D34] text-sm">{c.guest}</p>
               </div>
             )}
             <button className="mt-4 px-5 py-1.5 rounded-full bg-[#F6EAD3] text-[#777] text-xs font-cormorant shadow-lg">
-              Buka Undangan
+              {c.buttonLabel || 'Buka Undangan'}
             </button>
           </div>
         </div>
       )
     }
+
+    if (section.layoutId === 'opening-modern') {
+      return (
+        <div className="relative w-full overflow-hidden rounded-xl group" style={{
+          backgroundImage: c.photoUrl?.trim()
+            ? `url(${c.photoUrl.trim()})`
+            : backgroundImageUrl?.trim() ? `url(${backgroundImageUrl.trim()})` : 'url(https://assets.satumomen.com/images/invitation/bg-section-90534941775604513.jpg)',
+          backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '480px',
+        }}>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-all duration-700 group-hover:bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+          
+          <div className="relative z-20 flex flex-col items-center justify-between px-6 pt-16 pb-12 h-full" style={{ minHeight: '480px' }}>
+            {/* Top Text */}
+            <div className="text-center transform transition-all duration-700 translate-y-0 group-hover:-translate-y-2">
+              <p className="text-white/80 text-[11px] tracking-[0.3em] uppercase mb-4 font-medium">
+                {c.title || c.subtitle || 'The Wedding Of'}
+              </p>
+              <h1 className="text-white leading-tight font-serif italic" style={{ fontSize: '2.5rem', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                {c.coupleNames || c.title || title}
+              </h1>
+            </div>
+            
+            {/* Bottom Elements */}
+            <div className="w-full flex flex-col items-center mt-12 transform transition-all duration-700 translate-y-0 group-hover:translate-y-2">
+              <div className="text-center px-8 py-5 rounded-3xl w-full max-w-[260px] border border-white/20 shadow-2xl relative overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                <p className="text-white/80 text-[11px] uppercase tracking-wider mb-2 font-medium">{c.guestLabel || 'Kepada Yth.'}</p>
+                <p className="font-bold text-lg text-white mb-0.5">{c.guest || 'Tamu Undangan'}</p>
+                <p className="text-white/60 text-[10px] uppercase tracking-widest mt-1">{c.place || 'di Tempat'}</p>
+              </div>
+              
+              <button className="flex items-center gap-2 mt-6 px-8 py-3.5 rounded-full text-white text-xs font-bold uppercase tracking-wider shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-all hover:scale-105 hover:shadow-[0_8px_25px_rgba(0,0,0,0.4)]" style={{ backgroundColor: color }}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5" /></svg>
+                {c.buttonLabel || 'Buka Undangan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     // Generic opening
     return (
       <div className="relative w-full overflow-hidden rounded-xl" style={{
@@ -201,18 +243,20 @@ export default function SectionPreview({
         <div className="absolute inset-0 bg-black/25" />
         <div className="relative z-20 flex flex-col items-center justify-between px-12 pt-6 pb-8" style={{ minHeight: '320px' }}>
           <div className="text-center mt-2">
-            <p className="text-white/90 text-xs tracking-widest uppercase mb-1">{c.subtitle || 'The Wedding Of'}</p>
+            <p className="text-white/90 text-xs tracking-widest uppercase mb-1">{c.title || c.subtitle || 'The Wedding Of'}</p>
             <h1 className="text-white font-bold leading-tight" style={{ fontSize: '1.8rem', fontFamily: 'Georgia, serif', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-              {c.title || title}
+              {c.coupleNames || c.title || title}
             </h1>
           </div>
           <div className="w-full flex flex-col items-center gap-3 mt-4">
             <div className="text-center px-4 py-3 rounded-xl w-full max-w-[200px]" style={{ backgroundColor: 'rgba(255,255,255,0.77)', backdropFilter: 'blur(2px)' }}>
-              <p className="text-gray-700 text-xs mb-0.5">Kepada Yth.<br />Bapak/Ibu/Saudara/i</p>
+              <p className="text-gray-700 text-xs mb-0.5">{c.guestLabel || 'Kepada Yth.\nBapak/Ibu/Saudara/i'}</p>
               <p className="font-bold text-sm mb-0.5" style={{ color }}>{c.guest || 'Tamu Undangan'}</p>
               <p className="text-gray-600 text-xs">{c.place || 'di Tempat'}</p>
             </div>
-            <button className="px-6 py-2 rounded-full text-white text-xs font-semibold shadow-lg" style={{ backgroundColor: color }}>Open Invitation</button>
+            <button className="px-6 py-2 rounded-full text-white text-xs font-semibold shadow-lg" style={{ backgroundColor: color }}>
+              {c.buttonLabel || 'Open Invitation'}
+            </button>
           </div>
         </div>
       </div>

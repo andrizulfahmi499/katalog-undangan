@@ -305,3 +305,282 @@ model GiftRegistry {
   @@index([claimedByGuestId])
   @@map("GiftRegistry")
 }
+
+// ============================================================
+// Editor Undangan v2 - End User System
+// ============================================================
+
+// End users who self-register via email+OTP (momentus-style)
+// Can also be auto-linked to admin/member accounts
+model EndUser {
+  id                   String              @id @default(cuid())
+  name                 String
+  email                String              @unique
+  whatsapp             String?
+  role                 String              @default("customer") // 'customer' | 'admin' | 'member'
+  linkedAdminId        String?             // If auto-linked from admin login
+  linkedMemberId       String?             // If auto-linked from member login
+  isVerified           Boolean             @default(false)
+  packageType          String?             // package slug from V2Package
+  packageStatus        String              @default("unpaid") // 'unpaid' | 'paid' | 'trial'
+  subdomain            String?             @unique
+  subdomainChangesLeft Int                 @default(2)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  invitations          EndUserInvitation[]
+  otpSessions          OTPSession[]
+  payments             V2Payment[]
+
+  @@index([linkedAdminId])
+  @@index([linkedMemberId])
+  @@map("EndUser")
+}
+
+// OTP verification sessions for email auth
+model OTPSession {
+  id        String   @id @default(cuid())
+  endUserId String
+  code      String   // 6-digit OTP code
+  purpose   String   @default("login") // 'login' | 'register' | 'reset'
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  endUser   EndUser  @relation(fields: [endUserId], references: [id], onDelete: Cascade)
+
+  @@index([endUserId])
+  @@index([code])
+  @@map("OTPSession")
+}
+
+// Dynamic packages managed by admin (stored in DB, not hardcoded)
+model V2Package {
+  id            String   @id @default(cuid())
+  slug          String   @unique // e.g. 'basic', 'standard', 'premium'
+  name          String   // "Paket Basic", "Paket Premium"
+  description   String?  @db.Text
+  regularPrice  Int      // Price in Rupiah (before discount)
+  promoPrice    Int      // Promo/discounted price
+  features      Json     @default("[]") // Array of feature strings
+  popular       Boolean  @default(false) // Show "Popular" badge
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payments      V2Payment[]
+
+  @@map("V2Package")
+}
+
+// Discount coupons for v2 packages
+model V2Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  description     String?   @db.Text
+  discountPercent Int?      // e.g. 30 = 30% off
+  discountAmount  Int?      // Fixed discount in Rupiah
+  minPurchase     Int       @default(0) // Minimum purchase amount
+  maxUses         Int       @default(100)
+  usedCount       Int       @default(0)
+  isActive        Boolean   @default(true)
+  expiresAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  payments        V2Payment[]
+
+  @@map("V2Coupon")
+}
+
+// Payment records for package purchases
+model V2Payment {
+  id              String     @id @default(cuid())
+  endUserId       String
+  packageId       String?    // FK to V2Package (nullable for legacy)
+  packageType     String     // 'dengan_foto' | 'tanpa_foto' | package slug
+  amount          Int        // Amount in Rupiah
+  discountAmount  Int        @default(0) // Discount applied from coupon
+  finalAmount     Int        // Amount after discount
+  status          String     @default("pending") // 'pending' | 'paid' | 'failed' | 'refunded'
+  paymentMethod   String?    // 'bank_transfer' | 'ewallet' | 'qris'
+  externalId      String?    // Mayar payment ID
+  checkoutUrl     String?    // Mayar checkout URL
+  couponId        String?    // FK to V2Coupon if used
+  activatedBy     String?    // Admin ID if manually activated
+  activationNote  String?    @db.Text // Note for manual activation
+  paidAt          DateTime?
+  webhookPayload  Json?      // Store raw webhook for debugging
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  endUser         EndUser    @relation(fields: [endUserId], references: [id])
+  package_        V2Package? @relation(fields: [packageId], references: [id])
+  coupon          V2Coupon?  @relation(fields: [couponId], references: [id])
+
+  @@index([endUserId])
+  @@index([externalId])
+  @@index([status])
+  @@index([packageId])
+  @@map("V2Payment")
+}
+
+// End user invitations (separate from admin Invitations)
+model EndUserInvitation {
+  id            String   @id @default(cuid())
+  endUserId     String
+  templateSlug  String   @default("starry-sea") // 'starry-sea' | 'kalyana' | 'blooming-garden'
+  subdomain     String   @unique
+  isOnline      Boolean  @default(false)
+  editorConfig  Json     @default("{}") // All content in structured JSON
+  ogTitle       String?
+  ogDescription String?
+  ogImageUrl    String?
+  primaryColor  String   @default("#D0A77B")
+  headingFont   String   @default("Great Vibes")
+  bodyFont      String   @default("Cabin")
+  accentFont    String   @default("Cormorant Garamond")
+  musicUrl      String?
+  musicEnabled  Boolean  @default(true)
+  dateLanguage  String   @default("id") // 'id' | 'en'
+  coupleOrder   String   @default("groom-bride")
+  showWatermark Boolean  @default(true) // Show "Powered by Katalog" watermark
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  endUser       EndUser              @relation(fields: [endUserId], references: [id], onDelete: Cascade)
+  events        EndUserEvent[]
+  sessions      EndUserSession[]
+  guests        EndUserGuest[]
+  bankAccounts  EndUserBankAccount[]
+  giftItems     EndUserGiftItem[]
+  rsvpEntries   EndUserRsvp[]
+
+  @@index([endUserId])
+  @@index([subdomain])
+  @@map("EndUserInvitation")
+}
+
+// Event sessions (Akad Nikah, Resepsi, etc.)
+model EndUserEvent {
+  id           String   @id @default(cuid())
+  invitationId String
+  eventName    String   // "Akad Nikah" | "Resepsi"
+  date         DateTime
+  startTime    String   // "08:00"
+  endTime      String   // "10:00"
+  timezone     String   @default("WIB")
+  venue        String   @default("")
+  address      String   @default("")
+  mapsUrl      String?
+  mapsEmbedUrl String?
+  wazeUrl      String?
+  isMainEvent  Boolean  @default(false)
+  rsvpEnabled  Boolean  @default(true)
+  visibility   String   @default("public") // 'public' | 'private'
+  maxGuests    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invitation   EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("EndUserEvent")
+}
+
+// Crowd control sessions for events
+model EndUserSession {
+  id           String   @id @default(cuid())
+  invitationId String
+  sessionName  String
+  startTime    String
+  endTime      String
+  maxCapacity  Int      @default(100)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invitation   EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guests       EndUserGuest[]
+
+  @@index([invitationId])
+  @@map("EndUserSession")
+}
+
+// Guest management
+model EndUserGuest {
+  id            String   @id @default(cuid())
+  invitationId  String
+  name          String
+  whatsapp      String?
+  email         String?
+  category      String   @default("Reguler") // 'VIP' | 'Reguler'
+  sessionId     String?
+  tableNumber   String   @default("")
+  rsvpStatus    String   @default("Pending") // 'Hadir' | 'Menolak' | 'Pending'
+  checkIn       Boolean  @default(false)
+  invitationToken String @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  invitation    EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  session       EndUserSession?   @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([invitationId])
+  @@index([sessionId])
+  @@map("EndUserGuest")
+}
+
+// Bank accounts for digital kado/angpao
+model EndUserBankAccount {
+  id            String   @id @default(cuid())
+  invitationId  String
+  bankName      String   // "BCA" | "Mandiri" | "GoPay" etc
+  accountNumber String
+  accountName   String
+  logoUrl       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  invitation    EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("EndUserBankAccount")
+}
+
+// Physical gift registry items
+model EndUserGiftItem {
+  id            String   @id @default(cuid())
+  invitationId  String
+  itemName      String
+  itemImageUrl  String?
+  buyUrl        String?
+  isClaimed     Boolean  @default(false)
+  claimedByName String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  invitation    EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("EndUserGiftItem")
+}
+
+// RSVP entries from guests
+model EndUserRsvp {
+  id            String   @id @default(cuid())
+  invitationId  String
+  guestName     String
+  guestWhatsapp String?
+  attendance    String   // 'Hadir' | 'Tidak Hadir' | 'Mungkin'
+  guestCount    Int      @default(1)
+  message       String?  @db.Text
+  groupName     String?
+  createdAt     DateTime @default(now())
+
+  invitation    EndUserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("EndUserRsvp")
+}

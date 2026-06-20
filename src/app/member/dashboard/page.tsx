@@ -206,6 +206,13 @@ export default function MemberDashboard() {
           ))}
 
           <div className="pt-6 mt-6 border-t border-slate-100">
+            <a
+              href="/v2/dashboard"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-slate-600 hover:bg-[#3A5A40]/10 hover:text-[#3A5A40] transition-colors mb-1"
+            >
+              <Heart className="w-5 h-5" />
+              <span className="text-[14px]">Editor Undangan v2</span>
+            </a>
             <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors">
               <LogOut className="w-5 h-5" />
               <span className="text-[14px]">Logout</span>

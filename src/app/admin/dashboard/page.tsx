@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText, Settings, Layout, X, Menu, Home, UserPlus, Clock, Sparkles, CalendarDays, ChevronRight, ExternalLink, Activity, Eye, Smartphone, Layers } from 'lucide-react'
+import { Users, Mail, CreditCard, LogOut, Plus, Edit, Trash2, ArrowLeft, Palette, FileText, Settings, Layout, X, Menu, Home, UserPlus, Clock, Sparkles, CalendarDays, ChevronRight, ExternalLink, Activity, Eye, Smartphone, Layers, Heart, Package } from 'lucide-react'
 import { TEMPLATE_OPTIONS, type TemplateOption } from '@/lib/invitationTemplates'
 import OGImageUploader from '@/components/admin/OGImageUploader'
 import ImagePreview from '@/components/admin/ImagePreview'
@@ -46,7 +46,7 @@ type Invitation = {
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'invitations' | 'templates' | 'settings'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'invitations' | 'templates' | 'settings' | 'theme-config'>('dashboard')
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [members, setMembers] = useState<Member[]>([])
   const [invitations, setInvitations] = useState<Invitation[]>([])
@@ -665,6 +665,21 @@ export default function AdminDashboard() {
           >
             <Layers className="w-5 h-5" />
             Editor 3D Parallax
+          </a>
+
+          <a
+            href="/v2/dashboard"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <Heart className="w-5 h-5" />
+            Editor Undangan v2
+          </a>
+          <a
+            href="/admin/v2-packages"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+          >
+            <Package className="w-5 h-5" />
+            Paket v2
           </a>
 
           <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mt-8 mb-2">System</p>
